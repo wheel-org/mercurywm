@@ -1,0 +1,14 @@
+{
+  "manifest_version": 2,
+  "name": "MercuryWM",
+  "version": "1.0",
+  "description": "Transforms your new tab page into a multi-windowed terminal environment.",
+  "icons": {
+    "128": "icon128.png"
+  },
+  "chrome_url_overrides" : {
+    "newtab": "index.html"
+  },
+  "permissions": ["storage"],
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+}

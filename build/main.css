@@ -1,0 +1,144 @@
+* {
+    box-sizing: border-box;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+}
+
+html, body, #root {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+*::-webkit-scrollbar-track {
+    background-color: rgba(0,0,0,0);
+    width: 10px;
+}
+
+*::-webkit-scrollbar {
+    background-color: rgba(0,0,0,0);
+    width: 15px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    border: 5px solid transparent;
+    background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Terminal */
+
+.terminal-link {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    overflow-wrap: break-word;
+    overflow-y: scroll;
+    overflow-x: visible;
+}
+
+.terminal p {
+    margin-top: 0;
+    margin-bottom: 0;
+    white-space: pre-wrap;
+}
+
+.terminal .prompt {
+    color: #f48020;
+}
+
+.cursor.blink {
+    background-color: #f48020;
+    animation: blink 1s steps(1, start) infinite;
+}
+
+@keyframes blink {
+    0%, to { background-color: rgba(0,0,0,0); color: white; }
+    50% { background-color: #f48020; color: #111; }
+}
+
+
+/* Window */
+
+.window-box {
+    position: absolute;
+    padding: 10px 0 0 10px;
+}
+
+.window {
+    width: 100%;
+    height: calc(100% - 15px); /* window info height */
+    border: 1px solid #333;
+    background: rgba(11, 11, 11, 0.5);
+    position: relative;
+    overflow: auto;
+    z-index: 0;
+    color: white;
+}
+
+.window.selected {
+    border: 1px solid #999;
+}
+
+.window-info {
+    background: #0A0A0A;
+    width: 100%;
+    height: 15px;
+    color: #FDFDFD;
+    font-size: 8px;
+    padding: 3px;
+}
+
+.window-frame {
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* Workspace */
+
+.workspace {
+    position: relative;
+    width: calc(100% - 10px);
+    height: calc(100% - 30px); /* bottom bar height */
+}
+
+/* Bottom Bar */
+.bottombar {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.ws-btn-list {
+   display: inline-block;
+   height: 100%;
+}
+
+.ws-btn {
+    display: inline-block;
+    color: white;
+    width: 20px;
+    height: 100%;
+    text-align: center;
+    line-height: 20px;
+    cursor: pointer;
+}
+
+.ws-btn.selected {
+    background: black;
+}
+
+.logged-in-as {
+    display: inline-block;
+    float: right;
+    line-height: 20px;
+    color: white;
+    padding-right: 10px;
+}
