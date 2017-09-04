@@ -5,6 +5,7 @@ const Constants = {
     DIR_TYPE: 'dir',
     FILE_TYPE: 'file',
     MERCURYWM_CONTENT_URL: 'https://wheel-org.github.io/mercurywm-scripts/',
+    MERCURYWM_CONTENT_ORIGIN: 'https://wheel-org.github.io/',
 
     // KEY CODES
     KEY_LEFT_ARROW: 37,

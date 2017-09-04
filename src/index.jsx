@@ -33,7 +33,7 @@ Storage.load(newState => {
     window.addEventListener("message", receiveMessage, false);
 
     function receiveMessage(event) {
-        if (event.origin + '/' === Constants.MERCURYWM_CONTENT_URL) {
+        if (event.origin + '/' === Constants.MERCURYWM_CONTENT_ORIGIN) {
             const message = event.data;
             const parts = event.data.split("|");
             if (parts[0] === 'done') {
