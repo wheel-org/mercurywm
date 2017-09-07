@@ -35,14 +35,18 @@ const rootReducer = function (state = {}, action) {
         }
         case 'INTENT_SELECT_WORKSPACE': {
             let currentWorkspace = state.selectedWorkspace;
-            if (action.direction === Constants.KEY_LEFT_ARROW &&
-                    currentWorkspace > 0) {
-                currentWorkspace--;
-            }
-            else if (action.direction === Constants.KEY_RIGHT_ARROW &&
-                    currentWorkspace < state.workspaces.length - 1) {
-               currentWorkspace++;
-            }
+			if (action.direction === Constants.KEY_LEFT_ARROW) {
+				currentWorkspace--;
+				if (currentWorkspace < 0) {
+					currentWorkspace = state.workspaces.length - 1;
+				}
+			}
+			else if (action.direction === Constants.KEY_RIGHT_ARROW) {
+				currentWorkspace++;
+				if (currentWorkspace >= state.workspaces.length) {
+					currentWorkspace = 0;
+				}
+			}			
             return {
                 ...state,
                 selectedWorkspace: currentWorkspace,
