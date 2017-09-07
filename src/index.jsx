@@ -30,6 +30,27 @@ Storage.load(newState => {
         document.getElementById('root')
     );
 
+    window.addEventListener("keydown", handleSystemKey, false);
+
+    function handleSystemKey(e) {
+        if ((e.keyCode === Constants.KEY_LEFT_ARROW || e.keyCode === Constants.KEY_RIGHT_ARROW) && e.altKey) {
+            store.dispatch({
+                type: 'INTENT_SELECT_WORKSPACE',
+                direction: e.keyCode
+            });
+            e.preventDefault();
+        }
+        else if ([Constants.KEY_LEFT_ARROW, Constants.KEY_RIGHT_ARROW,
+                  Constants.KEY_UP_ARROW, Constants.KEY_DOWN_ARROW].indexOf(e.keyCode) > -1
+                  && e.shiftKey) {
+            store.dispatch({
+                type: 'INTENT_SELECT_WINDOW',
+                direction: e.keyCode
+            });
+            e.preventDefault();
+        }
+    }
+
     window.addEventListener("message", receiveMessage, false);
 
     function receiveMessage(event) {

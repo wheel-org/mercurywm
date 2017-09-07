@@ -104,16 +104,6 @@ class TerminalLink extends React.Component {
                 historyIndex: history.length
             });
         }
-        else if ((e.keyCode === Constants.KEY_LEFT_ARROW || e.keyCode === Constants.KEY_RIGHT_ARROW) && e.altKey) {
-            this.props.workspaceKeyDispatch(e.keyCode);
-            e.preventDefault();
-        }
-        else if ([Constants.KEY_LEFT_ARROW, Constants.KEY_RIGHT_ARROW,
-                  Constants.KEY_UP_ARROW, Constants.KEY_DOWN_ARROW].indexOf(e.keyCode) > -1
-                  && e.shiftKey) {
-            this.props.windowKeyDispatch(e.keyCode);
-            e.preventDefault();
-        }
         else if (e.keyCode === Constants.KEY_UP_ARROW) {
             if (this.state.historyIndex > 0) {
                 this.setState({
