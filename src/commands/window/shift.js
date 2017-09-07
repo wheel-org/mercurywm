@@ -51,7 +51,7 @@ function run(state, params, windowIndex) {
         });
     }
     else {
-        this.output('Cannot shift ' + params[1] + ' border');
+        this.output('Cannot shift ' + params[0] + ' border');
     }
     return state;
 }
