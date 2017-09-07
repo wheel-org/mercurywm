@@ -12,3 +12,5 @@ To build a production version, run `npm run prod`.
 To run the extension, open `chrome://extensions` and enable `Developer mode`. Then click `Load unpacked extension` and navigate to the `build` directory. Your new-tab page will now be replaced with MercuryWM.
 
 ![Screenshot of MercuryWM](screenshot.png)
+
+![Screenshot 2 of MercuryWM](screenshot2.png)
