@@ -16,7 +16,20 @@ function run(state, params) {
     }
     else if (params.length === 2) {
         if (params[0] === 'remove') {
-            state.workspaces.splice(params[1], 1);
+            if (params[1] < 0 || params[1] >= state.workspaces.length) {
+                this.output('Invalid workspace id ' + params[1]);
+            }
+            else if (state.workspaces.length === 1) {
+                this.output('Cannot have zero workspaces');
+            }
+            else {
+                if (parseInt(params[1]) === state.selectedWorkspace) {
+                    state.selectedWorkspace = 0;
+                    state.selectedWindow = state.workspaces[0].windows[0].id;
+                }
+                state.workspaces.splice(params[1], 1);
+            }
+
         }
         else {
             this.output('Unknown parameter ' + params[0]);
