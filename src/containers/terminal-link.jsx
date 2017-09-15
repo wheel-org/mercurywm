@@ -73,6 +73,10 @@ class TerminalLink extends React.Component {
         this.animation = setInterval(() => {
             animationProgress += 16;
             const timeStep = animationProgress / time;
+            if (!this.input) {
+                clearInterval(this.animation);
+                return;
+            }
             this.input.scrollTop = animationStart +
                 interpolator(timeStep) * (animationEnd - animationStart);
             if (animationProgress > time) {
