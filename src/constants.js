@@ -29,17 +29,17 @@ export const createTerminal = () => ({
     workingDirectory: '~'
 });
 
-export const createWindow = (x, y, width, height) => ({
+export const createWindow = (x, y, width, height, id) => ({
     x,
     y,
     width,
     height,
-    id: Date.now(),
+    id,
     terminal: createTerminal()
 });
 
-export const createWorkspace = () => ({
-    windows: [createWindow(0, 0, 100, 100)]
+export const createWorkspace = id => ({
+    windows: [createWindow(0, 0, 100, 100, id)]
 });
 
 /* File System */

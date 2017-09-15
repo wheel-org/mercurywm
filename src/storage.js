@@ -3,7 +3,7 @@ import Constants, { createWorkspace } from './constants';
 // INITIAL STATE
 const id = Date.now();
 const defaultStateObject = { [Constants.STATE_KEY]: {
-    workspaces: [createWorkspace()],
+    workspaces: [createWorkspace(id)],
     wfs: {
         type: Constants.DIR_TYPE,
         name: '~',
