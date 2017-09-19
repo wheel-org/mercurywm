@@ -9,7 +9,8 @@ function run(state, params) {
                 this.currWindow.x + this.currWindow.width,
                 this.currWindow.y,
                 Math.ceil(sharedWidth / 2),
-                this.currWindow.height
+                this.currWindow.height,
+                Date.now()
             )
         );
     }
@@ -21,7 +22,8 @@ function run(state, params) {
                 this.currWindow.x,
                 this.currWindow.y + this.currWindow.height,
                 this.currWindow.width,
-                Math.ceil(sharedHeight / 2)
+                Math.ceil(sharedHeight / 2),
+                Date.now()
             )
         );
     }
