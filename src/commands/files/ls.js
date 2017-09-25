@@ -9,7 +9,20 @@ function run(state, params) {
     }
     else {
         this.output('Directory listing for ' + this.terminal.workingDirectory);
-    }
+	}
+	workingDirectory.data.sort(function (a, b) { 
+		if (a.type === Constants.DIR_TYPE && b.type !== Constants.DIR_TYPE) {
+			return -1;
+		}
+		else if (b.type === Constants.DIR_TYPE && a.type !== Constants.DIR_TYPE) {
+			return 1;
+		}
+		else { 
+			if (a.name < b.name) return -1;
+			else if (a.name > b.name) return 1;
+			else return 0;
+		}
+	});
     for (let i = 0; i < workingDirectory.data.length; i++) {
         if (workingDirectory.data[i].type === Constants.DIR_TYPE) {
             this.output('DIR     ' + workingDirectory.data[i].name, false, false);

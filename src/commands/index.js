@@ -82,6 +82,8 @@ function executeCommand(state, text) {
 			return script.execute(edit);
 		case 'yum':
 			return script.execute(yum);
+		case 'rm':		  
+			return script.execute(rm);	
 		default: {
 			const path = Constants.MERCURYWM_CONTENT_URL + command + '/index.html';
 			const xml = new XMLHttpRequest();
