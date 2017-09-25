@@ -9,6 +9,7 @@ import mkdir from './files/mkdir';
 import ls from './files/ls';
 import cat from './files/cat';
 import edit from './files/edit';
+import rm from './files/rm';
 
 import Constants from '../constants';
 import { findWindow } from '../utils';
@@ -61,7 +62,9 @@ function executeCommand(state, text) {
         case 'edit':
             return script.execute(edit);
         case 'yum':
-            return script.execute(yum);
+			return script.execute(yum);
+		case 'rm':
+			return script.execute(rm);	
         default: {
             const path = Constants.MERCURYWM_CONTENT_URL + command + '/index.html';
             const xml = new XMLHttpRequest();

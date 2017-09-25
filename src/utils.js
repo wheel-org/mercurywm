@@ -71,6 +71,25 @@ export function findWindow(state, id) {
     return -1;
 }
 
+function deleteObject(path, type, currDir) {
+    var containingDirRes = getDirectory(path.substring(0, path.lastIndexOf("/")), currDir);
+    var name = path.substring(path.lastIndexOf("/") + 1, path.length);
+    for (var j = 0; j < containingDirRes[0].data.length; j++) {
+        if (containingDirRes[0].data[j].name === name && 
+                containingDirRes[0].data[j].type == type) {
+            containingDirRes[0].data.splice(j, 1);
+        }
+    }
+}
+
+export function deleteDirectory(path, currDir) {
+    deleteObject(path, Constants.DIR_TYPE, currDir);
+}
+
+export function deleteFile(path, currDir) {
+    deleteObject(path, Constants.FILE_TYPE, currDir);
+}
+
 // the following commands either returns a list of windows that are exact
 //   borders of the given index, or false if there are none
 function borderingComp(index, windows, borderingComp, boundaryComp1, boundaryComp2, isStrict) {
