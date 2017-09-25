@@ -4,6 +4,7 @@ const Constants = {
     STATE_KEY: 'state',
     DIR_TYPE: 'dir',
     FILE_TYPE: 'file',
+    EXE_TYPE: 'exe',
     MERCURYWM_CONTENT_URL: 'https://wheel-org.github.io/mercurywm-scripts/',
     MERCURYWM_CONTENT_ORIGIN: 'https://wheel-org.github.io/',
 

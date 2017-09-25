@@ -11,6 +11,14 @@ const defaultStateObject = { [Constants.STATE_KEY]: {
             type: Constants.FILE_TYPE,
             name: 'Welcome',
             data: 'Welcome to MercuryWM! Here is some information about some stuff!\n'
+        }, {
+            type: Constants.DIR_TYPE,
+            name: 'bin',
+            data: [{
+                type: Constants.FILE_TYPE,
+                name: 'echo',
+                data: `script.output(args.join(" "), false, false);`
+            }]
         }]
     },
     wsh: {

@@ -11,10 +11,15 @@ function run(state, params) {
         this.output('Directory listing for ' + this.terminal.workingDirectory);
     }
     for (let i = 0; i < workingDirectory.data.length; i++) {
-        this.output(
-            (workingDirectory.data[i].type === Constants.DIR_TYPE ?
-                'DIR     ' :
-                'FILE    ') + workingDirectory.data[i].name, false, false);
+        if (workingDirectory.data[i].type === Constants.DIR_TYPE) {
+            this.output('DIR     ' + workingDirectory.data[i].name, false, false);
+        }
+        else if (workingDirectory.data[i].type === Constants.FILE_TYPE) {
+            this.output('FILE    ' + workingDirectory.data[i].name, false, false);
+        }
+        else if (workingDirectory.data[i].type === Constants.EXE_TYPE) {
+            this.output('EXE     ' + workingDirectory.data[i].name, false, false);
+        }
     }
 
     return state;
