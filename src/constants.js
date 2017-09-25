@@ -1,6 +1,8 @@
 /* Constants */
 const Constants = {
-    // CONSTANTS
+	// CONSTANTS
+	NAME: 'Mercury WM',
+	VERSION: '1.1',
     STATE_KEY: 'state',
     DIR_TYPE: 'dir',
     FILE_TYPE: 'file',

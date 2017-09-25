@@ -19,7 +19,6 @@ const Terminal = ({output, command, cursor, prompt, selected}) => {
     return (
         <div className='terminal'>
             <div className='terminal-text'>
-                <p>MercuryWM 1.0</p>
                 {formatOutput}
                 <p>
                     <span className='prompt'>{prompt}</span>

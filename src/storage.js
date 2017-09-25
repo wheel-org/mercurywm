@@ -26,7 +26,7 @@ const defaultStateObject = { [Constants.STATE_KEY]: {
         env: {
             'background': '#aaa',
             'prompt': '%w $ ',
-            'username': 'MercuryWM',
+            'username': Constants.NAME,
         },
         // alias mappings
         aliases: []
