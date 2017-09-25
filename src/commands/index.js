@@ -52,12 +52,9 @@ function executeCommand(state, text) {
 			let workspace = state.workspaces[state.selectedWorkspace];
 			let currWindow = workspace.windows[windowIndex];
 			let terminal = currWindow.terminal;
-			const code = `
-				(function run(...args) {
-					${commands[command]}
-				})(${params.map(p => '"' + p + '"').join(',')})
-			`;
-			eval(code);
+
+            const code = Function('script', 'args', commands[command]);
+            code(script, params);
 			return state;
 		}
 	}

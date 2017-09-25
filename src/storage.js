@@ -17,7 +17,7 @@ const defaultStateObject = { [Constants.STATE_KEY]: {
             data: [{
                 type: Constants.FILE_TYPE,
                 name: 'echo',
-                data: `script.output(args.join(" "), false, false);`
+                data: `console.log(args);script.output(args.join(" "), false, false);`
             }]
         }]
     },
@@ -25,6 +25,7 @@ const defaultStateObject = { [Constants.STATE_KEY]: {
         // environmental variables
         env: {
             'background': '#aaa',
+            'title': 'MercuryWM 1.0',
             'prompt': '%w $ ',
             'username': Constants.NAME,
         },

@@ -6,7 +6,7 @@ import Workspace from './workspace.jsx';
 import BottomBar from './bottombar.jsx';
 
 const App = ({ currentWorkspace, background, title }) => {
-	document.title = title || Constants.NAME;
+	document.title = title;
     let bg = background;
     if (bg.startsWith('http://') || bg.startsWith('https://')) {
         bg = 'url("' + bg + '")';
