@@ -16,7 +16,15 @@ const rootReducer = function (state = {}, action) {
     if (action.type !== 'UPDATE_COMMAND') console.log(action);
     let newState = JSON.parse(JSON.stringify(state));
 
-    const index = findWindow(state, state.selectedWindow);
+	const index = findWindow(state, state.selectedWindow);
+	if (index == -1) { 
+		// Error Recovery
+		return {
+			...state,
+			selectedWorkspace: 0,
+			selectedWindow: state.workspaces[state.selectedWorkspace].windows[0].id
+		};
+	}
     let newTerminal = newState.workspaces[newState.selectedWorkspace].windows[index].terminal;
 
     switch(action.type) {

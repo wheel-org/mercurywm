@@ -3,7 +3,7 @@ import { createWorkspace } from '../constants';
 function run(state, params) {
     if (params.length === 1) {
         if (params[0] === 'add') {
-            state.workspaces.push(createWorkspace());
+            state.workspaces.push(createWorkspace(Date.now()));
         }
         else if (params[0] >= 0 && params[0] < state.workspaces.length) {
             const newIndex = parseInt(params[0]);
