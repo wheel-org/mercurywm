@@ -142,7 +142,13 @@ class TerminalLink extends React.Component {
             this.setState({
                 cursor: this.state.cursor - 1
             });
-        }
+		}
+		else if (e.keyCode === Constants.KEY_DELETE && this.state.cursor < command.length) {
+            this.props.updateCommand(
+                command.slice(0, this.state.cursor) + command.slice(this.state.cursor + 1),
+                this.state.historyIndex
+            );
+        }	
         else if (e.keyCode === Constants.KEY_TAB) {
             const words = command.split(' ');
             if (words.length > 1) {

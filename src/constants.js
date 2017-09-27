@@ -16,7 +16,8 @@ const Constants = {
     KEY_RIGHT_ARROW: 39,
     KEY_DOWN_ARROW: 40,
     KEY_ENTER: 13,
-    KEY_BACKSPACE: 8,
+	KEY_BACKSPACE: 8,
+	KEY_DELETE: 46,
     KEY_TAB: 9
 };
 export default Constants;
