@@ -1,4 +1,4 @@
-import Constants, { createWorkspace } from './constants';
+import Constants, { mmmCode, createWorkspace } from './constants';
 
 // INITIAL STATE
 const id = Date.now();
@@ -16,8 +16,8 @@ const defaultStateObject = { [Constants.STATE_KEY]: {
             name: 'bin',
             data: [{
                 type: Constants.FILE_TYPE,
-                name: 'echo',
-                data: `console.log(args);script.output(args.join(" "), false, false);`
+                name: 'mmm',
+                data: mmmCode
             }]
         }]
     },

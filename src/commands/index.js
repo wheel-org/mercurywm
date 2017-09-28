@@ -35,6 +35,27 @@ function Script(state, command, params) {
     }
 }
 
+function temp(state) {
+	// this.createTerminal = Constants.createTerminal;
+	// this.createWindow = Constants.createWindow;
+	// this.createWorkspace = Constants.createWorkspace;
+	// this.createDirectory = Constants.createDirectory;
+	// this.createFile = Constants.createFile;
+
+    this.windowIndex = findWindow(state, state.selectedWindow);
+    this.workspace = state.workspaces[state.selectedWorkspace];
+    this.currWindow = this.workspace.windows[this.windowIndex];
+    this.terminal = this.currWindow.terminal;
+
+	this.output = function(text, showCommand = false, showPrompt = false) {
+		this.terminal.output.push({
+            text: (showCommand ? command + ': ' : '') + text,
+            prompt: (showPrompt ? this.terminal.workingDirectory : '')
+        });
+	}
+	this.state = state;
+}
+
 function executeCommand(state, text) {
     const [command, ...params] = parseInput(text);
     console.log(command, params);
@@ -48,13 +69,8 @@ function executeCommand(state, text) {
 			return acc;
 		}, {});
 		if (commands[command]) {
-			let windowIndex = findWindow(state, state.selectedWindow);
-			let workspace = state.workspaces[state.selectedWorkspace];
-			let currWindow = workspace.windows[windowIndex];
-			let terminal = currWindow.terminal;
-
             const code = Function('script', 'args', commands[command]);
-            code(script, params);
+            code(new temp(state), params);
 			return state;
 		}
 	}
