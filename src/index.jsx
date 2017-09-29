@@ -8,7 +8,7 @@ import reducers from './reducers';
 import Storage from './storage';
 import App from './containers/app.jsx';
 import Constants, {createFile} from './constants';
-import { getDirectory, getFile } from './utils';
+import { getDirectory, getFile, createOrModifyFileAtPath } from './utils';
 
 // Storage.clear();
 Storage.load(newState => {
@@ -83,22 +83,4 @@ Storage.load(newState => {
             }
         }
     }
-
 });
-
-function createOrModifyFileAtPath(path, contents, wfs) {
-    let fileObject = getFile(path, wfs);
-    const parts = path.split("/");
-    if (fileObject === false) {
-        // Need to Create
-        let enclosingDir = getDirectory(path.substring(0, path.lastIndexOf("/")), wfs);
-        if (enclosingDir !== false) {
-            let newFile = createFile(parts[parts.length - 1]);
-            newFile.data = contents;
-            enclosingDir[0].data.push(newFile);
-        }
-    }
-    else {
-        fileObject[0].data = contents;
-    }
-}

@@ -42,7 +42,7 @@ class TerminalLink extends React.Component {
             this.startSmoothScroll(100, function(x) {
                 // return (1 - Math.cos(Math.PI * x)) / 2;
                 // return Math.cbrt(x - 0.5) / 1.585 + 0.5;
-                return 3*x*x - 2*x*x*x;
+                return 3 * x * x - 2 * x * x * x;
             });
         }
     }
@@ -144,10 +144,10 @@ class TerminalLink extends React.Component {
             });
 		}
 		else if (e.keyCode === Constants.KEY_DELETE && this.state.cursor < command.length) {
-            this.props.updateCommand(
-                command.slice(0, this.state.cursor) + command.slice(this.state.cursor + 1),
-                this.state.historyIndex
-            );
+			this.props.updateCommand(
+				command.slice(0, this.state.cursor) + command.slice(this.state.cursor + 1),
+				this.state.historyIndex
+			);
         }	
         else if (e.keyCode === Constants.KEY_TAB) {
             const words = command.split(' ');

@@ -1,4 +1,5 @@
 import Constants from './constants';
+import { createFile } from './constants';
 
 export function getDirectory(directory, currDir) {
     const parts = directory.split('/');
@@ -59,6 +60,23 @@ export function getFile(path, currDir) {
         }
     }
     return false;
+}
+
+export function createOrModifyFileAtPath(path, contents, wfs) {
+    let fileObject = getFile(path, wfs);
+    const parts = path.split("/");
+    if (fileObject === false) {
+        // Need to Create
+        let enclosingDir = getDirectory(path.substring(0, path.lastIndexOf("/")), wfs);
+        if (enclosingDir !== false) {
+            let newFile = createFile(parts[parts.length - 1]);
+            newFile.data = contents;
+            enclosingDir[0].data.push(newFile);
+        }
+    }
+    else {
+        fileObject[0].data = contents;
+    }
 }
 
 export function findWindow(state, id) {
