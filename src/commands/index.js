@@ -12,7 +12,7 @@ import edit from './files/edit';
 import rm from './files/rm';
 
 import Constants from '../constants';
-import { findWindow, getDirectory, getFile } from '../utils';
+import { findWindow, getDirectory, getFile, createOrModifyFileAtPath, deleteFile } from '../utils';
 
 function parseInput(text) {
     return text.trim().match(/[^\s"']+|"([^"]*)"|'([^']*)'/g)
@@ -60,6 +60,12 @@ function temp(state) {
 	this.getDirectory = function (path) {
 		var res = getDirectory(this.terminal.workingDirectory + path, state.wfs);
 		return res === false ? res : res[0];
+	};
+	this.writeFile = function (path, data) { 
+		createOrModifyFileAtPath(path, data, state.wfs);
+	};
+	this.deleteFile = function (path) {
+		deleteFile(path, state.wfs);
 	};
 	this.state = state;
 }
