@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "MercuryWM",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Transforms your new tab page into a multi-windowed terminal environment.",
   "icons": {
     "128": "icon128.png"

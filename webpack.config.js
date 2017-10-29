@@ -1,7 +1,7 @@
 let path = require('path');
 let webpack = require('webpack');
 
-module.exports = {
+const config = {
     entry: './src/index.jsx',
     output: {
         path: path.resolve(__dirname, 'build'),
@@ -19,8 +19,25 @@ module.exports = {
             }
         ]
     },
-    devtool: "#cheap-module-source-map",
+    plugins: [],
     stats: {
         colors: true
     }
 };
+
+if (process.env.NODE_ENV === 'production') {
+    config.plugins.push(
+        new webpack.optimize.UglifyJsPlugin({
+            comments: false,
+            compress: {
+                warnings: false,
+                drop_console: true
+           }
+        })
+    );
+}
+else {
+    config.devtool = "#cheap-module-source-map";
+}
+
+module.exports = config;
