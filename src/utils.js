@@ -80,6 +80,9 @@ export function createOrModifyFileAtPath(path, contents, wfs) {
 }
 
 export function findWindow(state, id) {
+    if (state.selectedWorkspace >= state.workspaces.length) {
+        return -1;
+    }
     const windows = state.workspaces[state.selectedWorkspace].windows;
     for (let i = 0; i < windows.length; i++) {
         if (windows[i].id === id) {
@@ -93,7 +96,7 @@ function deleteObject(path, type, currDir) {
     var containingDirRes = getDirectory(path.substring(0, path.lastIndexOf("/")), currDir);
     var name = path.substring(path.lastIndexOf("/") + 1, path.length);
     for (var j = 0; j < containingDirRes[0].data.length; j++) {
-        if (containingDirRes[0].data[j].name === name && 
+        if (containingDirRes[0].data[j].name === name &&
                 containingDirRes[0].data[j].type == type) {
             containingDirRes[0].data.splice(j, 1);
         }

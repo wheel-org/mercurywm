@@ -15,16 +15,15 @@ import { getBorderingLeft, getBorderingRight,
 const rootReducer = function (state = {}, action) {
     if (action.type !== 'UPDATE_COMMAND') console.log(action);
     let newState = JSON.parse(JSON.stringify(state));
-
-	const index = findWindow(state, state.selectedWindow);
-	if (index == -1) { 
-		// Error Recovery
-		return {
-			...state,
-			selectedWorkspace: 0,
-			selectedWindow: state.workspaces[state.selectedWorkspace].windows[0].id
-		};
-	}
+    const index = findWindow(state, state.selectedWindow);
+    if (index == -1) {
+        // Error Recovery
+        return {
+            ...state,
+            selectedWorkspace: 0,
+            selectedWindow: state.workspaces[0].windows[0].id
+        };
+    }
     let newTerminal = newState.workspaces[newState.selectedWorkspace].windows[index].terminal;
 
     switch(action.type) {
@@ -43,18 +42,18 @@ const rootReducer = function (state = {}, action) {
         }
         case 'INTENT_SELECT_WORKSPACE': {
             let currentWorkspace = state.selectedWorkspace;
-			if (action.direction === Constants.KEY_LEFT_ARROW) {
-				currentWorkspace--;
-				if (currentWorkspace < 0) {
-					currentWorkspace = state.workspaces.length - 1;
-				}
-			}
-			else if (action.direction === Constants.KEY_RIGHT_ARROW) {
-				currentWorkspace++;
-				if (currentWorkspace >= state.workspaces.length) {
-					currentWorkspace = 0;
-				}
-			}			
+            if (action.direction === Constants.KEY_LEFT_ARROW) {
+                currentWorkspace--;
+                if (currentWorkspace < 0) {
+                    currentWorkspace = state.workspaces.length - 1;
+                }
+            }
+            else if (action.direction === Constants.KEY_RIGHT_ARROW) {
+                currentWorkspace++;
+                if (currentWorkspace >= state.workspaces.length) {
+                    currentWorkspace = 0;
+                }
+            }
             return {
                 ...state,
                 selectedWorkspace: currentWorkspace,
