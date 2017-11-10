@@ -17,6 +17,7 @@ export function getDirectory(directory, currDir) {
         }
         else if (parts !== '' && parts !== '.') {
             const next = currDir.data.find(element => element.name === parts[i] && element.type === Constants.DIR_TYPE);
+            console.log(next);
             if (next) {
                 dirStack.push(next);
                 currDir = next;
@@ -26,7 +27,11 @@ export function getDirectory(directory, currDir) {
             }
         }
     }
-    let path = dirStack.join('/');
+    let path = '';
+    for (let i = 0; i < dirStack.length; i++) {
+        if (i !== 0) path += '/';
+        path += dirStack[i].name;
+    }
     return [currDir, path];
 }
 
@@ -71,7 +76,9 @@ export function findWindow(state, id) {
         return -1;
     }
     const windows = state.workspaces[state.selectedWorkspace].windows;
-    return windows.findIndex(w => w.id === id) || -1;
+    const index = windows.findIndex(w => w.id === id);
+    if (index !== undefined) return index;
+    return -1;
 }
 
 function deleteObject(path, type, currDir) {
