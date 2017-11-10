@@ -6,7 +6,7 @@ function run(state, params, windowId) {
 
     if (params.length === 1) {
         const path = this.terminal.workingDirectory + '/' + params[0];
-        const navResult = getFile(path);
+        const navResult = getFile(path, state.wfs);
         let text = '';
         if (navResult === false) {
             createFile(params[0]);
@@ -16,6 +16,7 @@ function run(state, params, windowId) {
         }
         const result = window.prompt('Editing' + path + ':', text);
         if (result !== null) {
+            console.log(state);
             getFile(path, state.wfs)[0].data = result;
         }
     }

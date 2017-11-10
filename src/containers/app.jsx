@@ -9,15 +9,14 @@ const App = ({ currentWorkspace, background, title }) => {
 	document.title = title;
     let bg = background;
     if (bg.startsWith('http://') || bg.startsWith('https://')) {
-        bg = 'url("' + bg + '")';
+        bg = 'url("' + bg + '") 0% 0% / cover';
     }
 
     return (
         <div style={{
             width: '100%',
             height: '100%',
-            background: bg,
-            backgroundSize: 'cover'
+            background: bg
         }}>
             <Workspace workspace={currentWorkspace}/>
             <BottomBar />
