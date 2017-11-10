@@ -1,36 +1,24 @@
-import Constants, { mmmCode, createWorkspace } from './constants';
+import Constants, { mmmCode, createFile, createDirectory, createWorkspace } from './constants';
 
 // INITIAL STATE
 const id = Date.now();
 const defaultStateObject = { [Constants.STATE_KEY]: {
     workspaces: [createWorkspace(id)],
-    wfs: {
-        type: Constants.DIR_TYPE,
-        name: '~',
-        data: [{
-            type: Constants.FILE_TYPE,
-            name: 'Welcome',
-            data: 'Welcome to MercuryWM! Here is some information about some stuff!\n'
-        }, {
-            type: Constants.DIR_TYPE,
-            name: 'bin',
-            data: [{
-                type: Constants.FILE_TYPE,
-                name: 'mmm',
-                data: mmmCode
-            }]
-        }]
-    },
+    wfs: createDirectory('~', [
+            createFile('Welcome', 'Welcome to MercuryWM! Type "help" to get started!\n'),
+            createDirectory('bin', [
+                createFile('mmm', mmmCode)
+            ])
+        ]
+    ),
     wsh: {
         // environmental variables
         env: {
             'background': '#aaa',
-            'title': 'MercuryWM 1.0',
+            'title': 'MercuryWM 1.1',
             'prompt': '%w $ ',
             'username': Constants.NAME,
-        },
-        // alias mappings
-        aliases: []
+        }
     },
     selectedWindow: id,
     selectedWorkspace: 0
