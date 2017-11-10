@@ -6,9 +6,10 @@ const defaultStateObject = { [Constants.STATE_KEY]: {
     workspaces: [createWorkspace(id)],
     wfs: createDirectory('~', [
             createFile('Welcome', 'Welcome to MercuryWM! Type "help" to get started!\n'),
-            createDirectory('bin', [
+            createDirectory('.bin', [
                 createFile('mmm', mmmCode)
-            ])
+            ]),
+            createDirectory('.man', [])
         ]
     ),
     wsh: {

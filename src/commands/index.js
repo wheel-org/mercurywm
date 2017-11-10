@@ -74,7 +74,7 @@ function executeCommand(state, text) {
     const [command, ...params] = parseInput(text);
     console.log(command, params);
     const script = new Script(state, command, params);
-    const bin = getDirectory('~/bin', state.wfs);
+    const bin = getDirectory('~/.bin', state.wfs);
 	if (bin !== false) {
 		const commands = bin[0].data.reduce((acc, d) => {
 			if (d.type === Constants.FILE_TYPE) {
