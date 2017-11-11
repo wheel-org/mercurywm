@@ -84,7 +84,12 @@ function executeCommand(state, text) {
 		}, {});
 		if (commands[command]) {
             const code = Function('script', 'args', commands[command]);
-            code(new temp(state), params);
+            try {
+            	code(new temp(state), params);
+            }
+            catch (e) {
+            	script.output('Error: ' + e);
+            }
 			return state;
 		}
 	}

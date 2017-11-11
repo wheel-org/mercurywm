@@ -17,7 +17,6 @@ export function getDirectory(directory, currDir) {
         }
         else if (parts !== '' && parts !== '.') {
             const next = currDir.data.find(element => element.name === parts[i] && element.type === Constants.DIR_TYPE);
-            console.log(next);
             if (next) {
                 dirStack.push(next);
                 currDir = next;
