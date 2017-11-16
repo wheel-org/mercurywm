@@ -21,17 +21,32 @@ function createMan(command, desc, usage) {
     }
     script.writeFile("~/.man/" + command, s);
 }
-script.output("Setting up MercuryWM");
+
+script.output("Setting up man directory...");
+script.output("====================================");
 script.exec("cd");
 script.exec("mkdir .man");
-script.output("Retrieving latest mmm package manager...");
+script.output("====================================");
+script.output("\\n");
+
+script.output("Retrieving latest Mercury Module Manager (mmm)...");
+script.output("====================================");
 var mmmUrl = "https://raw.githubusercontent.com/wheel-org/mercurywm-scripts/master/modules/mmm/";
 var version = getData(mmmUrl + "VERSION");
 var code = getData(mmmUrl + version + "/main.js");
 Function("script", "args", code)({ ...script, output: ()=>{} }, ['install', 'mmm']);
 script.output("Installed mmm@" + version);
+script.output("====================================");
+script.output("\\n");
+
+script.output("Installing man...");
+script.output("====================================");
 script.exec("mmm install man");
-script.output("mmm and man installed, grabbing system man pages");
+// install automatically makes the =========== border
+script.output("\\n");
+
+script.output("Creating system man pages...");
+script.output("====================================");
 script.exec("cd .man");
 createMan("reset", "Resets MercuryWM, will destroy all user files!", []);
 createMan("clear", "Clears the current terminal output.", []);
@@ -78,4 +93,7 @@ createMan("rm", "", [
     "rm -d [file] - Removes directory",
 ]);
 script.exec("cd ..");
+script.output("====================================");
+script.output("\\n");
+script.output("Setup has successfully completed.");
 `;

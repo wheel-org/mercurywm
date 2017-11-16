@@ -139,17 +139,10 @@ function executeCommand(state, text) {
                 script.terminal.inProg = true;
                 script.terminal.runningCommand = command;
                 script.terminal.params = params;
-<<<<<<< HEAD
             }
             else {
                 script.output('command not found');
             }
-=======
-            }
-            else {
-                script.output('command not found');
-            }
->>>>>>> master
         }
 
     }

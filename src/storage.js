@@ -13,8 +13,8 @@ const defaultStateObject = { [Constants.STATE_KEY]: {
     wsh: {
         // environmental variables
         env: {
-            'background': '#aaa',
-            'title': 'MercuryWM 1.1',
+            'background': '#555',
+            'title': Constants.NAME + " " + Constants.VERSION,
             'prompt': '%w $ ',
             'username': Constants.NAME,
         }
