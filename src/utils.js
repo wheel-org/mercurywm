@@ -14,6 +14,7 @@ export function getDirectory(directory, currDir) {
         else if (parts[i] === '~') {
             // Go Back to Root
             dirStack = dirStack.slice(0, 1);
+            currDir = dirStack[0];
         }
         else if (parts !== '' && parts !== '.') {
             const next = currDir.data.find(element => element.name === parts[i] && element.type === Constants.DIR_TYPE);
