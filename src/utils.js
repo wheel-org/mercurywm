@@ -4,9 +4,8 @@ import { createFile } from './constants';
 export function getDirectory(directory, currDir) {
     const parts = directory.split('/');
     let dirStack = [currDir];
-    for (let i = 1; i < parts.length; i++) {
+    for (let i = 0; i < parts.length; i++) {
         if (parts[i] === '..') {
-            currDir = dirStack[dirStack.length - 1];
             if (dirStack.length !== 1) {
                 dirStack.pop();
             }
@@ -14,18 +13,17 @@ export function getDirectory(directory, currDir) {
         else if (parts[i] === '~') {
             // Go Back to Root
             dirStack = dirStack.slice(0, 1);
-            currDir = dirStack[0];
         }
         else if (parts !== '' && parts !== '.') {
             const next = currDir.data.find(element => element.name === parts[i] && element.type === Constants.DIR_TYPE);
             if (next) {
                 dirStack.push(next);
-                currDir = next;
             }
             else {
                 return false;
             }
         }
+        currDir = dirStack[dirStack.length - 1];
     }
     let path = '';
     for (let i = 0; i < dirStack.length; i++) {
