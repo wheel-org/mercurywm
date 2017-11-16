@@ -1,4 +1,5 @@
 import Constants, { mmmCode, createFile, createDirectory, createWorkspace } from './constants';
+import setupFile from './setup';
 
 // INITIAL STATE
 const id = Date.now();
@@ -7,24 +8,8 @@ const defaultStateObject = { [Constants.STATE_KEY]: {
     wfs: createDirectory('~', [
             createFile('Welcome', 'Welcome to MercuryWM! Type "help" to get started!\n'),
             createDirectory('.bin', [
-                createFile('setup', `\
-function getData(url) {
-    var xml = new XMLHttpRequest();
-    xml.open("GET", url, false);
-    xml.send(null);
-    if (xml.status == 200) return xml.responseText;
-    return "";
-}
-
-var mmmUrl = "https://raw.githubusercontent.com/wheel-org/mercurywm-scripts/master/modules/mmm/";
-var version = getData(mmmUrl + "VERSION");
-var code = getData(mmmUrl + version + "/main.js");
-Function("script", "args", code)({ ...script, output: ()=>{} }, ['install', 'mmm']);
-script.output("Installed mmm@" + version);`)
-            ]),
-            createDirectory('.man', [])
-        ]
-    ),
+                createFile('setup', setupFile)
+            ])]),
     wsh: {
         // environmental variables
         env: {
