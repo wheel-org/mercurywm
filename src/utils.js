@@ -2,6 +2,7 @@ import Constants from './constants';
 import { createFile } from './constants';
 
 export function getDirectory(directory, currDir) {
+
     const parts = directory.split('/');
     let dirStack = [currDir];
     for (let i = 0; i < parts.length; i++) {
