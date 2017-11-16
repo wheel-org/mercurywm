@@ -11,8 +11,8 @@ import cat from './files/cat';
 import edit from './files/edit';
 import rm from './files/rm';
 
-import Constants from '../constants';
-import { findWindow, getDirectory, getFile, createOrModifyFileAtPath, deleteFile } from '../utils';
+import Constants, { createTerminal, createWindow, createWorkspace, createDirectory, createFile } from '../constants';
+import { findWindow, getDirectory, getFile, createOrModifyFileAtPath, deleteDirectory, deleteFile } from '../utils';
 
 function parseInput(text) {
     return text.trim().match(/[^\s"']+|"([^"]*)"|'([^']*)'/g)
@@ -36,11 +36,11 @@ function Script(state, command, params) {
 }
 
 function temp(state) {
-	// this.createTerminal = Constants.createTerminal;
-	// this.createWindow = Constants.createWindow;
-	// this.createWorkspace = Constants.createWorkspace;
-	// this.createDirectory = Constants.createDirectory;
-	// this.createFile = Constants.createFile;
+	this.createTerminal = createTerminal;
+	this.createWindow = createWindow;
+	this.createWorkspace = createWorkspace;
+	this.createDirectory = createDirectory;
+	this.createFile = createFile;
 
     this.windowIndex = findWindow(state, state.selectedWindow);
     this.workspace = state.workspaces[state.selectedWorkspace];
@@ -64,6 +64,9 @@ function temp(state) {
 	this.writeFile = function (path, data) { 
 		createOrModifyFileAtPath(path, data, state.wfs);
 	};
+	this.deleteDirectory = function (path) {
+		deleteDirectory(path, state.wfs);
+	}
 	this.deleteFile = function (path) {
 		deleteFile(path, state.wfs);
 	};
