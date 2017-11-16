@@ -58,11 +58,11 @@ function temp(state) {
         });
     };
     this.getFile = function (path) {
-        var res = getFile(this.terminal.workingDirectory + path, state.wfs);
+        var res = getFile(this.terminal.workingDirectory + '/' + path, state.wfs);
         return res === false ? res : res[0];
     };
     this.getDirectory = function (path) {
-        var res = getDirectory(this.terminal.workingDirectory + path, state.wfs);
+        var res = getDirectory(this.terminal.workingDirectory + '/'  + path, state.wfs);
         return res === false ? res : res[0];
     };
     this.writeFile = function (path, data) {
@@ -139,10 +139,17 @@ function executeCommand(state, text) {
                 script.terminal.inProg = true;
                 script.terminal.runningCommand = command;
                 script.terminal.params = params;
+<<<<<<< HEAD
             }
             else {
                 script.output('command not found');
             }
+=======
+            }
+            else {
+                script.output('command not found');
+            }
+>>>>>>> master
         }
 
     }

@@ -22,6 +22,7 @@ function createMan(command, desc, usage) {
     script.writeFile("~/.man/" + command, s);
 }
 script.output("Setting up MercuryWM");
+script.exec("cd");
 script.exec("mkdir .man");
 script.output("Retrieving latest mmm package manager...");
 var mmmUrl = "https://raw.githubusercontent.com/wheel-org/mercurywm-scripts/master/modules/mmm/";
