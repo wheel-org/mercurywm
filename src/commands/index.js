@@ -24,15 +24,19 @@ function Script(state, command, params) {
     this.workspace = state.workspaces[state.selectedWorkspace];
     this.currWindow = this.workspace.windows[this.windowIndex];
     this.terminal = this.currWindow.terminal;
-    this.output = function(text, showPrompt = false, showCommand = true) {
+    this.output = function (text, showPrompt = false, showCommand = true) {
         this.terminal.output.push({
             text: (showCommand ? command + ': ' : '') + text,
             prompt: (showPrompt ? this.terminal.workingDirectory : '')
         });
-    }
-    this.execute = function(run) {
+    };
+    this.exec = function (command) {
+        this.output("Executing " + command);
+        return executeCommand(state, command);
+    };
+    this.execute = function (run) {
         return run.call(this, state, params, this.windowIndex);
-    }
+    };
 }
 
 function temp(state) {
