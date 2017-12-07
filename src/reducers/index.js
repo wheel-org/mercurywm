@@ -7,13 +7,13 @@
 
 import ExecuteCommand from '../commands';
 import { save } from '../storage';
-import { findWindow } from '../utils';
+import { findWindow, createOrModifyFileAtPath } from '../utils';
 import Constants from '../constants';
 import { getBorderingLeft, getBorderingRight,
          getBorderingTop, getBorderingBottom } from '../utils';
 
 const rootReducer = function (state = {}, action) {
-    if (action.type !== 'UPDATE_COMMAND') console.log(action);
+	//if (action.type !== 'UPDATE_COMMAND') console.log(action);
     let newState = JSON.parse(JSON.stringify(state));
     const index = findWindow(state, state.selectedWindow);
     if (index == -1) {
@@ -112,6 +112,12 @@ const rootReducer = function (state = {}, action) {
             newState.selectedWindow = action.id;
             return newState;
         }
+		case 'CREATE_OR_MODIFY_FILE': {
+			const path = action.path;
+			const content = action.content;
+			createOrModifyFileAtPath(path, content, newState.wfs);
+			return newState;
+		}
         case 'SET_ENV': {
             state.wsh.env[action.key] = action.value;
             return state;

@@ -79,7 +79,11 @@ Storage.load(newState => {
                 event.source.postMessage('file|' + contents, event.origin);
             }
             else if (parts[0] === 'writeFile') {
-                createOrModifyFileAtPath(parts[1], message.split('|').slice(2).join('|'), store.getState().wfs);
+				store.dispatch({
+					type: 'CREATE_OR_MODIFY_FILE',
+					path: parts[1],
+					content: message.split('|').slice(2).join('|')
+				});
             }
         }
     }
