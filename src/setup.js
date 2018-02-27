@@ -60,7 +60,8 @@ createMan("window", "Manipulates windows on the screen. Window id is the first n
     "window hs - Splits current window in half horizontally",
     "window merge [id] - Merge current window with the window given; windows must share a same-length common edge",
     "window merge [id1] [id2] - Merges the two windows given; windows must share a same-length common edge",
-    "window [left | right | top | bottom] [value] - Moves window's given edge by given value; windows must share a same-length common edge"
+    "window [left | right | top | bottom] [value] - Moves window's given edge by given value; windows must share a same-length common edge",
+    "window list - Lists all the windows in the current workspace"
 ]);
 createMan("workspace", "Manipulates workspaces in the environment.", [
     "workspace add - Adds a workspace",

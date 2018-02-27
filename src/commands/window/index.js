@@ -14,6 +14,19 @@ function run(state, params) {
         case 'top':
         case 'bottom':
             return this.execute(shift);
+        case 'list':
+            this.output('In this workspace:');
+            this.workspace.windows.forEach(({terminal}, i) => {
+                let outputString = '[' + i + '] ';
+                if (terminal.inProg) {
+                    outputString += 'Running: ' + terminal.runningCommand + ' ' + terminal.params.join(' ');
+                }
+                else {
+                    outputString += 'Idle';
+                }
+                this.output(outputString);
+            });
+            return state;
         default:
             this.output('Unknown parameter ' + params[0]);
             return state;
