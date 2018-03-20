@@ -1,6 +1,7 @@
 * {
     box-sizing: border-box;
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-size: 12px;
 }
 
 html, body, #root {

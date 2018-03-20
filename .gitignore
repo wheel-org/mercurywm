@@ -3,4 +3,6 @@ node_modules
 npm-debug.log
 build/main.js
 build/main.js.map
+build/background.js
+build/background.js.map
 package-lock.json
