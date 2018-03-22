@@ -3,7 +3,6 @@
 // Components
 export type Terminal = {|
   +history: Array<string>,
-  +inProg: boolean,
   +running: boolean,
   +output: Array<{
     +prompt: string,
@@ -79,7 +78,6 @@ export type Action =
   | {| +type: 'SELECT_WINDOW', +id: number |}
   | {| +type: 'UPDATE_COMMAND', +text: string, +index: number |}
   | {| +type: 'ADD_COMMAND', +text: string, +showPrompt: boolean |}
-  | {| +type: 'ENTER_COMMAND', +text: string |}
   | {| +type: 'EXECUTE_COMMAND', +text: string |};
 
 // Storage

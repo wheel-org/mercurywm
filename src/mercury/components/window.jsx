@@ -41,7 +41,7 @@ class Window extends React.Component<Props> {
           top: window.y + '%'
         }}
       >
-        {window.terminal.inProg ? (
+        {window.terminal.running ? (
           <iframe
             className="window-frame"
             src={

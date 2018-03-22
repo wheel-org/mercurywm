@@ -35,7 +35,6 @@ export default Constants;
 /* Components */
 export const createTerminal = (): Terminal => ({
   history: [''],
-  inProg: false,
   running: false,
   output: [],
   runningCommand: '',

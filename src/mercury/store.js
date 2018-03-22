@@ -5,7 +5,7 @@ import { createStore } from 'redux';
 import reducer from 'mercury/reducer';
 import Constants, { createDirectory } from 'constants.js';
 
-import type { StoreState, Action, StorageState } from 'types';
+import type { Store, StoreState, Action, StorageState } from 'types';
 
 // Not actual valid state since real state will be taken from storage
 const initialState: StorageState = {
@@ -21,7 +21,7 @@ const initialState: StorageState = {
   }
 };
 
-const store = createStore(reducer, initialState);
+const store: Store = createStore(reducer, initialState);
 
 chrome.storage.local.get(Constants.STATE_KEY, (data: StorageState) => {
   store.dispatch({

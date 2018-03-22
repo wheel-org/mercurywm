@@ -4,7 +4,7 @@ import { createStore } from 'redux';
 import reducers from 'background/reducers';
 import Storage from 'background/storage';
 
-import type { Store } from 'types';
+import type { Store, Action } from 'types';
 
 const store: Store = createStore(reducers, Storage.initialState);
 
@@ -22,36 +22,45 @@ window.reset = () => store.dispatch({ type: 'RESET_STORE' });
 
 console.log('MercuryWM background running');
 
-/*
- * request: request object
- * sender: extension info object
- * sendResponse: callback
- */
-
 chrome.runtime.onConnect.addListener(port => {
   console.assert(port.name === 'mercurywm');
   console.log('connected');
   port.postMessage('connected');
 
-  port.onMessage.addListener(msg => {
+  port.onMessage.addListener((action: Action) => {
     const state = store.getState();
-    console.log(msg);
 
     if (!state.loaded) {
       port.postMessage('not ready');
       return;
     }
 
-    switch (msg.command) {
-      case 'reset': {
-        Storage.clear();
-      }
+    store.dispatch(action);
+
+    if (action.type === 'EXECUTE_COMMAND') {
+      // Run the commmand async
+      const id = state.selectedWindow;
+      const [command, ...params] = parseInput(action.text);
+    }
+    else if (action.type === 'KILL_SCRIPT') {
+      // Kill the command
+      const id = action.id;
     }
   });
 });
 
+
+// Parse input into command and parameters
+function parseInput(text): Array<string> {
+  const tokens = text.trim().match(/[^\s"']+|"([^"]*)"|'([^']*)'/g);
+  if (tokens)
+    return tokens.map(t => t.replace(/^"|"$/g, '').replace(/^'|'$/g, ''));
+  return [];
+}
+
+
 /*
-When a terminal runs a command, it sets itself to inProg = true, and doesn't allow any input.
+When a terminal runs a command, it sets itself to running = true, and doesn't allow any input.
 In the reducer, the command sends a message to this background script, along with additional
 information to identify the terminal such as the window ID.
 */

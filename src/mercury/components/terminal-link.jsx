@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import Terminal from './terminal.jsx';
 import Constants from 'constants.js';
-import { getDirectory } from 'mercury/utils';
+import { getDirectory } from 'utils';
 
 import type {
   StoreState,
@@ -61,7 +61,7 @@ class TerminalLink extends React.Component<Props, State> {
     }
     this.input.scrollTop = this.input.scrollHeight;
 
-    // event is a ClipboardEvent, which isn't supported in flow right now
+    // TODO: event is a ClipboardEvent, which isn't supported in flow right now
     this.input.addEventListener('paste', (event: any) => {
       const clipboardData = (event.clipboardData: DataTransfer).getData(
         'text/plain'
@@ -142,7 +142,7 @@ class TerminalLink extends React.Component<Props, State> {
     const history = this.props.terminal.history;
     const command = this.getCurrentInputCommand();
 
-    if (!this.props.selected || this.props.terminal.inProg) {
+    if (!this.props.selected || this.props.terminal.running) {
       return;
     }
 
