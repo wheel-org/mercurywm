@@ -7,12 +7,7 @@ import Constants, {
 } from 'constants.js';
 import setupFile from 'background/setup';
 
-import type {
-  StoreState,
-  StorageState,
-  Workspace,
-  Directory
-} from 'types';
+import type { StoreState, StorageState, Workspace, Directory } from 'types';
 
 // INITIAL STATE
 const id = Date.now();

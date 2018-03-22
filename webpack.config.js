@@ -4,7 +4,7 @@ const webpack = require('webpack');
 const config = {
   entry: {
     main: './src/mercury/index.jsx',
-    background: './src/background/index.js'
+    background: ['babel-polyfill', './src/background/index.js']
   },
   output: {
     path: path.resolve(__dirname, 'build'),

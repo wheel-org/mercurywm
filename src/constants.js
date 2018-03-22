@@ -1,12 +1,6 @@
 /* @flow */
 
-import type {
-  Terminal,
-  Window,
-  Workspace,
-  Directory,
-  File
-} from 'types';
+import type { Directory, File, Terminal, Window, Workspace } from 'types';
 
 /* Constants */
 const Constants = {

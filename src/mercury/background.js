@@ -1,8 +1,6 @@
 /* @flow */
 
-import store from './store';
-
-import type { StoreState, Action } from 'types';
+import type { Action } from 'types';
 
 const port = chrome.runtime.connect(undefined, { name: 'mercurywm' });
 port.onMessage.addListener(msg => {

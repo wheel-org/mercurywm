@@ -6,18 +6,10 @@ import Constants, { createFile } from 'constants.js';
 
 import type { File, Directory, Window, StoreState } from 'types';
 
-function getFileOrDirectory(
-  filePath: string,
-  currentPath: string
-): ?(File | Directory) {
-  const { loaded, wfs } = store.getState();
+function getStack(path: string): Array<File | Directory> {
+  const stack = [store.getState().wfs];
+  const splitPath = path.split('/');
 
-  if (!loaded) return null;
-
-  const stack = [wfs];
-  const splitPath = currentPath.split('/').concat(filePath.split('/'));
-
-  // Get to current directory
   for (let i = 0; i < splitPath.length; i++) {
     const name = splitPath[i];
     if (name === '~') {
@@ -34,20 +26,20 @@ function getFileOrDirectory(
       // Find if name exists within the current directory
       if (top.type === 'dir') {
         const next = top.data.find(child => child.name === name);
-        if (!next) return null; // Child doesn't exists
+        if (!next) return []; // Child doesn't exists
         stack.push(next);
       } else {
         // Not a directory
-        return null;
+        return [];
       }
     }
   }
 
-  return stack.pop();
+  return stack;
 }
 
 export function getFile(filePath: string, currentPath: string = '~'): ?File {
-  const top = getFileOrDirectory(filePath, currentPath);
+  const top = getStack(currentPath + '/' + filePath).pop();
   if (top && top.type === 'file') {
     // Needs to be a file
     return top;
@@ -60,13 +52,18 @@ export function getDirectory(
   filePath: string,
   currentPath: string = '~'
 ): ?Directory {
-  const top = getFileOrDirectory(filePath, currentPath);
+  const top = getStack(currentPath + '/' + filePath).pop();
   if (top && top.type === 'dir') {
-    // Needs to be a file
+    // Needs to be a directory
     return top;
   }
 
   return null;
+}
+
+export function getPath(path: string, currentPath: string = '~'): string {
+  const stack = getStack(path);
+  return stack.map(item => item.name).join('/');
 }
 
 export function findWindow(state: StoreState, id: number) {
@@ -77,60 +74,6 @@ export function findWindow(state: StoreState, id: number) {
   const windows = state.workspaces[state.selectedWorkspace].windows;
   const index = windows.findIndex(w => w.id === id);
   return index;
-}
-
-export function createOrModifyFile(
-  parts: Array<string>,
-  contents: string,
-  directory: Directory
-): Directory {
-  if (parts.length === 1) {
-    // Look for file
-    const fileName = parts[0];
-    const fileIndex = directory.data.findIndex(
-      item => item.type == Constants.FILE_TYPE && item.name === fileName
-    );
-    if (fileIndex >= 0) {
-      // File found: modify
-      return u(
-        {
-          data: {
-            [fileIndex]: {
-              data: contents
-            }
-          }
-        },
-        directory
-      );
-    } else {
-      // File not found: create
-      return u({
-        data: dirData => [...dirData, createFile(fileName, contents)]
-      });
-    }
-  } else {
-    // Look for subdirectory
-    const dirName = parts[0];
-    const subDirIndex = directory.data.findIndex(
-      item => item.type === Constants.DIR_TYPE && item.name === dirName
-    );
-    if (subDirIndex >= 0) {
-      // Subdirectory found
-      const subDir: Directory = (directory.data[subDirIndex]: any);
-      return u(
-        {
-          data: {
-            [subDirIndex]: createOrModifyFile(parts.slice(1), contents, subDir)
-          }
-        },
-        directory
-      );
-    } else {
-      // No subdirectory found
-      // TODO: does this need to be copied?
-      return directory;
-    }
-  }
 }
 
 // the following commands either returns a list of windows that are exact

@@ -25,9 +25,7 @@ type StateProps = {|
 type DispatchProps = {|
   +updateCommand: (string, number) => void,
   +addCommand: (string, boolean) => void,
-  +executeCommand: string => void,
-  +workspaceKeyDispatch: number => void,
-  +windowKeyDispatch: number => void
+  +executeCommand: string => void
 |};
 
 type Props = {|
@@ -325,18 +323,6 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
       dispatch({
         type: 'EXECUTE_COMMAND',
         text
-      });
-    },
-    workspaceKeyDispatch: (direction: number) => {
-      dispatch({
-        type: 'INTENT_SELECT_WORKSPACE',
-        direction
-      });
-    },
-    windowKeyDispatch: (direction: number) => {
-      dispatch({
-        type: 'INTENT_SELECT_WINDOW',
-        direction
       });
     }
   };
