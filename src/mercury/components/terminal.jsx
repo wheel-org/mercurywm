@@ -10,10 +10,18 @@ type Props = {|
   +command: string,
   +cursor: number,
   +prompt: string,
-  +selected: boolean
+  +selected: boolean,
+  +running: boolean
 |};
 
-const Terminal = ({ output, command, cursor, prompt, selected }: Props) => {
+const Terminal = ({
+  output,
+  command,
+  cursor,
+  prompt,
+  selected,
+  running
+}: Props) => {
   const leftText = command.slice(0, cursor);
   const cursorText = command.slice(cursor, cursor + 1) || ' ';
   const rightText = command.slice(cursor + 1);
@@ -32,14 +40,16 @@ const Terminal = ({ output, command, cursor, prompt, selected }: Props) => {
     <div className="terminal">
       <div className="terminal-text">
         {formatOutput}
-        <p>
-          <span className="prompt">{prompt}</span>
-          <span className="before">{leftText}</span>
-          <span className={'cursor' + (selected ? ' blink' : '')}>
-            {cursorText}
-          </span>
-          <span className="after">{rightText}</span>
-        </p>
+        {running ? null : (
+          <p>
+            <span className="prompt">{prompt}</span>
+            <span className="before">{leftText}</span>
+            <span className={'cursor' + (selected ? ' blink' : '')}>
+              {cursorText}
+            </span>
+            <span className="after">{rightText}</span>
+          </p>
+        )}
       </div>
     </div>
   );

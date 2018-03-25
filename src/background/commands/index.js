@@ -105,8 +105,7 @@ export function executeCommand(state: StoreState, input: string) {
     case 'workspace':
       return workspace.call(command, state, params);
     default:
-      // Execute script?
-      // Check for extensions
+      command.terminal.running = true;
       return state;
   }
 }

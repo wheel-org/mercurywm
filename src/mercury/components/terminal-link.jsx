@@ -289,6 +289,7 @@ class TerminalLink extends React.Component<Props, State> {
           cursor={this.state.cursor}
           prompt={prompt}
           selected={this.props.selected}
+          running={this.props.terminal.running}
         />
       </div>
     );

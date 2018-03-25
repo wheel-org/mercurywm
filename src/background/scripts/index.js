@@ -3,6 +3,8 @@
 import store from 'background/store';
 import { getFile, getDirectory, findWindow, getPath } from 'utils';
 
+import type { Script as ScriptType } from 'types';
+
 // Parse input into command and parameters
 function parseInput(text): Array<string> {
   const tokens = text.trim().match(/[^\s"']+|"([^"]*)"|'([^']*)'/g);
@@ -11,7 +13,7 @@ function parseInput(text): Array<string> {
   return [];
 }
 
-function Script(command) {
+function Script(command): ScriptType {
   const workspaceID = store.getState().selectedWorkspace;
   const windowID = findWindow(
     store.getState(),
@@ -37,14 +39,12 @@ function Script(command) {
       });
     },
     exec: function(input: string) {
-      store.dispatch({ type: 'EXECUTE_COMMAND', text: input });
+      store.dispatch({ type: 'EXECUTE_COMMAND', text: input, hidden: true });
     },
     resetStore: () => store.dispatch({ type: 'RESET_STORE' }),
     clearHistory: () => store.dispatch({ type: 'CLEAR_HISTORY' }),
     addCommand: (text: string, showPrompt: boolean) =>
       store.dispatch({ type: 'ADD_COMMAND', text, showPrompt }),
-    executeCommand: (text: string) =>
-      store.dispatch({ type: 'EXECUTE_COMMAND', text }),
     setEnv: (key: string, value: string) =>
       store.dispatch({ type: 'SET_ENV', key, value }),
     setDirectory: (path: string) =>
@@ -63,7 +63,15 @@ function Script(command) {
       store.dispatch({ type: 'SELECT_WORKSPACE', id }),
     addWorkspace: () => store.dispatch({ type: 'ADD_WORKSPACE' }),
     deleteWorkspace: (id: number) =>
-      store.dispatch({ type: 'DELETE_WORKSPACE', id })
+      store.dispatch({ type: 'DELETE_WORKSPACE', id }),
+    getFile: (path: string) => {
+      const file = getFile(path);
+      if (file) return file;
+      // Backward compatibility
+      return false;
+    },
+    writeFile: (path: string, content: string) =>
+      store.dispatch({ type: 'CREATE_OR_MODIFY_FILE', path, content })
   };
 }
 
@@ -76,26 +84,72 @@ export default function executeScript(id: number, input: string) {
   const binFile = getFile('~/.bin/' + command);
   if (binFile) {
     // $FlowFixMe: flow doesn't like function objects
-    new Function('script', 'params', binFile.data)(script, params);
+    new Function('script', 'args', binFile.data)(script, params);
+    script.exec('kill ' + script.windowID);
   } else if (command === 'async') {
     asyncFn(script, params);
+  } else if (command === 'edit') {
+    edit(script, params);
+  } else if (command === 'yum') {
+    yum(script, params);
   } else {
     script.output('Unrecognized command');
+    script.exec('kill ' + script.windowID);
   }
 }
 
 async function asyncFn(script, params) {
   setTimeout(() => {
     script.output('boo');
+    script.exec('kill ' + script.windowID);
   }, 1000);
 }
 
-// case 'edit':
-//   return script.execute(edit);
-// case 'yum':
-//   return script.execute(yum);
-// case 'kill':
-//   return script.execute(kill);
+async function edit(script, params) {
+  if (params.length === 1) {
+    const path = script.currentPath + '/' + params[0];
+    const file = getFile(path);
+    const text = file ? file.data : '';
+
+    const result = window.prompt('Editing' + path + ':', text);
+    if (result !== null) {
+      script.writeFile(path, result);
+    }
+  } else {
+    script.output('Incorrect number of parameters');
+  }
+  script.exec('kill ' + script.windowID);
+}
+
+async function yum(script, params) {
+  if (params.length === 0) {
+    script.output('spaghetti sauce');
+    script.exec('kill ' + script.windowID);
+  } else if (params.length === 2) {
+    // Pull URL
+    const path = script.currentPath + '/' + params[1];
+    script.output('Downloading ' + params[0] + '...');
+    const request = new XMLHttpRequest();
+    request.open('GET', params[0]);
+    request.onreadystatechange = function() {
+      if (request.readyState == 4) {
+        if (request.status == 200) {
+          script.output('download success');
+          script.output('data written to file ' + path);
+          script.writeFile(path, request.responseText);
+          script.exec('kill ' + script.windowID);
+        } else {
+          script.output('download failed: status ' + request.status);
+          script.exec('kill ' + script.windowID);
+        }
+      }
+    };
+    request.send();
+  } else {
+    script.output('Incorrect number of parameters');
+    script.exec('kill ' + script.windowID);
+  }
+}
 
 /*
 When a terminal runs a command, it sets itself to running = true, and doesn't allow any input.

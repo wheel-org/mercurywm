@@ -81,7 +81,7 @@ export type Action =
   | {| +type: 'SELECT_WINDOW', +id: number |}
   | {| +type: 'UPDATE_COMMAND', +text: string, +index: number |}
   | {| +type: 'ADD_COMMAND', +text: string, +showPrompt: boolean |}
-  | {| +type: 'EXECUTE_COMMAND', +text: string |}
+  | {| +type: 'EXECUTE_COMMAND', +text: string, +hidden?: boolean |}
   | {|
       +type: 'SET_DIRECTORY',
       +path: string,
@@ -110,7 +110,6 @@ export type Script = {|
   +resetStore: () => void,
   +clearHistory: () => void,
   +addCommand: (text: string, showPrompt: boolean) => void,
-  +executeCommand: (text: string) => void,
   +setEnv: (key: string, value: string) => void,
   +setDirectory: (path: string) => void,
   +createDirectory: (path: string) => void,
@@ -118,7 +117,9 @@ export type Script = {|
   +deleteDirectory: (path: string) => void,
   +selectWorkspace: (id: number) => void,
   +addWorkspace: () => void,
-  +deleteWorkspace: (id: number) => void
+  +deleteWorkspace: (id: number) => void,
+  +getFile: (path: string) => ?File | false,
+  +writeFile: (path: string, content: string) => void
 |};
 
 export type Command = (script: Script, params: Array<string>) => void;

@@ -10,6 +10,20 @@ window.reset = () => store.dispatch({ type: 'RESET_STORE' });
 
 console.log('MercuryWM background running');
 
+const builtins = [
+  'cat',
+  'cd',
+  'clear',
+  'env',
+  'kill',
+  'ls',
+  'mkdir',
+  'reset',
+  'rm',
+  'window',
+  'workspace'
+];
+
 chrome.runtime.onConnect.addListener(port => {
   console.assert(port.name === 'mercurywm');
   console.log('connected');
@@ -27,8 +41,11 @@ chrome.runtime.onConnect.addListener(port => {
 
     // Check for builtin?
     if (action.type === 'EXECUTE_COMMAND') {
-      // Run the script async
-      //executeScript(state.selectedWindow, action.text);
+      const [command] = action.text.split(' ');
+      if (command && !builtins.find(b => b === command)) {
+        // Run the script async
+        executeScript(state.selectedWindow, action.text);
+      }
     }
   });
 

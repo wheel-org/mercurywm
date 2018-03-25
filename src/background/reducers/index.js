@@ -172,22 +172,28 @@ const rootReducer = function(state: StoreState, action: Action): StoreState {
 
     case 'EXECUTE_COMMAND':
       const text = action.text;
-      const newState = updateCurrTerminal(
-        state,
-        index,
-        u(
-          {
-            history: draftHistory => [...draftHistory.slice(0, -1), text, ''],
-            output: pushArrayElement({
-              text,
-              prompt: state.wsh.env.prompt
-                .replace('%w', currTerminal.workingDirectory)
-                .replace('%u', state.wsh.env.username)
-            })
-          },
-          currTerminal
-        )
-      );
+      const newState = action.hidden
+        ? u({}, state)
+        : updateCurrTerminal(
+            state,
+            index,
+            u(
+              {
+                history: draftHistory => [
+                  ...draftHistory.slice(0, -1),
+                  text,
+                  ''
+                ],
+                output: pushArrayElement({
+                  text,
+                  prompt: state.wsh.env.prompt
+                    .replace('%w', currTerminal.workingDirectory)
+                    .replace('%u', state.wsh.env.username)
+                })
+              },
+              currTerminal
+            )
+          );
 
       // TODO: fix mutation hack
       // Commands should be free to mutate newState since it is a clone of state
@@ -242,7 +248,7 @@ const rootReducer = function(state: StoreState, action: Action): StoreState {
               // File not found: create
               return u({
                 data: dirData => [...dirData, createFile(fileName, contents)]
-              });
+              }, parentDir);
             }
           }
         )
