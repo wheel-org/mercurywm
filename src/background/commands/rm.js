@@ -8,7 +8,7 @@ import type { StoreState } from 'types';
 export default function rm(state: StoreState, params: Array<string>) {
   if (params.length !== 1 && params.length !== 2) {
     this.output('Invalid number of parameters');
-    return;
+    return state;
   }
 
   if (params.length === 1) {

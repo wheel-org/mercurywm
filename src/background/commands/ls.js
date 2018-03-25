@@ -9,7 +9,7 @@ export default function ls(state: StoreState, params: Array<string>) {
   const showHidden = params.length > 0 && params[0] === '-a';
 
   const workingDirectory = getDirectory(this.terminal.workingDirectory);
-  if (!workingDirectory) return; // Should always exist
+  if (!workingDirectory) return state; // Should always exist
 
   if (workingDirectory.data.length === 0) {
     this.output('Directory is empty');

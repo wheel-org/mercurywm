@@ -7,6 +7,7 @@ import { clear } from '../storage';
 import cat from './cat';
 import cd from './cd';
 import env from './env';
+import kill from './kill';
 import ls from './ls';
 import mkdir from './mkdir';
 import window from './window';
@@ -91,8 +92,8 @@ export function executeCommand(state: StoreState, input: string) {
       return cd.call(command, state, params);
     case 'env':
       return env.call(command, state, params);
-    // case 'kill':
-    //   return state;
+    case 'kill':
+      return kill.call(command, state, params);
     case 'ls':
       return ls.call(command, state, params);
     case 'mkdir':
@@ -104,7 +105,8 @@ export function executeCommand(state: StoreState, input: string) {
     case 'workspace':
       return workspace.call(command, state, params);
     default:
-      command.output('Unrecognized command');
+      // Execute script?
+      // Check for extensions
       return state;
   }
 }

@@ -193,6 +193,9 @@ const rootReducer = function(state: StoreState, action: Action): StoreState {
       // Commands should be free to mutate newState since it is a clone of state
       // However, updeep freezes objects in development, so newState can't be
       // mutated. This hack temporarily deep copies newState to allow mutation.
+      if (process.env.NODE_ENV === 'production') {
+        return executeCommand(newState, text);
+      }
       return executeCommand(JSON.parse(JSON.stringify(newState)), text);
 
     case 'KILL_SCRIPT':

@@ -25,9 +25,10 @@ chrome.runtime.onConnect.addListener(port => {
 
     store.dispatch(action);
 
+    // Check for builtin?
     if (action.type === 'EXECUTE_COMMAND') {
       // Run the script async
-      executeScript(state.selectedWindow, action.text);
+      //executeScript(state.selectedWindow, action.text);
     }
   });
 
