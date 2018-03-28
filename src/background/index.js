@@ -1,28 +1,15 @@
 /* @flow */
 
-import executeScript from 'background/scripts';
-import store from 'background/store';
+import executeScript, { isBuiltIn } from './scripts';
+import store from './store';
+import { clear } from './storage';
 
 import type { Action } from 'types';
 
 window.getState = () => store.getState();
-window.reset = () => store.dispatch({ type: 'RESET_STORE' });
+window.reset = () => clear();
 
 console.log('MercuryWM background running');
-
-const builtins = [
-  'cat',
-  'cd',
-  'clear',
-  'env',
-  'kill',
-  'ls',
-  'mkdir',
-  'reset',
-  'rm',
-  'window',
-  'workspace'
-];
 
 chrome.runtime.onConnect.addListener(port => {
   console.assert(port.name === 'mercurywm');
@@ -42,7 +29,7 @@ chrome.runtime.onConnect.addListener(port => {
     // Check for builtin?
     if (action.type === 'EXECUTE_COMMAND') {
       const [command] = action.text.split(' ');
-      if (command && !builtins.find(b => b === command)) {
+      if (command && !isBuiltIn(command)) {
         // Run the script async
         executeScript(state.selectedWindow, action.text);
       }

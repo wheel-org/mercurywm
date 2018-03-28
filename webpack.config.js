@@ -4,7 +4,7 @@ const webpack = require('webpack');
 const config = {
   entry: {
     main: './src/mercury/index.jsx',
-    background: ['babel-polyfill', './src/background/index.js']
+    background: './src/background/index.js'
   },
   output: {
     path: path.resolve(__dirname, 'build'),
@@ -17,7 +17,18 @@ const config = {
         loader: 'babel-loader',
         exclude: /node_modules/,
         query: {
-          presets: ['env', 'react', 'stage-2']
+          presets: [
+            [
+              'env',
+              {
+                targets: {
+                  browser: 'last 2 versions'
+                }
+              }
+            ],
+            'react',
+            'stage-2'
+          ]
         }
       },
       {

@@ -6,6 +6,8 @@ let script: {
   exec: string => void
 };
 
+let resolve: any => void;
+
 function getData(url) {
   const xml = new XMLHttpRequest();
   xml.open('GET', url, false);
@@ -41,10 +43,10 @@ function setupFile() {
   const version = getData(mmmUrl + 'VERSION');
   const code = getData(mmmUrl + version + '/main.js');
   // $FlowFixMe: "Function" isn't callable
-  Function('script', 'args', code)(Object.assign({}, script, {output: () => {}}), [
-    'install',
-    'mmm'
-  ]);
+  Function('script', 'args', 'resolve', code)(
+    Object.assign({}, script, { output: () => {} }),
+    ['install', 'mmm', () => {}]
+  );
   script.output('Installed mmm@' + version);
   script.output('====================================');
   script.output('\n');
@@ -111,6 +113,11 @@ function setupFile() {
   script.output('====================================');
   script.output('\n');
   script.output('Setup has successfully completed.');
+  resolve();
 }
 
-export default getData.toString() + createMan.toString() + '(' + setupFile.toString() + ')()';
+export default getData.toString() +
+  createMan.toString() +
+  '(' +
+  setupFile.toString() +
+  ')()';

@@ -2,8 +2,26 @@
 
 import store from 'background/store';
 import { getFile, getDirectory, findWindow, getPath } from 'utils';
+import Constants from 'constants.js';
 
 import type { Script as ScriptType } from 'types';
+
+export function isBuiltIn(command: string) {
+  const names = [
+    'cat',
+    'cd',
+    'clear',
+    'env',
+    'kill',
+    'ls',
+    'mkdir',
+    'reset',
+    'rm',
+    'window',
+    'workspace'
+  ];
+  return names.find(n => n === command);
+}
 
 // Parse input into command and parameters
 function parseInput(text): Array<string> {
@@ -15,10 +33,8 @@ function parseInput(text): Array<string> {
 
 function Script(command): ScriptType {
   const workspaceID = store.getState().selectedWorkspace;
-  const windowID = findWindow(
-    store.getState(),
-    store.getState().selectedWindow
-  );
+  const selectedWindow = store.getState().selectedWindow;
+  const windowID = findWindow(store.getState(), selectedWindow);
   const currentWindow = store.getState().workspaces[workspaceID].windows[
     windowID
   ];
@@ -38,8 +54,13 @@ function Script(command): ScriptType {
         showPrompt
       });
     },
-    exec: function(input: string) {
-      store.dispatch({ type: 'EXECUTE_COMMAND', text: input, hidden: true });
+    exec: function(input: string, callback?: any => void) {
+      const [cmd] = input.split(' ');
+      if (cmd && !isBuiltIn(cmd)) {
+        executeScript(selectedWindow, input, callback);
+      } else {
+        store.dispatch({ type: 'EXECUTE_COMMAND', text: input, hidden: true });
+      }
     },
     resetStore: () => store.dispatch({ type: 'RESET_STORE' }),
     clearHistory: () => store.dispatch({ type: 'CLEAR_HISTORY' }),
@@ -75,37 +96,55 @@ function Script(command): ScriptType {
   };
 }
 
-export default function executeScript(id: number, input: string) {
+export default function executeScript(
+  id: number,
+  input: string,
+  callback?: any => void
+) {
   // if (commands[id] && commands[id].running) return;
-
   const [command, ...params] = parseInput(input);
   const script = new Script(command);
 
   const binFile = getFile('~/.bin/' + command);
   if (binFile) {
-    // $FlowFixMe: flow doesn't like function objects
-    new Function('script', 'args', binFile.data)(script, params);
-    script.exec('kill ' + script.windowID);
+    // $FlowFixMe
+    new Function('script', 'args', 'resolve', binFile.data)(
+      script,
+      params,
+      () => script.exec('kill ' + script.windowID)
+    );
   } else if (command === 'async') {
-    asyncFn(script, params);
+    asyncFn(script, params, str => {
+      script.output(str);
+      script.exec('kill ' + script.windowID);
+    });
   } else if (command === 'edit') {
     edit(script, params);
   } else if (command === 'yum') {
-    yum(script, params);
+    yum(script, params, () => script.exec('kill ' + script.windowID));
   } else {
-    script.output('Unrecognized command');
-    script.exec('kill ' + script.windowID);
+    const path = Constants.MERCURYWM_CONTENT_URL + command + '/index.html';
+    fetch(path)
+      .then(response => {
+        // script.terminal.inProg = true;
+        // script.terminal.runningCommand = command;
+        // script.terminal.params = params;
+      })
+      .catch(error => {
+        script.output('Unrecognized command');
+        script.exec('kill ' + script.windowID);
+      });
   }
 }
 
-async function asyncFn(script, params) {
+function asyncFn(script, params, resolve) {
+  script.output('boo');
   setTimeout(() => {
-    script.output('boo');
-    script.exec('kill ' + script.windowID);
+    resolve('done');
   }, 1000);
 }
 
-async function edit(script, params) {
+function edit(script, params) {
   if (params.length === 1) {
     const path = script.currentPath + '/' + params[0];
     const file = getFile(path);
@@ -121,33 +160,33 @@ async function edit(script, params) {
   script.exec('kill ' + script.windowID);
 }
 
-async function yum(script, params) {
+function yum(script, params, resolve) {
   if (params.length === 0) {
     script.output('spaghetti sauce');
-    script.exec('kill ' + script.windowID);
+    resolve();
   } else if (params.length === 2) {
     // Pull URL
     const path = script.currentPath + '/' + params[1];
     script.output('Downloading ' + params[0] + '...');
-    const request = new XMLHttpRequest();
-    request.open('GET', params[0]);
-    request.onreadystatechange = function() {
-      if (request.readyState == 4) {
-        if (request.status == 200) {
-          script.output('download success');
-          script.output('data written to file ' + path);
-          script.writeFile(path, request.responseText);
-          script.exec('kill ' + script.windowID);
-        } else {
-          script.output('download failed: status ' + request.status);
-          script.exec('kill ' + script.windowID);
-        }
-      }
-    };
-    request.send();
+
+    fetch(params[0])
+      .then(response => {
+        if (!response.ok) throw response.status;
+        return response.text();
+      })
+      .then(text => {
+        script.output('Download success');
+        script.output('Data written to file ' + path);
+        script.writeFile(path, text);
+      })
+      .catch(error => {
+        script.output('Download failed: status ' + error);
+      })
+      // $FlowFixMe: Promise.finally isn't implemented in flow
+      .finally(() => resolve());
   } else {
     script.output('Incorrect number of parameters');
-    script.exec('kill ' + script.windowID);
+    resolve();
   }
 }
 
