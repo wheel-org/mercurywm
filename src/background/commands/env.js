@@ -10,7 +10,8 @@ export default function env(state: StoreState, params: Array<string>) {
   } else if (params.length === 1) {
     this.output(params[0] + ': ' + state.wsh.env[params[0]], false, false);
   } else if (params.length === 2) {
-    this.setEnv(params[0], params[1]);
+    // $FlowFixMe: command can mutate state
+    state.wsh.env[params[0]] = params[1];
   } else {
     this.output('Invalid number of parameters');
   }

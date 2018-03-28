@@ -4,6 +4,7 @@
 export type Terminal = {|
   +history: Array<string>,
   +running: boolean,
+  +isExtension: boolean,
   +output: Array<{
     +prompt: string,
     +text: string
@@ -68,15 +69,13 @@ export type Action =
   | {| +type: 'RESET_STORE' |}
   | {| +type: 'CLEAR_HISTORY' |}
   | {| +type: 'SELECT_WORKSPACE', +id: number |}
-  | {| +type: 'ADD_WORKSPACE' |}
+  | {| +type: 'ADD_WORKSPACE', +windows: Array<Window> |}
   | {| +type: 'DELETE_WORKSPACE', +id: number |}
   | {| +type: 'SELECT_WINDOW', +id: number |}
-  // | {| +type: 'INTENT_SELECT_WORKSPACE', +direction: number |}
-  // | {| +type: 'INTENT_SELECT_WINDOW', +direction: number |}
   | {| +type: 'KILL_SCRIPT', +id: number |}
   | {| +type: 'SET_ENV', +key: string, +value: string |}
   | {| +type: 'CREATE_OR_MODIFY_FILE', +path: string, +content: string |}
-  | {| +type: 'CREATE_DIR', +path: string |}
+  | {| +type: 'CREATE_DIR', +path: string, +contents: Array<File | Directory> |}
   | {| +type: 'SELECT_WORKSPACE', +id: number |}
   | {| +type: 'SELECT_WINDOW', +id: number |}
   | {| +type: 'UPDATE_COMMAND', +text: string, +index: number |}
@@ -89,7 +88,10 @@ export type Action =
       +window: number
     |}
   | {| +type: 'DELETE_FILE', +path: string |}
-  | {| +type: 'DELETE_DIR', +path: string |};
+  | {| +type: 'DELETE_DIR', +path: string |}
+  | {| +type: 'RUN_EXTENSION', +name: string, +params: Array<string> |}
+  | {| +type: 'INTENT_SELECT_WORKSPACE', +direction: number |}
+  | {| +type: 'INTENT_SELECT_WINDOW', +direction: number |};
 
 // Storage
 export type StorageState = { +[string]: StoreState };
@@ -112,14 +114,24 @@ export type Script = {|
   +addCommand: (text: string, showPrompt: boolean) => void,
   +setEnv: (key: string, value: string) => void,
   +setDirectory: (path: string) => void,
-  +createDirectory: (path: string) => void,
+  +createFile: (name: string, data: string) => File,
+  +createTerminal: () => Terminal,
+  +createWindow: (
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    id: number
+  ) => Window,
+  +createDirectory: (path: string, contents: Array<File | Directory>) => void,
   +deleteFile: (path: string) => void,
   +deleteDirectory: (path: string) => void,
   +selectWorkspace: (id: number) => void,
-  +addWorkspace: () => void,
+  +addWorkspace: (windows: Array<Window>) => void,
   +deleteWorkspace: (id: number) => void,
   +getFile: (path: string) => ?File | false,
-  +writeFile: (path: string, content: string) => void
+  +writeFile: (path: string, content: string) => void,
+  +runExtension: (name: string, params: Array<string>) => void
 |};
 
 export type Command = (script: Script, params: Array<string>) => void;

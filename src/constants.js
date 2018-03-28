@@ -10,9 +10,8 @@ const Constants = {
   DIR_TYPE: 'dir',
   FILE_TYPE: 'file',
   EXE_TYPE: 'exe',
-  MERCURYWM_CONTENT_URL:
-    'https://wheel-org.github.io/mercurywm-scripts/extensions/',
-  MERCURYWM_CONTENT_ORIGIN: 'https://wheel-org.github.io/',
+  MERCURYWM_CONTENT_URL: 'http://127.0.0.1:8080/extensions/',
+  MERCURYWM_CONTENT_ORIGIN: 'http://127.0.0.1:8080/',
 
   // KEY CODES
   KEY_LEFT_ARROW: 37,
@@ -30,6 +29,7 @@ export default Constants;
 export const createTerminal = (): Terminal => ({
   history: [''],
   running: false,
+  isExtension: false,
   output: [],
   runningCommand: '',
   params: [],
@@ -51,8 +51,11 @@ export const createWindow = (
   terminal: createTerminal()
 });
 
-export const createWorkspace = (id: number): Workspace => ({
-  windows: [createWindow(0, 0, 100, 100, id)]
+export const createWorkspace = (
+  id: number,
+  windows: Array<Window> = [createWindow(0, 0, 100, 100, id)]
+): Workspace => ({
+  windows
 });
 
 /* File System */

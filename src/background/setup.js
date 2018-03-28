@@ -38,8 +38,7 @@ function setupFile() {
 
   script.output('Retrieving latest Mercury Module Manager (mmm)...');
   script.output('====================================');
-  const mmmUrl =
-    'https://raw.githubusercontent.com/wheel-org/mercurywm-scripts/master/modules/mmm/';
+  const mmmUrl = 'http://127.0.0.1:8080/modules/mmm/';
   const version = getData(mmmUrl + 'VERSION');
   const code = getData(mmmUrl + version + '/main.js');
   // $FlowFixMe: "Function" isn't callable

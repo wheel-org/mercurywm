@@ -6,8 +6,12 @@ export default function kill(state: StoreState, params: Array<string>) {
   if (params.length === 1) {
     const index = parseInt(params[0]);
     if (index >= 0 && index < this.workspace.windows.length) {
-      if (this.workspace.windows[index].terminal.running) {
+      if (
+        this.workspace.windows[index].terminal.running ||
+        this.workspace.windows[index].terminal.isExtension
+      ) {
         this.workspace.windows[index].terminal.running = false;
+        this.workspace.windows[index].terminal.isExtension = false;
         this.output('Extension killed');
       } else {
         this.output('Nothing running in window');

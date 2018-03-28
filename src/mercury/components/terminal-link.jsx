@@ -148,7 +148,7 @@ class TerminalLink extends React.Component<Props, State> {
       this.input.scrollTop = this.input.scrollHeight;
     }
 
-    if (e.keyCode === Constants.KEY_ENTER) {
+    if (e.keyCode === Constants.KEY_ENTER && command.length > 0) {
       this.props.executeCommand(command);
       this.setState({
         cursor: 0,

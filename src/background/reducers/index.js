@@ -120,7 +120,9 @@ const rootReducer = function(state: StoreState, action: Action): StoreState {
     case 'ADD_WORKSPACE':
       return u(
         {
-          workspaces: pushArrayElement(createWorkspace(Date.now()))
+          workspaces: pushArrayElement(
+            createWorkspace(Date.now(), action.windows)
+          )
         },
         state
       );
@@ -170,7 +172,7 @@ const rootReducer = function(state: StoreState, action: Action): StoreState {
         )
       );
 
-    case 'EXECUTE_COMMAND':
+    case 'EXECUTE_COMMAND': {
       const text = action.text;
       const newState = action.hidden
         ? u({}, state)
@@ -203,24 +205,27 @@ const rootReducer = function(state: StoreState, action: Action): StoreState {
         return executeCommand(newState, text);
       }
       return executeCommand(JSON.parse(JSON.stringify(newState)), text);
+    }
 
-    case 'KILL_SCRIPT':
+    case 'KILL_SCRIPT': {
       const scriptIndex = findWindow(state, action.id);
       return {
         ...updateCurrTerminal(
           state,
-          index,
+          scriptIndex,
           u(
             {
-              running: false
+              running: false,
+              isExtension: false
             },
             currTerminal
           )
         ),
         selectedWindow: action.id
       };
+    }
 
-    case 'CREATE_OR_MODIFY_FILE':
+    case 'CREATE_OR_MODIFY_FILE': {
       const contents = action.content;
       return {
         ...state,
@@ -256,6 +261,7 @@ const rootReducer = function(state: StoreState, action: Action): StoreState {
           }
         )
       };
+    }
 
     case 'SET_ENV':
       return u({ wsh: { env: { [action.key]: action.value } } }, state);
@@ -278,7 +284,8 @@ const rootReducer = function(state: StoreState, action: Action): StoreState {
         state
       );
 
-    case 'CREATE_DIR':
+    case 'CREATE_DIR': {
+      const contents = action.contents;
       return {
         ...state,
         wfs: editFilesystem(
@@ -294,7 +301,7 @@ const rootReducer = function(state: StoreState, action: Action): StoreState {
             } else {
               return u(
                 {
-                  data: pushArrayElement(createDirectory(dirName))
+                  data: pushArrayElement(createDirectory(dirName, contents))
                 },
                 parentDir
               );
@@ -302,6 +309,7 @@ const rootReducer = function(state: StoreState, action: Action): StoreState {
           }
         )
       };
+    }
 
     case 'DELETE_FILE':
       return {
@@ -353,6 +361,73 @@ const rootReducer = function(state: StoreState, action: Action): StoreState {
         )
       };
 
+    case 'RUN_EXTENSION':
+      return updateCurrTerminal(
+        state,
+        index,
+        u(
+          {
+            isExtension: true,
+            runningCommand: action.name,
+            params: action.params
+          },
+          currTerminal
+        )
+      );
+
+    // TODO: this is too specific for a reducer
+    // move the logic out to the function using it and
+    // just call SELECT_WORKSPACE
+    case 'INTENT_SELECT_WORKSPACE': {
+      let currentWorkspace = state.selectedWorkspace;
+      if (action.direction === Constants.KEY_LEFT_ARROW) {
+        currentWorkspace--;
+        if (currentWorkspace < 0) {
+          currentWorkspace = state.workspaces.length - 1;
+        }
+      } else if (action.direction === Constants.KEY_RIGHT_ARROW) {
+        currentWorkspace++;
+        if (currentWorkspace >= state.workspaces.length) {
+          currentWorkspace = 0;
+        }
+      }
+      return {
+        ...state,
+        selectedWorkspace: currentWorkspace,
+        selectedWindow: state.workspaces[currentWorkspace].windows[0].id
+      };
+    }
+
+    // TODO: same issue as INTENT_SELECT_WORKSPACE
+    case 'INTENT_SELECT_WINDOW': {
+      const currentWindows = state.workspaces[state.selectedWorkspace].windows;
+      let result;
+      switch (action.direction) {
+        case Constants.KEY_LEFT_ARROW:
+          result = getBorderingLeft(index, currentWindows, false);
+          break;
+        case Constants.KEY_RIGHT_ARROW:
+          result = getBorderingRight(index, currentWindows, false);
+          break;
+        case Constants.KEY_UP_ARROW:
+          result = getBorderingTop(index, currentWindows, false);
+          break;
+        case Constants.KEY_DOWN_ARROW:
+          result = getBorderingBottom(index, currentWindows, false);
+          break;
+      }
+      if (result && result.length > 0) {
+        return {
+          ...state,
+          selectedWindow: currentWindows[result[0]].id
+        };
+      } else {
+        return {
+          ...state
+        };
+      }
+    }
+
     default:
       action;
       return state;
@@ -366,55 +441,3 @@ const saveWrapper = function(state: StoreState, action: Action) {
 };
 
 export default saveWrapper;
-
-// // TODO: this is too specific for a reducer
-// // move the logic out to the function using it and
-// // just call SELECT_WORKSPACE
-// case 'INTENT_SELECT_WORKSPACE':
-//   let currentWorkspace = state.selectedWorkspace;
-//   if (action.direction === Constants.KEY_LEFT_ARROW) {
-//     currentWorkspace--;
-//     if (currentWorkspace < 0) {
-//       currentWorkspace = state.workspaces.length - 1;
-//     }
-//   } else if (action.direction === Constants.KEY_RIGHT_ARROW) {
-//     currentWorkspace++;
-//     if (currentWorkspace >= state.workspaces.length) {
-//       currentWorkspace = 0;
-//     }
-//   }
-//   return {
-//     ...state,
-//     selectedWorkspace: currentWorkspace,
-//     selectedWindow: state.workspaces[currentWorkspace].windows[0].id
-//   };
-//
-// // TODO: same issue as INTENT_SELECT_WORKSPACE
-// case 'INTENT_SELECT_WINDOW': {
-//   const currentWindows = state.workspaces[state.selectedWorkspace].windows;
-//   let result;
-//   switch (action.direction) {
-//     case Constants.KEY_LEFT_ARROW:
-//       result = getBorderingLeft(index, currentWindows, false);
-//       break;
-//     case Constants.KEY_RIGHT_ARROW:
-//       result = getBorderingRight(index, currentWindows, false);
-//       break;
-//     case Constants.KEY_UP_ARROW:
-//       result = getBorderingTop(index, currentWindows, false);
-//       break;
-//     case Constants.KEY_DOWN_ARROW:
-//       result = getBorderingBottom(index, currentWindows, false);
-//       break;
-//   }
-//   if (result && result.length > 0) {
-//     return {
-//       ...state,
-//       selectedWindow: currentWindows[result[0]].id
-//     };
-//   } else {
-//     return {
-//       ...state
-//     };
-//   }
-// }

@@ -1,10 +1,10 @@
 /* @flow */
 
 import store from 'background/store';
-import Constants from 'constants.js';
+import Constants, { createFile, createTerminal, createWindow } from 'constants.js';
 import { findWindow, getDirectory, getFile, getPath } from 'utils';
 
-import type { Script as ScriptType } from 'types';
+import type { Directory, File, Script as ScriptType, Window } from 'types';
 
 export function isBuiltIn(command: string) {
   const names = [
@@ -75,14 +75,19 @@ function Script(command): ScriptType {
         workspace: workspaceID,
         window: windowID
       }),
-    createDirectory: (path: string) =>
-      store.dispatch({ type: 'CREATE_DIR', path }),
+    createFile: (name: string, data: string) => createFile(name, data),
+    createTerminal: () => createTerminal(),
+    createWindow: (x: number, y: number, w: number, h: number, id: number) =>
+      createWindow(x, y, w, h, id),
+    createDirectory: (path: string, contents: Array<File | Directory>) =>
+      store.dispatch({ type: 'CREATE_DIR', path, contents }),
     deleteFile: (path: string) => store.dispatch({ type: 'DELETE_FILE', path }),
     deleteDirectory: (path: string) =>
       store.dispatch({ type: 'DELETE_DIR', path }),
     selectWorkspace: (id: number) =>
       store.dispatch({ type: 'SELECT_WORKSPACE', id }),
-    addWorkspace: () => store.dispatch({ type: 'ADD_WORKSPACE' }),
+    addWorkspace: (windows: Array<Window>) =>
+      store.dispatch({ type: 'ADD_WORKSPACE', windows }),
     deleteWorkspace: (id: number) =>
       store.dispatch({ type: 'DELETE_WORKSPACE', id }),
     getFile: (path: string) => {
@@ -92,7 +97,9 @@ function Script(command): ScriptType {
       return false;
     },
     writeFile: (path: string, content: string) =>
-      store.dispatch({ type: 'CREATE_OR_MODIFY_FILE', path, content })
+      store.dispatch({ type: 'CREATE_OR_MODIFY_FILE', path, content }),
+    runExtension: (name: string, params: Array<string>) =>
+      store.dispatch({ type: 'RUN_EXTENSION', name, params })
   };
 }
 
@@ -102,10 +109,10 @@ export default function executeScript(
   callback?: any => void
 ) {
   // if (commands[id] && commands[id].running) return;
-  const [command, ...params] = parseInput(input);
-  const script = new Script(command);
+  const [name, ...params] = parseInput(input);
+  const script = new Script(name);
 
-  const binFile = getFile('~/.bin/' + command);
+  const binFile = getFile('~/.bin/' + name);
   if (binFile) {
     // $FlowFixMe
     new Function('script', 'args', 'resolve', binFile.data)(
@@ -113,22 +120,20 @@ export default function executeScript(
       params,
       () => script.exec('kill ' + script.windowID)
     );
-  } else if (command === 'async') {
+  } else if (name === 'async') {
     asyncFn(script, params, str => {
       script.output(str);
       script.exec('kill ' + script.windowID);
     });
-  } else if (command === 'edit') {
+  } else if (name === 'edit') {
     edit(script, params);
-  } else if (command === 'yum') {
+  } else if (name === 'yum') {
     yum(script, params, () => script.exec('kill ' + script.windowID));
   } else {
-    const path = Constants.MERCURYWM_CONTENT_URL + command + '/index.html';
+    const path = Constants.MERCURYWM_CONTENT_URL + name + '/index.html';
     fetch(path)
       .then(response => {
-        // script.terminal.inProg = true;
-        // script.terminal.runningCommand = command;
-        // script.terminal.params = params;
+        script.runExtension(name, params);
       })
       .catch(error => {
         script.output('Unrecognized command');
