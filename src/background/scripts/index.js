@@ -1,27 +1,15 @@
 /* @flow */
 
+import { isCommand } from 'background/commands';
 import store from 'background/store';
-import Constants, { createFile, createTerminal, createWindow } from 'constants.js';
+import Constants, {
+  createFile,
+  createTerminal,
+  createWindow
+} from 'constants.js';
 import { findWindow, getDirectory, getFile, getPath } from 'utils';
 
 import type { Directory, File, Script as ScriptType, Window } from 'types';
-
-export function isBuiltIn(command: string) {
-  const names = [
-    'cat',
-    'cd',
-    'clear',
-    'env',
-    'kill',
-    'ls',
-    'mkdir',
-    'reset',
-    'rm',
-    'window',
-    'workspace'
-  ];
-  return names.find(n => n === command);
-}
 
 // Parse input into command and parameters
 function parseInput(text): Array<string> {
@@ -29,6 +17,11 @@ function parseInput(text): Array<string> {
   if (tokens)
     return tokens.map(t => t.replace(/^"|"$/g, '').replace(/^'|'$/g, ''));
   return [];
+}
+
+function isScript(name: string) {
+  const names = ['async', 'edit', 'yum'];
+  return names.find(n => n === name);
 }
 
 function Script(command): ScriptType {
@@ -56,25 +49,26 @@ function Script(command): ScriptType {
     },
     exec: function(input: string, callback?: any => void) {
       const [cmd] = input.split(' ');
-      if (cmd && !isBuiltIn(cmd)) {
+      if (cmd && !isCommand(cmd)) {
         executeScript(selectedWindow, input, callback);
       } else {
         store.dispatch({ type: 'EXECUTE_COMMAND', text: input, hidden: true });
+        if (callback) callback();
       }
     },
-    resetStore: () => store.dispatch({ type: 'RESET_STORE' }),
-    clearHistory: () => store.dispatch({ type: 'CLEAR_HISTORY' }),
-    addCommand: (text: string, showPrompt: boolean) =>
-      store.dispatch({ type: 'ADD_COMMAND', text, showPrompt }),
-    setEnv: (key: string, value: string) =>
-      store.dispatch({ type: 'SET_ENV', key, value }),
-    setDirectory: (path: string) =>
-      store.dispatch({
-        type: 'SET_DIRECTORY',
-        path,
-        workspace: workspaceID,
-        window: windowID
-      }),
+    // resetStore: () => store.dispatch({ type: 'RESET_STORE' }),
+    // clearHistory: () => store.dispatch({ type: 'CLEAR_HISTORY' }),
+    // addCommand: (text: string, showPrompt: boolean) =>
+    //   store.dispatch({ type: 'ADD_COMMAND', text, showPrompt }),
+    // setEnv: (key: string, value: string) =>
+    //   store.dispatch({ type: 'SET_ENV', key, value }),
+    // setDirectory: (path: string) =>
+    //   store.dispatch({
+    //     type: 'SET_DIRECTORY',
+    //     path,
+    //     workspace: workspaceID,
+    //     window: windowID
+    //   }),
     createFile: (name: string, data: string) => createFile(name, data),
     createTerminal: () => createTerminal(),
     createWindow: (x: number, y: number, w: number, h: number, id: number) =>
@@ -103,6 +97,18 @@ function Script(command): ScriptType {
   };
 }
 
+function Async(func, script, params, resolve?) {
+  function newResolve(...args: Array<any>) {
+    if (resolve) resolve(...args);
+    else script.exec('kill ' + script.windowID);
+  }
+
+  const val = func(script, params, newResolve);
+  // If the script returns nothing, it's assumed that the script is synchronous
+  // and it will not call resolve to finish.
+  if (val === undefined) newResolve();
+}
+
 export default function executeScript(
   id: number,
   input: string,
@@ -114,21 +120,11 @@ export default function executeScript(
 
   const binFile = getFile('~/.bin/' + name);
   if (binFile) {
-    // $FlowFixMe
-    new Function('script', 'args', 'resolve', binFile.data)(
-      script,
-      params,
-      () => script.exec('kill ' + script.windowID)
-    );
-  } else if (name === 'async') {
-    asyncFn(script, params, str => {
-      script.output(str);
-      script.exec('kill ' + script.windowID);
-    });
-  } else if (name === 'edit') {
-    edit(script, params);
-  } else if (name === 'yum') {
-    yum(script, params, () => script.exec('kill ' + script.windowID));
+    // $FlowFixMe: Flow doesn't like function objects
+    const binFunc = new Function('script', 'args', 'resolve', binFile.data);
+    Async(binFunc, script, params, callback);
+  } else if (isScript(name)) {
+    Async(require('./' + name).default, script, params, callback);
   } else {
     const path = Constants.MERCURYWM_CONTENT_URL + name + '/index.html';
     fetch(path)
@@ -139,59 +135,6 @@ export default function executeScript(
         script.output('Unrecognized command');
         script.exec('kill ' + script.windowID);
       });
-  }
-}
-
-function asyncFn(script, params, resolve) {
-  script.output('boo');
-  setTimeout(() => {
-    resolve('done');
-  }, 1000);
-}
-
-function edit(script, params) {
-  if (params.length === 1) {
-    const path = script.currentPath + '/' + params[0];
-    const file = getFile(path);
-    const text = file ? file.data : '';
-
-    const result = window.prompt('Editing' + path + ':', text);
-    if (result !== null) {
-      script.writeFile(path, result);
-    }
-  } else {
-    script.output('Incorrect number of parameters');
-  }
-  script.exec('kill ' + script.windowID);
-}
-
-function yum(script, params, resolve) {
-  if (params.length === 0) {
-    script.output('spaghetti sauce');
-    resolve();
-  } else if (params.length === 2) {
-    // Pull URL
-    const path = script.currentPath + '/' + params[1];
-    script.output('Downloading ' + params[0] + '...');
-
-    fetch(params[0])
-      .then(response => {
-        if (!response.ok) throw response.status;
-        return response.text();
-      })
-      .then(text => {
-        script.output('Download success');
-        script.output('Data written to file ' + path);
-        script.writeFile(path, text);
-      })
-      .catch(error => {
-        script.output('Download failed: status ' + error);
-      })
-      // $FlowFixMe: Promise.finally isn't implemented in flow
-      .finally(() => resolve());
-  } else {
-    script.output('Incorrect number of parameters');
-    resolve();
   }
 }
 
@@ -230,9 +173,3 @@ information to identify the terminal such as the window ID.
 //     }, 1000);
 //   }
 // }
-
-export function kill(id: number) {
-  // if (commands[id]) {
-  //   commands[id].kill();
-  // }
-}

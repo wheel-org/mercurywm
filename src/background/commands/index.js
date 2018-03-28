@@ -74,39 +74,39 @@ function Command(state, command, params) {
   };
 }
 
+export function isCommand(name: string) {
+  const names = [
+    'cat',
+    'cd',
+    'clear',
+    'env',
+    'kill',
+    'ls',
+    'mkdir',
+    'reset',
+    'rm',
+    'window',
+    'workspace'
+  ];
+  return names.find(n => n === name);
+}
+
 export function executeCommand(state: StoreState, input: string) {
   const [name, ...params] = parseInput(input);
 
   const command = new Command(state, name, params);
 
-  switch (name) {
-    case 'reset':
-      return clear();
-    case 'clear':
-      // $FlowFixMe: command can mutate state
-      command.terminal.output = [];
-      return state;
-    case 'cat':
-      return cat.call(command, state, params);
-    case 'cd':
-      return cd.call(command, state, params);
-    case 'env':
-      return env.call(command, state, params);
-    case 'kill':
-      return kill.call(command, state, params);
-    case 'ls':
-      return ls.call(command, state, params);
-    case 'mkdir':
-      return mkdir.call(command, state, params);
-    case 'rm':
-      return rm.call(command, state, params);
-    case 'window':
-      return window.call(command, state, params);
-    case 'workspace':
-      return workspace.call(command, state, params);
-    default:
-      // $FlowFixMe: command can mutate state
-      command.terminal.running = true;
-      return state;
+  if (name === 'reset') {
+    return clear();
+  } else if (name === 'clear') {
+    // $FlowFixMe: command can mutate state
+    command.terminal.output = [];
+    return state;
+  } else if (isCommand(name)) {
+    return require('./' + name).default.call(command, state, params);
+  } else {
+    // $FlowFixMe: command can mutate state
+    command.terminal.running = true;
+    return state;
   }
 }

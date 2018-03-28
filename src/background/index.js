@@ -1,6 +1,7 @@
 /* @flow */
 
-import executeScript, { isBuiltIn } from './scripts';
+import executeScript from './scripts';
+import { isCommand } from './commands/index';
 import { clear } from './storage';
 import store from './store';
 
@@ -29,7 +30,7 @@ chrome.runtime.onConnect.addListener(port => {
     // Check for builtin?
     if (action.type === 'EXECUTE_COMMAND') {
       const [command] = action.text.split(' ');
-      if (command && !isBuiltIn(command)) {
+      if (command && !isCommand(command)) {
         // Run the script async
         executeScript(state.selectedWindow, action.text);
       }
