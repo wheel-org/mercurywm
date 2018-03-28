@@ -84,6 +84,7 @@ export function executeCommand(state: StoreState, input: string) {
     case 'reset':
       return clear();
     case 'clear':
+      // $FlowFixMe: command can mutate state
       command.terminal.output = [];
       return state;
     case 'cat':
@@ -105,6 +106,7 @@ export function executeCommand(state: StoreState, input: string) {
     case 'workspace':
       return workspace.call(command, state, params);
     default:
+      // $FlowFixMe: command can mutate state
       command.terminal.running = true;
       return state;
   }

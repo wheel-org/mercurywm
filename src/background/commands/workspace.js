@@ -11,7 +11,9 @@ export default function workspace(state: StoreState, params: Array<string>) {
     } else {
       const index = parseInt(params[0]);
       if (index >= 0 && index < state.workspaces.length) {
+        // $FlowFixMe: command can mutate state
         state.selectedWorkspace = index;
+        // $FlowFixMe: command can mutate state
         state.selectedWindow = state.workspaces[index].windows[0].id;
       } else {
         this.output('Unknown parameter ' + params[0]);
@@ -26,7 +28,9 @@ export default function workspace(state: StoreState, params: Array<string>) {
         this.output('Cannot have zero workspaces');
       } else {
         if (index === state.selectedWorkspace) {
+          // $FlowFixMe: command can mutate state
           state.selectedWorkspace = 0;
+          // $FlowFixMe: command can mutate state
           state.selectedWindow = state.workspaces[0].windows[0].id;
         }
         state.workspaces.splice(index, 1);
