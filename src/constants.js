@@ -10,8 +10,9 @@ const Constants = {
   DIR_TYPE: 'dir',
   FILE_TYPE: 'file',
   EXE_TYPE: 'exe',
-  MERCURYWM_CONTENT_URL: 'http://127.0.0.1:8080/extensions/',
-  MERCURYWM_CONTENT_ORIGIN: 'http://127.0.0.1:8080/',
+  MERCURYWM_CONTENT_URL:
+    'https://wheel-org.github.io/mercurywm-scripts/extensions/',
+  MERCURYWM_CONTENT_ORIGIN: 'https://wheel-org.github.io/mercurywm-scripts/',
 
   // KEY CODES
   KEY_LEFT_ARROW: 37,

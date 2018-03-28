@@ -64,7 +64,6 @@ function editFilesystem(
     );
   } else {
     // No subdirectory found
-    // TODO: does this need to be copied?
     return directory;
   }
 }
@@ -375,9 +374,7 @@ const rootReducer = function(state: StoreState, action: Action): StoreState {
         )
       );
 
-    // TODO: this is too specific for a reducer
-    // move the logic out to the function using it and
-    // just call SELECT_WORKSPACE
+    // TODO: move the logic out to the function using it and call SELECT_WORKSPACE?
     case 'INTENT_SELECT_WORKSPACE': {
       let currentWorkspace = state.selectedWorkspace;
       if (action.direction === Constants.KEY_LEFT_ARROW) {

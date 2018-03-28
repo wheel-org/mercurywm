@@ -19,6 +19,7 @@ function parseInput(text): Array<string> {
   return [];
 }
 
+// List of built-in scripts (doesn't include .bin)
 function isScript(name: string) {
   const names = ['async', 'edit', 'yum'];
   return names.find(n => n === name);
