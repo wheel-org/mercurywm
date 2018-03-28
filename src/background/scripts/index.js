@@ -1,8 +1,8 @@
 /* @flow */
 
 import store from 'background/store';
-import { getFile, getDirectory, findWindow, getPath } from 'utils';
 import Constants from 'constants.js';
+import { findWindow, getDirectory, getFile, getPath } from 'utils';
 
 import type { Script as ScriptType } from 'types';
 

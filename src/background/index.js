@@ -1,8 +1,8 @@
 /* @flow */
 
 import executeScript, { isBuiltIn } from './scripts';
-import store from './store';
 import { clear } from './storage';
+import store from './store';
 
 import type { Action } from 'types';
 

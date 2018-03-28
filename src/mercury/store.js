@@ -1,11 +1,10 @@
 /* @flow */
 
+import Constants, { createDirectory } from 'constants.js';
+import reducer from 'mercury/reducer';
 import { createStore } from 'redux';
 
-import reducer from 'mercury/reducer';
-import Constants, { createDirectory } from 'constants.js';
-
-import type { Store, StoreState, Action, StorageState } from 'types';
+import type { StorageState, Store } from 'types';
 
 // Not actual valid state since real state will be taken from storage
 const initialState: StorageState = {

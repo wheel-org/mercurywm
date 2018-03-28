@@ -1,8 +1,8 @@
 /* @flow */
 
 import merge from './merge';
-import split from './split';
 import shift from './shift';
+import split from './split';
 
 import type { StoreState } from 'types';
 

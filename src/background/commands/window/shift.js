@@ -1,15 +1,13 @@
 /* @flow */
 
 import {
+  getBorderingBottom,
   getBorderingLeft,
   getBorderingRight,
-  getBorderingTop,
-  getBorderingBottom
+  getBorderingTop
 } from 'utils';
 
 import type { StoreState } from 'types';
-
-// <BlackMagic>
 
 // edge is one of left, right, top, or bottom
 // c is 1 for +, -1 for -
@@ -26,8 +24,6 @@ function getChangeMatrix(edge, c) {
     return [0, 0, 0, c, 0, c, 0, -c];
   }
 }
-
-// </BlackMagic>
 
 export default function shift(state: StoreState, params: Array<string>) {
   const windows = this.workspace.windows;

@@ -1,10 +1,8 @@
 /* @flow */
 
-import u from 'updeep';
 import store from 'background/store';
-import Constants, { createFile } from 'constants.js';
 
-import type { File, Directory, Window, StoreState } from 'types';
+import type { Directory, File, StoreState, Window } from 'types';
 
 function getStack(path: string): Array<File | Directory> {
   const stack = [store.getState().wfs];

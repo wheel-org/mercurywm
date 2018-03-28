@@ -1,6 +1,6 @@
 /* @flow */
 
-import Constants, { createDirectory } from 'constants.js';
+import Constants, {createDirectory} from 'constants.js';
 import { getDirectory } from 'utils';
 
 import type { StoreState } from 'types';

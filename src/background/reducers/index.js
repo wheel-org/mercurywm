@@ -1,24 +1,24 @@
 /* @flow */
 
 import u from 'updeep';
+import { executeCommand } from 'background/commands';
+import { clear, save } from 'background/storage';
+import Constants, {
+  createDirectory,
+  createFile,
+  createWorkspace
+} from 'constants.js';
 import {
-  getFile,
-  getDirectory,
   findWindow,
+  getBorderingBottom,
   getBorderingLeft,
   getBorderingRight,
   getBorderingTop,
-  getBorderingBottom
+  getDirectory,
+  getFile
 } from 'utils';
-import { executeCommand } from 'background/commands';
-import { save, clear } from 'background/storage';
-import Constants, {
-  createFile,
-  createDirectory,
-  createWorkspace
-} from 'constants.js';
 
-import type { StoreState, Action, Terminal, Directory } from 'types';
+import type { Action, Directory, StoreState, Terminal } from 'types';
 
 function pushArrayElement<T>(element: T): (Array<T>) => Array<T> {
   return (array: Array<T>) => [...array, element];
@@ -246,9 +246,12 @@ const rootReducer = function(state: StoreState, action: Action): StoreState {
               );
             } else {
               // File not found: create
-              return u({
-                data: dirData => [...dirData, createFile(fileName, contents)]
-              }, parentDir);
+              return u(
+                {
+                  data: dirData => [...dirData, createFile(fileName, contents)]
+                },
+                parentDir
+              );
             }
           }
         )

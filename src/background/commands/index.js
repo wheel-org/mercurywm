@@ -1,20 +1,19 @@
 /* @flow */
 
-import u from 'updeep';
-import Constants from 'constants.js';
+import { clear } from 'background/storage';
 import { findWindow } from 'utils';
-import { clear } from '../storage';
 import cat from './cat';
 import cd from './cd';
 import env from './env';
 import kill from './kill';
 import ls from './ls';
 import mkdir from './mkdir';
-import window from './window';
 import rm from './rm';
+import window from './window';
 import workspace from './workspace';
+import Constants from 'constants.js';
 
-import type { StoreState, Directory } from 'types';
+import type { StoreState } from 'types';
 
 // Parse input into command and parameters
 function parseInput(text): Array<string> {
