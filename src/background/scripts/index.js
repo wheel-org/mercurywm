@@ -38,9 +38,15 @@ function Script(command): ScriptType {
     windowID,
     currentWindow,
     currentPath: currentWindow.terminal.workingDirectory,
-    getFile,
-    getDirectory,
-    getPath,
+    getFile: function(filePath: string, currentPath: string = '~') {
+      return getFile(filePath, store.getState().wfs, currentPath);
+    },
+    getDirectory: function(filePath: string, currentPath: string = '~') {
+      return getDirectory(filePath, store.getState().wfs, currentPath);
+    },
+    getPath: function(path: string, currentPath: string = '~') {
+      return getPath(path, store.getState().wfs, currentPath);
+    },
     output: function(text, showPrompt = false, showCommand = true) {
       store.dispatch({
         type: 'ADD_COMMAND',
@@ -86,7 +92,7 @@ function Script(command): ScriptType {
     deleteWorkspace: (id: number) =>
       store.dispatch({ type: 'DELETE_WORKSPACE', id }),
     getFile: (path: string) => {
-      const file = getFile(path);
+      const file = getFile(path, store.getState().wfs);
       if (file) return file;
       // Backward compatibility
       return false;
@@ -119,13 +125,13 @@ export default function executeScript(
   const [name, ...params] = parseInput(input);
   const script = new Script(name);
 
-  const binFile = getFile('~/.bin/' + name);
+  const binFile = getFile('~/.bin/' + name, store.getState().wfs);
   if (binFile) {
     // $FlowFixMe: Flow doesn't like function objects
     const binFunc = new Function('script', 'args', 'resolve', binFile.data);
     try {
       Async(binFunc, script, params, callback);
-    } catch(e) {
+    } catch (e) {
       script.output('Error: ' + e);
       script.exec('kill ' + script.windowID);
     }

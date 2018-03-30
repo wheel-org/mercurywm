@@ -13,6 +13,9 @@ import App from './app.jsx';
 import Loading from './loading.jsx';
 import Constants from 'constants.js';
 import { getFile } from 'utils';
+// This is only here because getDirectory needs the file system is a parameter
+// For other state needs, use connect!
+import store from 'mercury/store';
 
 import type { StoreState, Dispatch } from 'types';
 
@@ -85,7 +88,7 @@ class Root extends React.Component<Props> {
     } else if (command === 'env') {
       this.props.setEnv(message.key, message.value);
     } else if (command === 'requestFile') {
-      const result = getFile(message.path);
+      const result = getFile(message.path, store.getState().wfs);
       const contents = result ? result.data : '';
       event.source.postMessage(
         JSON.stringify({ type: 'file', path: message.path, contents }),

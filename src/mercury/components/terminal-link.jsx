@@ -6,6 +6,9 @@ import { connect } from 'react-redux';
 import Terminal from './terminal.jsx';
 import Constants from 'constants.js';
 import { getDirectory } from 'utils';
+// This is only here because getDirectory needs the file system is a parameter
+// For other state needs, use connect!
+import store from 'mercury/store';
 
 import type {
   StoreState,
@@ -209,7 +212,8 @@ class TerminalLink extends React.Component<Props, State> {
         const lastWord = words[words.length - 1];
         // Grab Matches
         const workingDirectory = getDirectory(
-          this.props.terminal.workingDirectory
+          this.props.terminal.workingDirectory,
+          store.getState().wfs
         );
         // Guaranteed to exist since we're in the directory
         if (!workingDirectory) return;

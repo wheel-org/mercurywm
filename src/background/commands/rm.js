@@ -13,9 +13,9 @@ export default function rm(state: StoreState, params: Array<string>) {
   if (params.length === 1) {
     const path = getPath(params[0], this.terminal.workingDirectory);
 
-    if (getFile(path)) {
+    if (getFile(path, state.wfs)) {
       this.deleteFile(path);
-    } else if (getDirectory(path)) {
+    } else if (getDirectory(path, state.wfs)) {
       this.deleteDirectory(path);
     } else {
       this.output(params[0] + ' was not found');
@@ -24,13 +24,13 @@ export default function rm(state: StoreState, params: Array<string>) {
     const path = getPath(params[1], this.terminal.workingDirectory);
 
     if (params[0] === '-f') {
-      if (getFile(path)) {
+      if (getFile(path, state.wfs)) {
         this.deleteFile(path);
       } else {
         this.output('File ' + params[1] + ' was not found');
       }
     } else if (params[0] === '-d') {
-      if (getDirectory(path)) {
+      if (getDirectory(path, state.wfs)) {
         this.deleteDirectory(path);
       } else {
         this.output('Directory ' + params[1] + ' was not found');

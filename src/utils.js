@@ -1,11 +1,9 @@
 /* @flow */
 
-import store from 'background/store';
-
 import type { Directory, File, StoreState, Window } from 'types';
 
-function getStack(path: string): Array<File | Directory> {
-  const stack = [store.getState().wfs];
+function getStack(path: string, wfs: Directory): Array<File | Directory> {
+  const stack = [wfs];
   const splitPath = path.split('/');
 
   for (let i = 0; i < splitPath.length; i++) {
@@ -36,8 +34,12 @@ function getStack(path: string): Array<File | Directory> {
   return stack;
 }
 
-export function getFile(filePath: string, currentPath: string = '~'): ?File {
-  const top = getStack(currentPath + '/' + filePath).pop();
+export function getFile(
+  filePath: string,
+  wfs: Directory,
+  currentPath: string = '~'
+): ?File {
+  const top = getStack(currentPath + '/' + filePath, wfs).pop();
   if (top && top.type === 'file') {
     // Needs to be a file
     return top;
@@ -48,9 +50,10 @@ export function getFile(filePath: string, currentPath: string = '~'): ?File {
 
 export function getDirectory(
   filePath: string,
+  wfs: Directory,
   currentPath: string = '~'
 ): ?Directory {
-  const top = getStack(currentPath + '/' + filePath).pop();
+  const top = getStack(currentPath + '/' + filePath, wfs).pop();
   if (top && top.type === 'dir') {
     // Needs to be a directory
     return top;
@@ -59,8 +62,12 @@ export function getDirectory(
   return null;
 }
 
-export function getPath(path: string, currentPath: string = '~'): string {
-  const stack = getStack(path);
+export function getPath(
+  path: string,
+  wfs: Directory,
+  currentPath: string = '~'
+): string {
+  const stack = getStack(currentPath + '/' + path, wfs);
   return stack.map(item => item.name).join('/');
 }
 

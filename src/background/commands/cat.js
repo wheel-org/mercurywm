@@ -6,7 +6,11 @@ import type { StoreState } from 'types';
 
 export default function cat(state: StoreState, params: Array<string>) {
   if (params.length === 1) {
-    const navResult = getFile(params[0], this.terminal.workingDirectory);
+    const navResult = getFile(
+      params[0],
+      state.wfs,
+      this.terminal.workingDirectory
+    );
     if (!navResult) {
       this.output(params[0] + ' was not found');
     } else {
