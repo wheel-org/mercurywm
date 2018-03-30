@@ -78,24 +78,21 @@ class Root extends React.Component<Props> {
       return;
     }
 
-    const message = event.data;
-    const [command, ...parts] = event.data.split('|');
+    const message = JSON.parse(event.data);
+    const command = message.type;
     if (command === 'done') {
-      this.props.killScript(parseInt(parts[0]));
+      this.props.killScript(parseInt(message.id));
     } else if (command === 'env') {
-      this.props.setEnv(parts[0], parts[1]);
+      this.props.setEnv(message.key, message.value);
     } else if (command === 'requestFile') {
-      const result = getFile(message.substring(message.indexOf('|') + 1));
+      const result = getFile(message.path);
       const contents = result ? result.data : '';
-      event.source.postMessage('file|' + contents, event.origin);
-    } else if (command === 'writeFile') {
-      this.props.createOrModifyFile(
-        parts[0],
-        message
-          .split('|')
-          .slice(2)
-          .join('|')
+      event.source.postMessage(
+        JSON.stringify({ type: 'file', path: message.path, contents }),
+        event.origin
       );
+    } else if (command === 'writeFile') {
+      this.props.createOrModifyFile(message.path, message.content);
     }
   }
 }

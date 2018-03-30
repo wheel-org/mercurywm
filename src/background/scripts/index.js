@@ -123,7 +123,12 @@ export default function executeScript(
   if (binFile) {
     // $FlowFixMe: Flow doesn't like function objects
     const binFunc = new Function('script', 'args', 'resolve', binFile.data);
-    Async(binFunc, script, params, callback);
+    try {
+      Async(binFunc, script, params, callback);
+    } catch(e) {
+      script.output('Error: ' + e);
+      script.exec('kill ' + script.windowID);
+    }
   } else if (isScript(name)) {
     Async(require('./' + name).default, script, params, callback);
   } else {
