@@ -20,7 +20,7 @@ const initialState: StorageState = {
   }
 };
 
-const store: Store = createStore(reducer, initialState);
+const store: Store = createStore(reducer, initialState[Constants.STATE_KEY]);
 
 chrome.storage.local.get(Constants.STATE_KEY, (data: StorageState) => {
   store.dispatch({

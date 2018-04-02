@@ -37,12 +37,12 @@ class Root extends React.Component<Props> {
   componentWillMount() {
     window.addEventListener(
       'keydown',
-      (e: KeyboardEvent) => this._handleSystemKey(e),
+      (e: KeyboardEvent) => this.handleSystemKey(e),
       true
     );
     window.addEventListener(
       'message',
-      (e: MessageEvent) => this._receiveMessage(e),
+      (e: MessageEvent) => this.receiveMessage(e),
       false
     );
   }
@@ -51,7 +51,7 @@ class Root extends React.Component<Props> {
     return this.props.loaded ? <App /> : <Loading />;
   }
 
-  _handleSystemKey(e: KeyboardEvent) {
+  handleSystemKey(e: KeyboardEvent) {
     if (
       (e.keyCode === Constants.KEY_LEFT_ARROW ||
         e.keyCode === Constants.KEY_RIGHT_ARROW) &&
@@ -73,7 +73,7 @@ class Root extends React.Component<Props> {
     }
   }
 
-  _receiveMessage(event: MessageEvent) {
+  receiveMessage(event: MessageEvent) {
     if (
       event.origin + '/' !== Constants.MERCURYWM_CONTENT_ORIGIN ||
       typeof event.data !== 'string'
