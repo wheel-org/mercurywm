@@ -36,7 +36,6 @@ function editFilesystem(
   parts: Array<string>,
   callback: (Directory, string) => Directory
 ): Directory {
-  // TODO: is this a hack?
   if (parts.length > 0 && parts[0] === '~') {
     // Remove root directory
     parts.shift();
@@ -372,7 +371,6 @@ const rootReducer = function(state: StoreState, action: Action): StoreState {
         )
       );
 
-    // TODO: move the logic out to the function using it and call SELECT_WORKSPACE?
     case 'INTENT_SELECT_WORKSPACE': {
       let currentWorkspace = state.selectedWorkspace;
       if (action.direction === Constants.KEY_LEFT_ARROW) {
@@ -393,7 +391,6 @@ const rootReducer = function(state: StoreState, action: Action): StoreState {
       };
     }
 
-    // TODO: same issue as INTENT_SELECT_WORKSPACE
     case 'INTENT_SELECT_WINDOW': {
       const currentWindows = state.workspaces[state.selectedWorkspace].windows;
       let result;

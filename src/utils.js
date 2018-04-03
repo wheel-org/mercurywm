@@ -101,7 +101,6 @@ function borderingComp(
         if (containsComp(a, b) || !isStrict) {
           borderingWindows.push(i);
         } else if (!containedComp(a, b)) {
-          // TODO: check logic of this else if statement
           return [];
         }
       }

@@ -9,7 +9,6 @@ const reducer = (state: StoreState, action: Action) => {
     return { ...action.data };
   }
 
-  // TODO: is this check necessary?
   if (state.loaded) {
     // Send action to background
     dispatchToBackground(action);
