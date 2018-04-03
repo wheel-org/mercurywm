@@ -34,7 +34,8 @@ function setupFile() {
 
   script.output('Retrieving latest Mercury Module Manager (mmm)...');
   script.output('====================================');
-  const mmmUrl = 'https://wheel-org.github.io/mercurywm-scripts/modules/mmm/';
+  // $FlowFixMe: MERCURYWM_URL will be set by webpack
+  const mmmUrl = process.env.MERCURYWM_URL + 'modules/mmm/';
   getData(mmmUrl + 'VERSION').then(version => {
     getData(mmmUrl + version + '/main.js').then(code => {
       // $FlowFixMe: "Function" isn't callable

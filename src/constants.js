@@ -2,11 +2,6 @@
 
 import type { Directory, File, Terminal, Window, Workspace } from 'types';
 
-const MERCURYWM_URL =
-  process.env.NODE_ENV === 'production'
-    ? 'https://wheel-org.github.io/mercurywm-scripts/'
-    : 'http://127.0.0.1:8080/';
-
 /* Constants */
 const Constants = {
   NAME: 'Mercury WM',
@@ -15,8 +10,9 @@ const Constants = {
   DIR_TYPE: 'dir',
   FILE_TYPE: 'file',
   EXE_TYPE: 'exe',
-  MERCURYWM_CONTENT_URL: MERCURYWM_URL + 'extensions/',
-  MERCURYWM_CONTENT_ORIGIN: MERCURYWM_URL,
+  // $FlowFixMe: MERCURYWM_URL will be set by webpack
+  MERCURYWM_CONTENT_URL: process.env.MERCURYWM_URL + 'extensions/',
+  MERCURYWM_CONTENT_ORIGIN: process.env.MERCURYWM_URL,
 
   // KEY CODES
   KEY_LEFT_ARROW: 37,

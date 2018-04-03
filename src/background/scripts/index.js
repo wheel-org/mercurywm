@@ -141,10 +141,11 @@ export default function executeScript(
     const path = Constants.MERCURYWM_CONTENT_URL + name + '/index.html';
     fetch(path)
       .then(response => {
-        script.runExtension(name, params);
+        if (response.ok) script.runExtension(name, params);
+        else throw 'Unrecognized command';
       })
       .catch(error => {
-        script.output('Unrecognized command');
+        script.output(error);
         script.exec('kill ' + script.windowID);
       });
   }

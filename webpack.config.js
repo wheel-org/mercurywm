@@ -58,14 +58,18 @@ if (process.env.NODE_ENV === 'production') {
       }
     }),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production')
+      'process.env.NODE_ENV': JSON.stringify('production'),
+      'process.env.MERCURYWM_URL': JSON.stringify(
+        'https://wheel-org.github.io/mercurywm-scripts/'
+      )
     })
   );
 } else {
   config.devtool = '#cheap-module-source-map';
   config.plugins.push(
     new webpack.DefinePlugin({
-      'process.env.UPDEEP_MODE': JSON.stringify('dangerously_never_freeze')
+      'process.env.UPDEEP_MODE': JSON.stringify('dangerously_never_freeze'),
+      'process.env.MERCURYWM_URL': JSON.stringify('http://127.0.0.1:8080/')
     })
   );
 }
