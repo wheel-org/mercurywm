@@ -8,23 +8,23 @@ let script: {
 
 let resolve: any => void;
 
-function getData(url) {
-  return fetch(url).then(res => res.text());
-}
-
-function createMan(command, desc, usage) {
-  script.output('Creating manpage for ' + command);
-  let s = '## ' + command;
-  if (desc.length > 0) {
-    s += '\n\n' + desc;
+function setupFile(script, args, resolve) {
+  function getData(url) {
+    return fetch(url).then(res => res.text());
   }
-  if (usage.length > 0) {
-    s += '\n\nUsage: ' + usage.reduce((acc, val) => acc + '\n\n' + val);
-  }
-  script.writeFile('~/.man/' + command, s);
-}
 
-function setupFile() {
+  function createMan(command, desc, usage) {
+    script.output('Creating manpage for ' + command);
+    let s = '## ' + command;
+    if (desc.length > 0) {
+      s += '\n\n' + desc;
+    }
+    if (usage.length > 0) {
+      s += '\n\nUsage: ' + usage.reduce((acc, val) => acc + '\n\n' + val);
+    }
+    script.writeFile('~/.man/' + command, s);
+  }
+
   script.output('Setting up man directory...');
   script.output('====================================');
   script.exec('cd');
@@ -115,8 +115,6 @@ function setupFile() {
   });
 }
 
-export default getData.toString() +
-  createMan.toString() +
-  '(' +
+export default '(' +
   setupFile.toString() +
-  ')(); return true;';
+  ')(script, args, resolve); return true;';
