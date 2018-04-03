@@ -56,10 +56,18 @@ if (process.env.NODE_ENV === 'production') {
         warnings: false,
         drop_console: true
       }
+    }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('production')
     })
   );
 } else {
   config.devtool = '#cheap-module-source-map';
+  config.plugins.push(
+    new webpack.DefinePlugin({
+      'process.env.UPDEEP_MODE': JSON.stringify('dangerously_never_freeze')
+    })
+  );
 }
 
 module.exports = config;
