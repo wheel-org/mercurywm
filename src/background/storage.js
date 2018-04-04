@@ -43,8 +43,9 @@ function load(callback: StoreState => void) {
 }
 
 function clear() {
+  // Need to deep copy default state
   const newState = {
-    ...defaultStateObject[Constants.STATE_KEY],
+    ...JSON.parse(JSON.stringify(defaultStateObject[Constants.STATE_KEY])),
     loaded: true
   };
   chrome.storage.local.set({ [Constants.STATE_KEY]: newState });
