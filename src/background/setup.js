@@ -20,7 +20,7 @@ function setupFile(script, args, resolve) {
       s += '\n\n' + desc;
     }
     if (usage.length > 0) {
-      s += '\n\nUsage: ' + usage.reduce((acc, val) => acc + '\n\n' + val);
+      s += '\n\nUsage:\n' + usage.join('\n');
     }
     script.writeFile('~/.man/' + command, s);
   }
@@ -105,6 +105,10 @@ function setupFile(script, args, resolve) {
         'rm [file] - Removes file or directory',
         'rm -f [file] - Removes file',
         'rm -d [file] - Removes directory'
+      ]);
+      createMan('backup', '', [
+        'backup save - Writes a backup of the current state of Mercury into the console',
+        'backup restore - Restores Mercury from a backup created by "backup save"'
       ]);
       script.exec('cd ..');
       script.output('====================================');

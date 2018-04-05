@@ -2,15 +2,6 @@
 
 import { clear } from 'background/storage';
 import { findWindow } from 'utils';
-import cat from './cat';
-import cd from './cd';
-import env from './env';
-import kill from './kill';
-import ls from './ls';
-import mkdir from './mkdir';
-import rm from './rm';
-import window from './window';
-import workspace from './workspace';
 import Constants from 'constants.js';
 
 import type { StoreState } from 'types';
@@ -76,6 +67,7 @@ function Command(state, command, params) {
 
 export function isCommand(name: string) {
   const names = [
+    'backup',
     'cat',
     'cd',
     'clear',
