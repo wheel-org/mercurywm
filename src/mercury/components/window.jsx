@@ -27,8 +27,73 @@ type Props = {|
 class Window extends React.Component<Props> {
   cacheParamValue = Date.now();
 
+  renderFile() {
+    const { window, env } = this.props;
+    return (
+      <iframe
+        className="window-frame"
+        src={chrome.runtime.getURL(
+          'render.html?runningCommand=' +
+            window.terminal.runningCommand +
+            '&workingDirectory=' +
+            window.terminal.workingDirectory +
+            '&cache=' +
+            this.cacheParamValue +
+            '&id=' +
+            window.id +
+            '&env=' +
+            encodeURIComponent(JSON.stringify(env)) +
+            '&params=' +
+            encodeURIComponent(JSON.stringify(window.terminal.params))
+        )}
+      />
+    );
+  }
+
+  renderExtension() {
+    const { window, env } = this.props;
+    return (
+      <iframe
+        className="window-frame"
+        src={
+          Constants.MERCURYWM_CONTENT_URL +
+          window.terminal.runningCommand +
+          '/index.html?workingDirectory=' +
+          window.terminal.workingDirectory +
+          '&cache=' +
+          this.cacheParamValue +
+          '&id=' +
+          window.id +
+          '&env=' +
+          encodeURIComponent(JSON.stringify(env)) +
+          '&params=' +
+          encodeURIComponent(JSON.stringify(window.terminal.params))
+        }
+      />
+    );
+  }
+
+  renderTerminal() {
+    const { window, index, selected } = this.props;
+    return (
+      <span>
+        <div className={'window' + (selected ? ' selected' : ' ')}>
+          <TerminalLink terminal={window.terminal} selected={selected} />
+        </div>
+        <div className="window-info">
+          <span>
+            {index} ({window.id})
+          </span>
+          <span style={{ float: 'right' }}>
+            {window.x}, {window.y}, {window.width}, {window.height}
+          </span>
+        </div>
+      </span>
+    );
+  }
+
   render() {
-    const { window, index, selected, onClick, env } = this.props;
+    const { window, onClick } = this.props;
 
     return (
       <div
@@ -41,40 +106,11 @@ class Window extends React.Component<Props> {
           top: window.y + '%'
         }}
       >
-        {window.terminal.isExtension ? (
-          <iframe
-            className="window-frame"
-            src={
-              Constants.MERCURYWM_CONTENT_URL +
-              window.terminal.runningCommand +
-              '/index.html' +
-              '?workingDirectory=' +
-              window.terminal.workingDirectory +
-              '&cache=' +
-              this.cacheParamValue +
-              '&id=' +
-              window.id +
-              '&env=' +
-              encodeURIComponent(JSON.stringify(env)) +
-              '&params=' +
-              encodeURIComponent(JSON.stringify(window.terminal.params))
-            }
-          />
-        ) : (
-          <span>
-            <div className={'window' + (selected ? ' selected' : ' ')}>
-              <TerminalLink terminal={window.terminal} selected={selected} />
-            </div>
-            <div className="window-info">
-              <span>
-                {index} ({window.id})
-              </span>
-              <span style={{ float: 'right' }}>
-                {window.x}, {window.y}, {window.width}, {window.height}
-              </span>
-            </div>
-          </span>
-        )}
+        {window.terminal.isExtension
+          ? window.terminal.runningCommand === 'render'
+            ? this.renderFile()
+            : this.renderExtension()
+          : this.renderTerminal()}
       </div>
     );
   }

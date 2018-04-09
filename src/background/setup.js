@@ -110,6 +110,11 @@ function setupFile(script, args, resolve) {
         'backup save - Writes a backup of the current state of Mercury into the console',
         'backup restore - Restores Mercury from a backup created by "backup save"'
       ]);
+      createMan('render', '', [
+        'render - Renders nothing (Makes the window blank)',
+        'render [HTML filepath] - Renders the HTML file',
+        'render [HTML filepath] [JS filepath] - Renders the HTML file and executes the JS file'
+      ]);
       script.exec('cd ..');
       script.output('====================================');
       script.output('\n');

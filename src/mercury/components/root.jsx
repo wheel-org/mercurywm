@@ -17,7 +17,12 @@ import { getFile } from 'utils';
 // For other state needs, use connect!
 import store from 'mercury/store';
 
-import type { StoreState, Dispatch } from 'types';
+import type {
+  StoreState,
+  Dispatch,
+  ExtensionMessage,
+  ExtensionResponse
+} from 'types';
 
 type StateProps = {|
   +loaded: boolean
@@ -75,28 +80,35 @@ class Root extends React.Component<Props> {
 
   receiveMessage(event: MessageEvent) {
     if (
-      event.origin + '/' !== Constants.MERCURYWM_CONTENT_ORIGIN ||
+      (event.origin + '/' !== chrome.runtime.getURL('/') &&
+        event.origin + '/' !== Constants.MERCURYWM_CONTENT_ORIGIN) ||
       typeof event.data !== 'string'
     ) {
       return;
     }
 
-    const message = JSON.parse(event.data);
-    const command = message.type;
-    if (command === 'done') {
-      this.props.killScript(parseInt(message.id));
-    } else if (command === 'env') {
-      this.props.setEnv(message.key, message.value);
-    } else if (command === 'requestFile') {
-      const result = getFile(message.path, store.getState().wfs);
-      const contents = result ? result.data : '';
-      event.source.postMessage(
-        JSON.stringify({ type: 'file', path: message.path, contents }),
-        event.origin
-      );
-    } else if (command === 'writeFile') {
-      this.props.createOrModifyFile(message.path, message.content);
+    const message: ExtensionMessage = JSON.parse(event.data);
+    switch (message.type) {
+      case 'done':
+        this.props.killScript(parseInt(message.id));
+        break;
+      case 'env':
+        this.props.setEnv(message.key, message.value);
+        break;
+      case 'requestFile': {
+        const result = getFile(message.path, store.getState().wfs);
+        const contents = result ? result.data : '';
+        this.sendMessage(event, { type: 'file', path: message.path, contents });
+        break;
+      }
+      case 'writeFile':
+        this.props.createOrModifyFile(message.path, message.content);
+        break;
     }
+  }
+
+  sendMessage(event: MessageEvent, message: ExtensionResponse) {
+    event.source.postMessage(JSON.stringify(message), event.origin);
   }
 }
 

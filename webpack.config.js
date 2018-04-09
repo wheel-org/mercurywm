@@ -4,7 +4,8 @@ const webpack = require('webpack');
 const config = {
   entry: {
     main: './src/mercury/index.jsx',
-    background: './src/background/index.js'
+    background: './src/background/index.js',
+    render: './src/render/index.js'
   },
   output: {
     path: path.resolve(__dirname, 'build'),

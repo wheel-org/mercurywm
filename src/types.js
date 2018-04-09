@@ -135,3 +135,31 @@ export type Script = {|
 |};
 
 export type Command = (script: Script, params: Array<string>) => void;
+
+// Message send by extension to Mercury
+export type ExtensionMessage =
+  | {|
+      +type: 'done',
+      +id: string
+    |}
+  | {|
+      +type: 'env',
+      +key: string,
+      +value: string
+    |}
+  | {|
+      +type: 'requestFile',
+      +path: string
+    |}
+  | {|
+      +type: 'writeFile',
+      +path: string,
+      +content: string
+    |};
+
+// Response message from Mercury to extension
+export type ExtensionResponse = {|
+  +type: 'file',
+  +path: string,
+  +contents: string
+|};
