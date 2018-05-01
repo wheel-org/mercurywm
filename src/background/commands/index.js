@@ -71,6 +71,7 @@ export function isCommand(name: string) {
         'ls',
         'mkdir',
         'render',
+        'reload',
         'reset',
         'rm',
         'window',
