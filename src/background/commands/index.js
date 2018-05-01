@@ -74,7 +74,8 @@ export function isCommand(name: string) {
         'reset',
         'rm',
         'window',
-        'workspace'
+        'workspace',
+        'info'
     ];
     return names.find(n => n === name);
 }
