@@ -1,66 +1,76 @@
+/* @flow */
+
+import type { Directory, File, Terminal, Window, Workspace } from 'types';
+
 /* Constants */
 const Constants = {
-	// CONSTANTS
-	NAME: 'Mercury WM',
-	VERSION: '1.1',
-    STATE_KEY: 'state',
-    DIR_TYPE: 'dir',
-    FILE_TYPE: 'file',
-    EXE_TYPE: 'exe',
-    MERCURYWM_CONTENT_URL: 'https://wheel-org.github.io/mercurywm-scripts/extensions/',
-    MERCURYWM_CONTENT_ORIGIN: 'https://wheel-org.github.io/',
+  NAME: 'Mercury WM',
+  VERSION: '1.1',
+  STATE_KEY: 'state',
+  DIR_TYPE: 'dir',
+  FILE_TYPE: 'file',
+  EXE_TYPE: 'exe',
+  // $FlowFixMe: MERCURYWM_URL will be set by webpack
+  MERCURYWM_CONTENT_URL: process.env.MERCURYWM_URL + 'extensions/',
+  MERCURYWM_CONTENT_ORIGIN: process.env.MERCURYWM_URL,
 
-    // KEY CODES
-    KEY_LEFT_ARROW: 37,
-    KEY_UP_ARROW: 38,
-    KEY_RIGHT_ARROW: 39,
-    KEY_DOWN_ARROW: 40,
-    KEY_ENTER: 13,
-	KEY_BACKSPACE: 8,
-	KEY_DELETE: 46,
-    KEY_TAB: 9
+  // KEY CODES
+  KEY_LEFT_ARROW: 37,
+  KEY_UP_ARROW: 38,
+  KEY_RIGHT_ARROW: 39,
+  KEY_DOWN_ARROW: 40,
+  KEY_ENTER: 13,
+  KEY_BACKSPACE: 8,
+  KEY_DELETE: 46,
+  KEY_TAB: 9
 };
 export default Constants;
 
 /* Components */
-
-export const createTerminal = () => ({
-    history: [''],
-    inProg: false,
-    output: [],
-    runningCommand: '',
-    params: [],
-    workingDirectory: '~'
+export const createTerminal = (): Terminal => ({
+  history: [''],
+  running: false,
+  isExtension: false,
+  output: [],
+  runningCommand: '',
+  params: [],
+  workingDirectory: '~'
 });
 
-export const createWindow = (x, y, width, height, id) => ({
-    x,
-    y,
-    width,
-    height,
-    id,
-    terminal: createTerminal()
+export const createWindow = (
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  id: number
+): Window => ({
+  x,
+  y,
+  width,
+  height,
+  id,
+  terminal: createTerminal()
 });
 
-export const createWorkspace = id => ({
-    windows: [createWindow(0, 0, 100, 100, id)]
+export const createWorkspace = (
+  id: number,
+  windows: Array<Window> = [createWindow(0, 0, 100, 100, id)]
+): Workspace => ({
+  windows
 });
 
 /* File System */
-
-export const createDirectory = (name, data = []) => ({
-    type: Constants.DIR_TYPE,
-    name,
-    data
+export const createDirectory = (
+  name: string,
+  data: Array<File | Directory> = []
+): Directory => ({
+  type: Constants.DIR_TYPE,
+  name,
+  data
 });
 
-export const createFile = (name, data = '') => ({
-    type: Constants.FILE_TYPE,
-    name,
-    data
-});
-
-export const createAlias = (alias, command) => ({
-    alias,
-    command
+export const createFile = (name: string, data: string = ''): File => ({
+  type: Constants.FILE_TYPE,
+  name,
+  data
 });

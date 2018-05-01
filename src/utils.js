@@ -1,162 +1,170 @@
-import Constants from './constants';
-import { createFile } from './constants';
+/* @flow */
 
-export function getDirectory(directory, currDir) {
+import type { Directory, File, StoreState, Window } from 'types';
 
-    const parts = directory.split('/');
-    let dirStack = [currDir];
-    for (let i = 0; i < parts.length; i++) {
-        if (parts[i] === '..') {
-            if (dirStack.length !== 1) {
-                dirStack.pop();
-            }
-        }
-        else if (parts[i] === '~') {
-            // Go Back to Root
-            dirStack = dirStack.slice(0, 1);
-        }
-        else if (parts !== '' && parts !== '.') {
-            const next = currDir.data.find(element => element.name === parts[i] && element.type === Constants.DIR_TYPE);
-            if (next) {
-                dirStack.push(next);
-            }
-            else {
-                return false;
-            }
-        }
-        currDir = dirStack[dirStack.length - 1];
+function getStack(path: string, wfs: Directory): Array<File | Directory> {
+  const stack = [wfs];
+  const splitPath = path.split('/');
+
+  for (let i = 0; i < splitPath.length; i++) {
+    const name = splitPath[i];
+    if (name === '~') {
+      // Back to root
+      stack.splice(1);
+    } else if (name === '..') {
+      // Go up to parent
+      if (stack.length > 1) {
+        stack.pop();
+      }
+    } else if (name !== '.') {
+      // '.' is same directory
+      const top = stack.slice(-1)[0];
+      // Find if name exists within the current directory
+      if (top.type === 'dir') {
+        const next = top.data.find(child => child.name === name);
+        if (!next) return []; // Child doesn't exists
+        stack.push(next);
+      } else {
+        // Not a directory
+        return [];
+      }
     }
-    let path = '';
-    for (let i = 0; i < dirStack.length; i++) {
-        if (i !== 0) path += '/';
-        path += dirStack[i].name;
-    }
-    return [currDir, path];
+  }
+
+  return stack;
 }
 
-export function getFile(path, currDir) {
-    const end = path.lastIndexOf('/');
-    if (end > -1) {
-        const parts = path.split('/');
-        const filename = parts[parts.length - 1];
-        const containingDirRes = getDirectory(path.substring(0, end), currDir);
+export function getFile(
+  filePath: string,
+  wfs: Directory,
+  currentPath: string = '~'
+): ?File {
+  const top = getStack(currentPath + '/' + filePath, wfs).pop();
+  if (top && top.type === 'file') {
+    // Needs to be a file
+    return top;
+  }
 
-        if (containingDirRes) {
-            const [containingDir, containingPath] = containingDirRes;
-            for (let j = 0; j < containingDir.data.length; j++) {
-                if (containingDir.data[j].type === Constants.FILE_TYPE && containingDir.data[j].name === filename) {
-                    return [containingDir.data[j], containingPath + '/' + filename];
-                }
-            }
-        }
-    }
-    return false;
+  return null;
 }
 
-export function createOrModifyFileAtPath(path, contents, wfs) {
-    let fileObject = getFile(path, wfs);
-    const parts = path.split("/");
-    if (fileObject === false) {
-        // Need to Create
-        let enclosingDir = getDirectory(path.substring(0, path.lastIndexOf("/")), wfs);
-        if (enclosingDir !== false) {
-            let newFile = createFile(parts[parts.length - 1]);
-            newFile.data = contents;
-            enclosingDir[0].data.push(newFile);
-        }
-    }
-    else {
-        fileObject[0].data = contents;
-    }
+export function getDirectory(
+  filePath: string,
+  wfs: Directory,
+  currentPath: string = '~'
+): ?Directory {
+  const top = getStack(currentPath + '/' + filePath, wfs).pop();
+  if (top && top.type === 'dir') {
+    // Needs to be a directory
+    return top;
+  }
+
+  return null;
 }
 
-export function findWindow(state, id) {
-    if (state.selectedWorkspace >= state.workspaces.length) {
-        return -1;
-    }
-    const windows = state.workspaces[state.selectedWorkspace].windows;
-    const index = windows.findIndex(w => w.id === id);
-    if (index !== undefined) return index;
+export function getPath(
+  path: string,
+  wfs: Directory,
+  currentPath: string = '~'
+): string {
+  const stack = getStack(currentPath + '/' + path, wfs);
+  return stack.map(item => item.name).join('/');
+}
+
+export function findWindow(state: StoreState, id: number) {
+  if (state.selectedWorkspace >= state.workspaces.length) {
     return -1;
-}
+  }
 
-function deleteObject(path, type, currDir) {
-    var containingDirRes = getDirectory(path.substring(0, path.lastIndexOf("/")), currDir);
-    var name = path.substring(path.lastIndexOf("/") + 1, path.length);
-    for (var j = 0; j < containingDirRes[0].data.length; j++) {
-        if (containingDirRes[0].data[j].name === name &&
-                containingDirRes[0].data[j].type == type) {
-            containingDirRes[0].data.splice(j, 1);
-        }
-    }
-}
-
-export function deleteDirectory(path, currDir) {
-    deleteObject(path, Constants.DIR_TYPE, currDir);
-}
-
-export function deleteFile(path, currDir) {
-    deleteObject(path, Constants.FILE_TYPE, currDir);
+  const windows = state.workspaces[state.selectedWorkspace].windows;
+  const index = windows.findIndex(w => w.id === id);
+  return index;
 }
 
 // the following commands either returns a list of windows that are exact
 //   borders of the given index, or false if there are none
-function borderingComp(index, windows, borderingComp, boundaryComp1, boundaryComp2, isStrict) {
-    let borderingWindows = [];
-    const a = windows[index];
-    for (let i = 0; i < windows.length; i++) {
-        if (i !== index) {
-            const b = windows[i];
-            if (borderingComp(a, b)) {
-                // Bordering
-                if (boundaryComp1(a, b) || !isStrict) {
-                    borderingWindows.push(i);
-                }
-                else if (!boundaryComp2(a, b)) {
-                    // Borders on edge but exceeds limit.
-                    return false;
-                }
-            }
+function borderingComp(
+  index,
+  windows,
+  borderingComp: (Window, Window) => boolean, // Next to window
+  containsComp: (Window, Window) => boolean, // Contains bordering window
+  containedComp: (Window, Window) => boolean, // Contained by bordering window
+  isStrict
+): Array<number> {
+  const borderingWindows = [];
+  const a = windows[index];
+  for (let i = 0; i < windows.length; i++) {
+    if (i !== index) {
+      const b = windows[i];
+      if (borderingComp(a, b)) {
+        // Bordering
+        if (containsComp(a, b) || !isStrict) {
+          borderingWindows.push(i);
+        } else if (!containedComp(a, b)) {
+          return [];
         }
+      }
     }
-    if (borderingWindows.length === 0) {
-        return false;
-    }
-    return borderingWindows;
+  }
+  return borderingWindows;
 }
 
-export function getBorderingLeft(index, windows, isStrict = true) {
-    return borderingComp(index, windows,
-        (a, b) => b.x + b.width === a.x,
-        (a, b) => b.y >= a.y && b.y + b.height <= a.y + a.height,
-        (a, b) => b.y >= a.y + a.height || b.y + b.height <= a.y,
-        isStrict
-    );
+export function getBorderingLeft(
+  index: number,
+  windows: Array<Window>,
+  isStrict: boolean = true
+) {
+  return borderingComp(
+    index,
+    windows,
+    (a, b) => b.x + b.width === a.x,
+    (a, b) => b.y >= a.y && b.y + b.height <= a.y + a.height,
+    (a, b) => b.y >= a.y + a.height || b.y + b.height <= a.y,
+    isStrict
+  );
 }
 
-export function getBorderingRight(index, windows, isStrict = true) {
-    return borderingComp(index, windows,
-        (a, b) => b.x === a.x + a.width,
-        (a, b) => b.y >= a.y && b.y + b.height <= a.y + a.height,
-        (a, b) => b.y >= a.y + a.height || b.y + b.height <= a.y,
-        isStrict
-    );
+export function getBorderingRight(
+  index: number,
+  windows: Array<Window>,
+  isStrict: boolean = true
+) {
+  return borderingComp(
+    index,
+    windows,
+    (a, b) => b.x === a.x + a.width,
+    (a, b) => b.y >= a.y && b.y + b.height <= a.y + a.height,
+    (a, b) => b.y >= a.y + a.height || b.y + b.height <= a.y,
+    isStrict
+  );
 }
 
-export function getBorderingTop(index, windows, isStrict = true) {
-    return borderingComp(index, windows,
-        (a, b) => b.y + b.height === a.y,
-        (a, b) => b.x >= a.x && b.x + b.width <= a.x + a.width,
-        (a, b) => b.x >= a.x + a.width || b.x + b.width <= a.x,
-        isStrict
-    );
+export function getBorderingTop(
+  index: number,
+  windows: Array<Window>,
+  isStrict: boolean = true
+) {
+  return borderingComp(
+    index,
+    windows,
+    (a, b) => b.y + b.height === a.y,
+    (a, b) => b.x >= a.x && b.x + b.width <= a.x + a.width,
+    (a, b) => b.x >= a.x + a.width || b.x + b.width <= a.x,
+    isStrict
+  );
 }
 
-export function getBorderingBottom(index, windows, isStrict = true) {
-    return borderingComp(index, windows,
-        (a, b) => b.y === a.y + a.height,
-        (a, b) => b.x >= a.x && b.x + b.width <= a.x + a.width,
-        (a, b) => b.x >= a.x + a.width || b.x + b.width <= a.x,
-        isStrict
-    );
+export function getBorderingBottom(
+  index: number,
+  windows: Array<Window>,
+  isStrict: boolean = true
+) {
+  return borderingComp(
+    index,
+    windows,
+    (a, b) => b.y === a.y + a.height,
+    (a, b) => b.x >= a.x && b.x + b.width <= a.x + a.width,
+    (a, b) => b.x >= a.x + a.width || b.x + b.width <= a.x,
+    isStrict
+  );
 }

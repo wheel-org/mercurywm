@@ -1,0 +1,16 @@
+[ignore]
+
+[include]
+
+[libs]
+node_modules/flow-interfaces-chrome/interfaces/
+
+[lints]
+
+[options]
+module.system.node.resolve_dirname=node_modules
+module.system.node.resolve_dirname=src
+suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe
+module.ignore_non_literal_requires=true
+
+[strict]

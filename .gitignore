@@ -1,6 +1,6 @@
 .DS_Store
 node_modules
 npm-debug.log
-build/main.js
-build/main.js.map
+build/*.js
+build/*.js.map
 package-lock.json
