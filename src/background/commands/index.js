@@ -8,98 +8,94 @@ import type { StoreState } from 'types';
 
 // Parse input into command and parameters
 function parseInput(text): Array<string> {
-  const tokens = text.trim().match(/[^\s"']+|"([^"]*)"|'([^']*)'/g);
-  if (tokens)
-    return tokens.map(t => t.replace(/^"|"$/g, '').replace(/^'|'$/g, ''));
-  return [];
+    const tokens = text.trim().match(/[^\s"']+|"([^"]*)"|'([^']*)'/g);
+    if (tokens) return tokens.map(t => t.replace(/^"|"$/g, '').replace(/^'|'$/g, ''));
+    return [];
 }
 
 function Command(state, command, params) {
-  this.windowIndex = findWindow(state, state.selectedWindow);
-  this.workspace = state.workspaces[state.selectedWorkspace];
-  this.currWindow = this.workspace.windows[this.windowIndex];
-  this.terminal = this.currWindow.terminal;
-  this.output = function(text, showPrompt = false, showCommand = true) {
-    this.terminal.output.push({
-      text: (showCommand ? command + ': ' : '') + text,
-      prompt: showPrompt ? this.terminal.workingDirectory : ''
-    });
-  };
-  this.traversePath = function(directory, parts, callback) {
-    if (parts.length > 0 && parts[0] === '~') {
-      // Remove root directory
-      parts.shift();
-    }
+    this.windowIndex = findWindow(state, state.selectedWindow);
+    this.workspace = state.workspaces[state.selectedWorkspace];
+    this.currWindow = this.workspace.windows[this.windowIndex];
+    this.terminal = this.currWindow.terminal;
+    this.output = function(text, showPrompt = false, showCommand = true) {
+        this.terminal.output.push({
+            text: (showCommand ? command + ': ' : '') + text,
+            prompt: showPrompt ? this.terminal.workingDirectory : ''
+        });
+    };
+    this.traversePath = function(directory, parts, callback) {
+        if (parts.length > 0 && parts[0] === '~') {
+            // Remove root directory
+            parts.shift();
+        }
 
-    const name = parts[0];
-    if (parts.length === 1) {
-      callback(directory, name);
-    } else {
-      const dirIndex = directory.data.findIndex(
-        item => item.type == Constants.DIR_TYPE && item.name === name
-      );
-      if (dirIndex >= 0) {
-        this.traversePath(directory.data[dirIndex], parts.slice(1), callback);
-      }
-    }
-  };
-  this.deleteFile = function(path) {
-    this.traversePath(state.wfs, path.split('/'), (directory, fileName) => {
-      const fileIndex = directory.data.findIndex(
-        item => item.type == Constants.FILE_TYPE && item.name === fileName
-      );
-      if (fileIndex >= 0) {
-        directory.data.splice(fileIndex, 1);
-      }
-    });
-  };
-  this.deleteDirectory = function(path) {
-    this.traversePath(state.wfs, path.split('/'), (directory, dirName) => {
-      const dirIndex = directory.data.findIndex(
-        item => item.type == Constants.DIR_TYPE && item.name === dirName
-      );
-      if (dirIndex >= 0) {
-        directory.data.splice(dirIndex, 1);
-      }
-    });
-  };
+        const name = parts[0];
+        if (parts.length === 1) {
+            callback(directory, name);
+        } else {
+            const dirIndex = directory.data.findIndex(item => item.type == Constants.DIR_TYPE && item.name === name);
+            if (dirIndex >= 0) {
+                this.traversePath(directory.data[dirIndex], parts.slice(1), callback);
+            }
+        }
+    };
+    this.deleteFile = function(path) {
+        this.traversePath(state.wfs, path.split('/'), (directory, fileName) => {
+            const fileIndex = directory.data.findIndex(
+                item => item.type == Constants.FILE_TYPE && item.name === fileName
+            );
+            if (fileIndex >= 0) {
+                directory.data.splice(fileIndex, 1);
+            }
+        });
+    };
+    this.deleteDirectory = function(path) {
+        this.traversePath(state.wfs, path.split('/'), (directory, dirName) => {
+            const dirIndex = directory.data.findIndex(item => item.type == Constants.DIR_TYPE && item.name === dirName);
+            if (dirIndex >= 0) {
+                directory.data.splice(dirIndex, 1);
+            }
+        });
+    };
 }
 
 export function isCommand(name: string) {
-  const names = [
-    'backup',
-    'cat',
-    'cd',
-    'clear',
-    'env',
-    'kill',
-    'ls',
-    'mkdir',
-    'render',
-    'reset',
-    'rm',
-    'window',
-    'workspace'
-  ];
-  return names.find(n => n === name);
+    const names = [
+        'backup',
+        'cat',
+        'cd',
+        'clear',
+        'env',
+        'kill',
+        'ls',
+        'mkdir',
+        'render',
+        'reset',
+        'rm',
+        'window',
+        'workspace'
+    ];
+    return names.find(n => n === name);
 }
 
 export function executeCommand(state: StoreState, input: string) {
-  const [name, ...params] = parseInput(input);
+    if (input === '') return state;
 
-  const command = new Command(state, name, params);
+    const [name, ...params] = parseInput(input);
 
-  if (name === 'reset') {
-    return clear();
-  } else if (name === 'clear') {
-    // $FlowFixMe: command can mutate state
-    command.terminal.output = [];
-    return state;
-  } else if (isCommand(name)) {
-    return require('./' + name).default.call(command, state, params);
-  } else {
-    // $FlowFixMe: command can mutate state
-    command.terminal.running = true;
-    return state;
-  }
+    const command = new Command(state, name, params);
+    if (name === 'reset') {
+        return clear();
+    } else if (name === 'clear') {
+        // $FlowFixMe: command can mutate state
+        command.terminal.output = [];
+        return state;
+    } else if (isCommand(name)) {
+        return require('./' + name).default.call(command, state, params);
+    } else if (name !== undefined) {
+        // $FlowFixMe: command can mutate state
+        command.terminal.running = true;
+        return state;
+    }
 }
