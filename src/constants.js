@@ -2,6 +2,8 @@
 
 import type { Directory, File, Terminal, Window, Workspace } from 'types';
 
+const MERCURY_BASE_URL = 'https://wheel-org.github.io/mercurywm-scripts/';
+
 /* Constants */
 const Constants = {
     NAME: 'Mercury WM',
@@ -10,9 +12,8 @@ const Constants = {
     DIR_TYPE: 'dir',
     FILE_TYPE: 'file',
     EXE_TYPE: 'exe',
-    MERCURYWM_URL: 'https://wheel-org.github.io/mercurywm-scripts/',
-    MERCURYWM_CONTENT_URL: MERCURYWM_URL + 'extensions/',
-    MERCURYWM_CONTENT_ORIGIN: MERCURYWM_URL,
+    MERCURYWM_URL: MERCURY_BASE_URL,
+    MERCURYWM_CONTENT_URL: MERCURY_BASE_URL + 'extensions/',
 
     // KEY CODES
     KEY_LEFT_ARROW: 37,

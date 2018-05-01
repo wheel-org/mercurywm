@@ -17,133 +17,115 @@ import { getFile } from 'utils';
 // For other state needs, use connect!
 import store from 'mercury/store';
 
-import type {
-  StoreState,
-  Dispatch,
-  ExtensionMessage,
-  ExtensionResponse
-} from 'types';
+import type { StoreState, Dispatch, ExtensionMessage, ExtensionResponse } from 'types';
 
 type StateProps = {|
-  +loaded: boolean
+    +loaded: boolean
 |};
 
 type DispatchProps = {|
-  +selectWorkspace: number => void,
-  +selectWindow: number => void,
-  +killScript: number => void,
-  +setEnv: (string, string) => void,
-  +createOrModifyFile: (string, string) => void
+    +selectWorkspace: number => void,
+    +selectWindow: number => void,
+    +killScript: number => void,
+    +setEnv: (string, string) => void,
+    +createOrModifyFile: (string, string) => void
 |};
 
 type Props = {| ...StateProps, ...DispatchProps |};
 
 class Root extends React.Component<Props> {
-  componentWillMount() {
-    window.addEventListener(
-      'keydown',
-      (e: KeyboardEvent) => this.handleSystemKey(e),
-      true
-    );
-    window.addEventListener(
-      'message',
-      (e: MessageEvent) => this.receiveMessage(e),
-      false
-    );
-  }
-
-  render() {
-    return this.props.loaded ? <App /> : <Loading />;
-  }
-
-  handleSystemKey(e: KeyboardEvent) {
-    if (
-      (e.keyCode === Constants.KEY_LEFT_ARROW ||
-        e.keyCode === Constants.KEY_RIGHT_ARROW) &&
-      e.altKey
-    ) {
-      e.preventDefault();
-      this.props.selectWorkspace(e.keyCode);
-    } else if (
-      [
-        Constants.KEY_LEFT_ARROW,
-        Constants.KEY_RIGHT_ARROW,
-        Constants.KEY_UP_ARROW,
-        Constants.KEY_DOWN_ARROW
-      ].indexOf(e.keyCode) > -1 &&
-      e.shiftKey
-    ) {
-      e.preventDefault();
-      this.props.selectWindow(e.keyCode);
-    }
-  }
-
-  receiveMessage(event: MessageEvent) {
-    if (
-      (event.origin + '/' !== chrome.runtime.getURL('/') &&
-        event.origin + '/' !== Constants.MERCURYWM_CONTENT_ORIGIN) ||
-      typeof event.data !== 'string'
-    ) {
-      return;
+    componentWillMount() {
+        window.addEventListener('keydown', (e: KeyboardEvent) => this.handleSystemKey(e), true);
+        window.addEventListener('message', (e: MessageEvent) => this.receiveMessage(e), false);
     }
 
-    const message: ExtensionMessage = JSON.parse(event.data);
-    switch (message.type) {
-      case 'done':
-        this.props.killScript(parseInt(message.id));
-        break;
-      case 'env':
-        this.props.setEnv(message.key, message.value);
-        break;
-      case 'requestFile': {
-        const result = getFile(message.path, store.getState().wfs);
-        const contents = result ? result.data : '';
-        this.sendMessage(event, { type: 'file', path: message.path, contents });
-        break;
-      }
-      case 'writeFile':
-        this.props.createOrModifyFile(message.path, message.content);
-        break;
+    render() {
+        return this.props.loaded ? <App /> : <Loading />;
     }
-  }
 
-  sendMessage(event: MessageEvent, message: ExtensionResponse) {
-    event.source.postMessage(JSON.stringify(message), event.origin);
-  }
+    handleSystemKey(e: KeyboardEvent) {
+        if ((e.keyCode === Constants.KEY_LEFT_ARROW || e.keyCode === Constants.KEY_RIGHT_ARROW) && e.altKey) {
+            e.preventDefault();
+            this.props.selectWorkspace(e.keyCode);
+        } else if (
+            [
+                Constants.KEY_LEFT_ARROW,
+                Constants.KEY_RIGHT_ARROW,
+                Constants.KEY_UP_ARROW,
+                Constants.KEY_DOWN_ARROW
+            ].indexOf(e.keyCode) > -1 &&
+            e.shiftKey
+        ) {
+            e.preventDefault();
+            this.props.selectWindow(e.keyCode);
+        }
+    }
+
+    receiveMessage(event: MessageEvent) {
+        if (
+            (event.origin + '/' !== chrome.runtime.getURL('/') && event.origin + '/' !== Constants.MERCURYWM_URL) ||
+            typeof event.data !== 'string'
+        ) {
+            return;
+        }
+
+        const message: ExtensionMessage = JSON.parse(event.data);
+        switch (message.type) {
+            case 'done':
+                this.props.killScript(parseInt(message.id));
+                break;
+            case 'env':
+                this.props.setEnv(message.key, message.value);
+                break;
+            case 'requestFile': {
+                const result = getFile(message.path, store.getState().wfs);
+                const contents = result ? result.data : '';
+                this.sendMessage(event, { type: 'file', path: message.path, contents });
+                break;
+            }
+            case 'writeFile':
+                this.props.createOrModifyFile(message.path, message.content);
+                break;
+        }
+    }
+
+    sendMessage(event: MessageEvent, message: ExtensionResponse) {
+        event.source.postMessage(JSON.stringify(message), event.origin);
+    }
 }
 
 const mapStateToProps = (state: StoreState): StateProps => ({
-  loaded: state.loaded
+    loaded: state.loaded
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  selectWorkspace: (direction: number) =>
-    dispatch({
-      type: 'INTENT_SELECT_WORKSPACE',
-      direction
-    }),
-  selectWindow: (direction: number) =>
-    dispatch({
-      type: 'INTENT_SELECT_WINDOW',
-      direction
-    }),
-  killScript: (id: number) =>
-    dispatch({
-      type: 'KILL_SCRIPT',
-      id
-    }),
-  setEnv: (key: string, value: string) =>
-    dispatch({
-      type: 'SET_ENV',
-      key,
-      value
-    }),
-  createOrModifyFile: (path: string, content: string) =>
-    dispatch({
-      type: 'CREATE_OR_MODIFY_FILE',
-      path,
-      content
-    })
+    selectWorkspace: (direction: number) =>
+        dispatch({
+            type: 'INTENT_SELECT_WORKSPACE',
+            direction
+        }),
+    selectWindow: (direction: number) =>
+        dispatch({
+            type: 'INTENT_SELECT_WINDOW',
+            direction
+        }),
+    killScript: (id: number) =>
+        dispatch({
+            type: 'KILL_SCRIPT',
+            id
+        }),
+    setEnv: (key: string, value: string) =>
+        dispatch({
+            type: 'SET_ENV',
+            key,
+            value
+        }),
+    createOrModifyFile: (path: string, content: string) =>
+        dispatch({
+            type: 'CREATE_OR_MODIFY_FILE',
+            path,
+            content
+        })
 });
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(Root);
