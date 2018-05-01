@@ -40,6 +40,7 @@ const config = {
             }
         ]
     },
+    plugins: [],
     stats: {
         colors: true
     },
