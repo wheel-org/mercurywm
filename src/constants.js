@@ -1,13 +1,14 @@
 /* @flow */
 
 import type { Directory, File, Terminal, Window, Workspace } from 'types';
+import packageData from '../package.json';
 
 const MERCURY_BASE_URL = 'https://wheel-org.github.io/mercurywm-scripts/';
 
 /* Constants */
 const Constants = {
     NAME: 'Mercury WM',
-    VERSION: '1.1',
+    VERSION: packageData.version,
     STATE_KEY: 'state',
     DIR_TYPE: 'dir',
     FILE_TYPE: 'file',
