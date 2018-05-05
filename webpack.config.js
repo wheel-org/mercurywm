@@ -1,6 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
 
+const Constants = require('./src/constants.js');
+
 const config = {
     entry: {
         main: './src/mercury/index.jsx',
@@ -40,7 +42,14 @@ const config = {
             }
         ]
     },
-    plugins: [],
+    plugins: [
+        new webpack.DefinePlugin(
+            Object.entries(Constants).reduce((acc, [key, val]) => ({
+                ...acc,
+                ['Constants.' + key]: JSON.stringify(val)
+            }), {})
+        )
+    ],
     stats: {
         colors: true
     },

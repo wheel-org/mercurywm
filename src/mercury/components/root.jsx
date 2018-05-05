@@ -11,7 +11,6 @@ import { connect } from 'react-redux';
 
 import App from './app.jsx';
 import Loading from './loading.jsx';
-import Constants from 'constants.js';
 import { getFile } from 'utils';
 // This is only here because getDirectory needs the file system is a parameter
 // For other state needs, use connect!
@@ -63,7 +62,7 @@ class Root extends React.Component<Props> {
 
     receiveMessage(event: MessageEvent) {
         if (
-            (event.origin + '/' !== chrome.runtime.getURL('/') && event.origin + '/' !== Constants.MERCURYWM_URL) ||
+            (event.origin + '/' !== chrome.runtime.getURL('/') && event.origin + '/' !== Constants.MERCURYWM_ORIGIN) ||
             typeof event.data !== 'string'
         ) {
             return;

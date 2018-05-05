@@ -1,6 +1,6 @@
 /* @flow */
 
-import { createWindow } from 'constants.js';
+import { createWindow } from 'creators.js';
 
 import type { StoreState } from 'types';
 

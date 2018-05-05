@@ -2,7 +2,6 @@
 
 import { clear } from 'background/storage';
 import { findWindow } from 'utils';
-import Constants from 'constants.js';
 
 import type { StoreState } from 'types';
 

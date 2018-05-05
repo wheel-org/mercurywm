@@ -4,7 +4,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import Terminal from './terminal.jsx';
-import Constants from 'constants.js';
 import { getDirectory } from 'utils';
 // This is only here because getDirectory needs the file system is a parameter
 // For other state needs, use connect!
