@@ -4,7 +4,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import TerminalLink from './terminal-link.jsx';
-import Constants from 'constants.js';
 
 import type { StoreState, Dispatch, Window as WindowType } from 'types';
 

@@ -4,7 +4,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import Workspace from './workspace.jsx';
 import BottomBar from './bottombar.jsx';
-import Constants from 'constants.js';
 
 import type { StoreState, Dispatch, Workspace as WorkspaceType } from 'types';
 

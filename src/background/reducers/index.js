@@ -3,11 +3,11 @@
 import u from 'updeep';
 import { executeCommand } from 'background/commands';
 import { clear, save } from 'background/storage';
-import Constants, {
+import {
   createDirectory,
   createFile,
   createWorkspace
-} from 'constants.js';
+} from 'creators.js';
 import {
   findWindow,
   getBorderingBottom,

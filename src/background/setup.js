@@ -1,7 +1,5 @@
 /* @flow */
 
-import { Constants } from 'constants.js';
-
 let script: {
     output: string => void,
     writeFile: (string, string) => void,

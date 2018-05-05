@@ -1,7 +1,7 @@
 /* @flow */
 
 import setupFile from 'background/setup';
-import Constants, { createDirectory, createFile, createWorkspace } from 'constants.js';
+import { createDirectory, createFile, createWorkspace } from 'creators.js';
 
 import type { StorageState, StoreState } from 'types';
 
