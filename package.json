@@ -5,7 +5,7 @@
     "main": "src/index.js",
     "scripts": {
         "dev": "webpack --progress --watch",
-        "prod": "NODE_ENV=production webpack -p --progress"
+        "prod": "cross-env NODE_ENV=production webpack -p --progress"
     },
     "repository": {
         "type": "git",
@@ -27,6 +27,7 @@
         "remove-flow-types-loader": "^1.1.0",
         "uglify-js": "^3.1.5",
         "updeep": "^1.0.0",
-        "webpack": "^3.5.2"
+        "webpack": "^3.5.2",
+        "cross-env": "^5.1.4"
     }
 }
