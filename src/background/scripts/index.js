@@ -115,7 +115,7 @@ export default function executeScript(id: number, input: string, callback?: any 
             Async(binFunc, script, params, callback);
         } catch (e) {
             script.output('Error: ' + e);
-            script.exec('kill ' + script.windowID);
+            script.exec('kill -s ' + script.windowID);
         }
     } else if (isScript(name)) {
         Async(require('./' + name).default, script, params, callback);
@@ -128,7 +128,7 @@ export default function executeScript(id: number, input: string, callback?: any 
             })
             .catch(error => {
                 script.output(error);
-                script.exec('kill ' + script.windowID);
+                script.exec('kill -s ' + script.windowID);
             });
     }
 }
