@@ -2,7 +2,7 @@
 
 import { isCommand } from 'background/commands';
 import store from 'background/store';
-import { createFile, createTerminal, createWindow } from 'creators.js';
+import { createFile, createTerminal, createWindow } from 'creators';
 import { findWindow, getDirectory, getFile, getPath } from 'utils';
 
 import type { Directory, File, Script as ScriptType, Window } from 'types';
