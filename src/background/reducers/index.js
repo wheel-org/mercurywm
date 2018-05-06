@@ -3,7 +3,7 @@
 import u from 'updeep';
 import { executeCommand } from 'background/commands';
 import { clear, save } from 'background/storage';
-import { createDirectory, createFile, createWorkspace } from 'creators.js';
+import { createDirectory, createFile, createWorkspace } from 'creators';
 import {
     findWindow,
     getBorderingBottom,

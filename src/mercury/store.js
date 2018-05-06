@@ -1,6 +1,6 @@
 /* @flow */
 
-import { createDirectory } from 'creators.js';
+import { createDirectory } from 'creators';
 import reducer from 'mercury/reducer';
 import { createStore } from 'redux';
 

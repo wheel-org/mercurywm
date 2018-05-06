@@ -1,6 +1,6 @@
 /* @flow */
 
-import { createWorkspace } from 'creators.js';
+import { createWorkspace } from 'creators';
 
 import type { StoreState } from 'types';
 
