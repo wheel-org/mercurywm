@@ -71,12 +71,14 @@ export function isCommand(name: string) {
         'ls',
         'mkdir',
         'render',
-        'reload',
         'reset',
         'rm',
         'window',
         'workspace'
     ];
+    if (!PRODUCTION) {
+        names.push('reload');
+    }
     return names.find(n => n === name);
 }
 
