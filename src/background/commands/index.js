@@ -76,6 +76,9 @@ export function isCommand(name: string) {
         'workspace',
         'info'
     ];
+    if (!PRODUCTION) {
+        names.push('reload');
+    }
     return names.find(n => n === name);
 }
 
