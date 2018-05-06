@@ -44,11 +44,17 @@ const config = {
     },
     plugins: [
         new webpack.DefinePlugin(
-            Object.entries(Constants).reduce((acc, [key, val]) => ({
-                ...acc,
-                ['Constants.' + key]: JSON.stringify(val)
-            }), {})
-        )
+            Object.entries(Constants).reduce(
+                (acc, [key, val]) => ({
+                    ...acc,
+                    ['Constants.' + key]: JSON.stringify(val)
+                }),
+                {}
+            )
+        ),
+        new webpack.DefinePlugin({
+            PRODUCTION: JSON.stringify(process.env.NODE_ENV === 'production')
+        })
     ],
     stats: {
         colors: true
