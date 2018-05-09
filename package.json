@@ -5,7 +5,8 @@
     "main": "src/index.js",
     "scripts": {
         "dev": "webpack --progress --watch",
-        "prod": "cross-env NODE_ENV=production webpack -p --progress"
+        "prod": "cross-env NODE_ENV=production webpack -p --progress",
+        "travis": "npm run prod && zip -r mercurywm-$(date +%s).zip build/"
     },
     "repository": {
         "type": "git",
