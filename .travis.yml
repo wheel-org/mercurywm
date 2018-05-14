@@ -1,5 +1,6 @@
 branches:
   only:
+  - master
   - release
 language: node_js
 script: npm run travis
@@ -20,3 +21,4 @@ deploy:
   file: mercurywm*.zip
   on:
     repo: wheel-org/mercurywm
+    branch: release
