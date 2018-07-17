@@ -44,11 +44,12 @@ const config = {
     },
     plugins: [
         new webpack.DefinePlugin(
-            Object.entries(Constants).reduce(
-                (acc, [key, val]) => ({
-                    ...acc,
-                    ['Constants.' + key]: JSON.stringify(val)
-                }),
+            Object.keys(Constants).reduce(
+                (acc, key) => Object.assign(acc,
+                    {
+                        ['Constants.' + key]: JSON.stringify(Constants[key])
+                    }
+                ),
                 {}
             )
         ),
