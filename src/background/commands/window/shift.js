@@ -38,8 +38,7 @@ export default function shift(state: StoreState, params: Array<string>) {
   } else if (params[0] === 'bottom') {
     result = getBorderingBottom(this.windowIndex, windows);
   }
-
-  if (result) {
+  if (result.length !== 0) {
     const change =
       params[1] === '+' ? 1 : params[1] === '-' ? -1 : parseInt(params[1]);
 
