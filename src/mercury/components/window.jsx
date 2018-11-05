@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
@@ -15,13 +15,13 @@ type DispatchProps = {|
   +onClick: number => void
 |};
 
-type Props = {|
+type PassedProps =  {|
   +window: WindowType,
   +index: number,
   +selected: boolean,
-  ...StateProps,
-  ...DispatchProps
 |};
+
+type Props = PassedProps & StateProps & DispatchProps;
 
 class Window extends React.Component<Props> {
   cacheParamValue = Date.now();
@@ -128,4 +128,9 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Window);
+const ConnectedComp: React.ComponentType<PassedProps> = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Window);
+
+export default ConnectedComp;

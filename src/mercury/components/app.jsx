@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
@@ -49,4 +49,6 @@ const mapStateToProps = (state: StoreState): Props => {
     };
 };
 
-export default connect(mapStateToProps)(App);
+const ConnectedComp: React.ComponentType<{||}> = connect(mapStateToProps)(App);
+
+export default ConnectedComp;

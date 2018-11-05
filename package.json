@@ -20,7 +20,10 @@
         "babel-preset-env": "^1.6.0",
         "babel-preset-react": "^6.24.1",
         "babel-preset-stage-2": "^6.24.1",
+        "cross-env": "^5.1.4",
+        "flow-bin": "^0.85.0",
         "flow-interfaces-chrome": "^0.4.0",
+        "flow-typed": "^2.5.1",
         "react": "^15.6.1",
         "react-dom": "^15.6.1",
         "react-redux": "^5.0.6",
@@ -28,7 +31,6 @@
         "remove-flow-types-loader": "^1.1.0",
         "uglify-js": "^3.1.5",
         "updeep": "^1.0.0",
-        "webpack": "^3.5.2",
-        "cross-env": "^5.1.4"
+        "webpack": "^3.5.2"
     }
 }

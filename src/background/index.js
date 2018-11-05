@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 import executeScript from './scripts';
 import { clear } from './storage';

@@ -14,3 +14,8 @@ suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe
 module.ignore_non_literal_requires=true
 
 [strict]
+nonstrict-import
+; unclear-type
+unsafe-getters-setters
+untyped-import
+untyped-type-import

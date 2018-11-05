@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
@@ -11,10 +11,11 @@ type StateProps = {|
   +currentWindowId: number
 |};
 
-type Props = {|
+type PassedProps = {|
   +workspace: WorkspaceType,
-  ...StateProps
-|};
+|}
+
+type Props = PassedProps & StateProps;
 
 const Workspace = ({ workspace, currentWindowId }: Props) => {
   const windows = [];
@@ -35,4 +36,8 @@ const mapStateToProps = (state: StoreState): StateProps => ({
   currentWindowId: state.selectedWindow
 });
 
-export default connect(mapStateToProps)(Workspace);
+const ConnectedComp: React.ComponentType<PassedProps> = connect(
+  mapStateToProps
+)(Workspace);
+
+export default ConnectedComp;

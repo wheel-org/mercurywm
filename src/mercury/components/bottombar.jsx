@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
@@ -15,14 +15,14 @@ type DispatchProps = {|
   +onClick: number => void
 |};
 
-type Props = {| ...StateProps, ...DispatchProps |};
+type Props = StateProps & DispatchProps;
 
 const BottomBar = ({
   numWorkspaces,
   selectedWorkspace,
   username,
   onClick
-}: Props) => {
+}: Props): React.Node => {
   const buttons = [];
   for (let i = 0; i < numWorkspaces; i++) {
     buttons.push(
@@ -59,4 +59,9 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(BottomBar);
+const ConnectedComp: React.ComponentType<{||}> = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(BottomBar);
+
+export default ConnectedComp;

@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 import { isCommand } from 'background/commands';
 import store from 'background/store';

@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 import { clear } from 'background/storage';
 import { findWindow } from 'utils';

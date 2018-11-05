@@ -1,6 +1,6 @@
-/* @flow */
+/* @flow strict */
 
-import type { ExtensionMessage, ExtensionResponse } from 'types';
+import type { ExtensionMessage, ExtensionResponse } from "types";
 
 const fileRequestCallback: { [string]: (string) => void } = {};
 const qp: { [string]: string } = getQueryParams(document.location.search);
@@ -9,7 +9,7 @@ const env: { [string]: string } = JSON.parse(qp.env);
 const params: string[] = JSON.parse(qp.params);
 console.log({ runningCommand, workingDirectory, cache, id, env, params });
 
-const content = document.getElementById('content');
+const content = document.getElementById("content");
 if (content && params[0]) {
   getFile(params[0], htmlFile => {
     console.log(htmlFile);
@@ -26,30 +26,32 @@ if (content && params[0]) {
 }
 
 function getFile(path: string, callback: string => void) {
-  if (path.startsWith('~')) path = workingDirectory + '/' + path;
-  fileRequestCallback[path] = callback;
+  const absolutePath = path.startsWith("~")
+    ? workingDirectory + "/" + path
+    : path;
+  fileRequestCallback[absolutePath] = callback;
   sendMessage({
-    type: 'requestFile',
-    path
+    type: "requestFile",
+    path: absolutePath
   });
 }
 
 function writeFile(path: string, content: string) {
   sendMessage({
-    type: 'writeFile',
+    type: "writeFile",
     path,
     content
   });
 }
 
 function getEnv(key: string) {
-  return env[key] || '';
+  return env[key] || "";
 }
 
 function setEnv(key: string, value: string) {
   env[key] = value;
   sendMessage({
-    type: 'env',
+    type: "env",
     key,
     value
   });
@@ -58,26 +60,26 @@ function setEnv(key: string, value: string) {
 // Exit render
 function done() {
   sendMessage({
-    type: 'done',
+    type: "done",
     id
   });
 }
 
 function sendMessage(msg: ExtensionMessage) {
-  parent.postMessage(JSON.stringify(msg), '*');
+  parent.postMessage(JSON.stringify(msg), "*");
 }
 
 window.onload = function() {
-  window.addEventListener('keydown', function(e) {
+  window.addEventListener("keydown", function(e) {
     if (e.ctrlKey && e.keyCode === 67) {
       // Quit extension on Ctrl+C
       done();
     }
   });
 
-  window.addEventListener('message', event => {
+  window.addEventListener("message", event => {
     const message: ExtensionResponse = JSON.parse(event.data);
-    if (message.type === 'file') {
+    if (message.type === "file") {
       if (fileRequestCallback[message.path]) {
         fileRequestCallback[message.path](message.contents);
         delete fileRequestCallback[message.path];
@@ -85,7 +87,7 @@ window.onload = function() {
     }
   });
 
-  const textareas = document.getElementsByTagName('textarea');
+  const textareas = document.getElementsByTagName("textarea");
   for (let t of textareas) {
     t.onkeydown = e => {
       if (e.keyCode === 9 || e.which === 9) {
@@ -94,7 +96,7 @@ window.onload = function() {
         const s = this.selectionStart;
         this.value =
           this.value.slice(0, this.selectionStart) +
-          '\t' +
+          "\t" +
           this.value.slice(this.selectionEnd);
         this.selectionEnd = s + 1;
       }
@@ -104,7 +106,7 @@ window.onload = function() {
 
 // Parse URL query parameters
 function getQueryParams(qs) {
-  const query = qs.split('+').join(' '),
+  const query = qs.split("+").join(" "),
     params = {},
     re = /[?&]?([^=]+)=([^&]*)/g;
   let tokens;
