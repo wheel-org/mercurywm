@@ -82,7 +82,7 @@ export function isCommand(name: string) {
     return names.find(n => n === name);
 }
 
-export function executeCommand(state: StoreState, input: string) {
+export function executeCommand(state: StoreState, input: string): StoreState {
     if (input === '') return state;
 
     const [name, ...params] = parseInput(input);
@@ -96,7 +96,7 @@ export function executeCommand(state: StoreState, input: string) {
         return state;
     } else if (isCommand(name)) {
         return require('./' + name).default.call(command, state, params);
-    } else if (name !== undefined) {
+    } else {
         // $FlowFixMe: command can mutate state
         command.terminal.running = true;
         return state;

@@ -16,6 +16,8 @@ window.reset = () => {
 console.log('MercuryWM background running');
 
 chrome.runtime.onConnect.addListener(port => {
+    if (!port) return;
+
     console.assert(port.name === 'mercurywm');
     console.log('connected');
     port.postMessage('connected');
@@ -34,7 +36,8 @@ chrome.runtime.onConnect.addListener(port => {
             const newState = store.getState();
             // Only handle async script if store determines it is (and sets
             //   status to running)
-            if (getCurrentWindow(newState).terminal.running) {
+            const currWindow = getCurrentWindow(newState);
+            if (currWindow && currWindow.terminal.running) {
                 // Run the script async
                 executeScript(newState.selectedWindow, action.text);
             }
