@@ -1,4 +1,4 @@
-/* @flow
+/* @flow strict
  * root.jsx
  * Renders the app when data is loaded, or shows the loading page
  * Handles global key listeners and iframe message listeners
@@ -30,7 +30,7 @@ type DispatchProps = {|
     +createOrModifyFile: (string, string) => void
 |};
 
-type Props = {| ...StateProps, ...DispatchProps |};
+type Props = StateProps & DispatchProps;
 
 class Root extends React.Component<Props> {
     componentWillMount() {
@@ -127,4 +127,9 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
         })
 });
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(Root);
+const ConnectedComp: React.ComponentType<{||}> = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Root);
+
+export default ConnectedComp;

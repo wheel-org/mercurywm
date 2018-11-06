@@ -1,4 +1,6 @@
-/* @flow */
+/* @flow strict */
+
+import type { Store as ReduxStore } from 'redux';
 
 // Components
 export type Terminal = {|
@@ -41,15 +43,9 @@ export type File = {|
 |};
 
 // Redux
-export type Store = {
-  getState(): StoreState,
-  +dispatch: Dispatch
-};
+export type Store = ReduxStore<StoreState, Action, Dispatch>;
 
-// TODO: Flow has a bug where exact types become inexact after using the
-// object spread operator. This affects the reducers where the state is spread
-// out, so StoreState is inexact.
-export type StoreState = {
+export type StoreState = {|
   +loaded: boolean,
   +workspaces: Array<Workspace>,
   +wfs: Directory,
@@ -60,7 +56,7 @@ export type StoreState = {
   },
   +selectedWindow: number,
   +selectedWorkspace: number
-};
+|};
 
 export type Dispatch = (action: Action) => void;
 

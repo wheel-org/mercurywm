@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 import merge from './merge';
 import shift from './shift';

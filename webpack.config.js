@@ -3,6 +3,10 @@ const webpack = require('webpack');
 
 const Constants = require('./src/constants.js');
 
+// When adding any global constants via `webpack.definePlugin`,
+// make sure to add its type definition in `flow-typed/mercurywm.js`
+// so flow will understand it.
+
 const config = {
     entry: {
         main: './src/mercury/index.jsx',

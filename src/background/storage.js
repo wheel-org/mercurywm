@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 import setupFile from 'background/setup';
 import { createDirectory, createFile, createWorkspace } from 'creators';

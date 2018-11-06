@@ -1,8 +1,8 @@
-/* @flow */
+/* @flow strict */
 
 import u from 'updeep';
 import { executeCommand } from 'background/commands';
-import { clear, save } from 'background/storage';
+import { clear, save, initialState } from 'background/storage';
 import { createDirectory, createFile, createWorkspace } from 'creators';
 import {
     findWindow,
@@ -390,7 +390,7 @@ const rootReducer = function(state: StoreState, action: Action): StoreState {
     }
 };
 
-const saveWrapper = function(state: StoreState, action: Action) {
+const saveWrapper = function(state: StoreState = initialState, action: Action) {
     const newState = rootReducer(state, action);
     save(newState);
     return newState;

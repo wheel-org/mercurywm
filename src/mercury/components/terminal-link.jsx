@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
@@ -25,12 +25,12 @@ type DispatchProps = {|
     +executeCommand: string => void
 |};
 
-type Props = {|
+type PassedProps = {|
     terminal: TerminalType,
     selected: boolean,
-    ...StateProps,
-    ...DispatchProps
 |};
+
+type Props = PassedProps & StateProps & DispatchProps;
 
 type State = {|
     historyIndex: number,
@@ -289,4 +289,9 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TerminalLink);
+const ConnectedComp: React.ComponentType<PassedProps> = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TerminalLink);
+
+export default ConnectedComp;

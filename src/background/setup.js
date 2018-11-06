@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 let script: {
     output: string => void,

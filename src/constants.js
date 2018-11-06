@@ -1,8 +1,17 @@
+/* Constants */
+
+// This file is used directly by webpack, so cannot contain any flow or
+// ES features that Node doesn't support.
+
 const packageData = require('../package.json');
 
 const MERCURY_BASE_URL = 'https://wheel-org.github.io/';
 
-/* Constants */
+// To add another constant, make sure to add the type in
+// `flow-typed/mercurywm.js`. If it is a static variable,
+// add its value to this type. Otherwise, add the
+// type of the variable instead (number, string, etc.)
+
 const Constants = {
     NAME: 'Mercury WM',
     VERSION: packageData.version,

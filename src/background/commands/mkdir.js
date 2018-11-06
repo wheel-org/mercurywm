@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 import {createDirectory} from 'creators';
 import { getDirectory } from 'utils';
