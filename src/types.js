@@ -7,10 +7,10 @@ export type Terminal = {|
   +history: Array<string>,
   +running: boolean,
   +isExtension: boolean,
-  +output: Array<{
+  +output: Array<{|
     +prompt: string,
     +text: string
-  }>,
+  |}>,
   +runningCommand: string,
   +params: Array<string>,
   +workingDirectory: string

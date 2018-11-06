@@ -18,17 +18,15 @@ type PassedProps = {|
 type Props = PassedProps & StateProps;
 
 const Workspace = ({ workspace, currentWindowId }: Props) => {
-  const windows = [];
-  for (let i = 0; i < workspace.windows.length; i++) {
-    windows.push(
-      <Window
-        key={workspace.windows[i].id}
-        index={i}
-        window={workspace.windows[i]}
-        selected={workspace.windows[i].id === currentWindowId}
-      />
-    );
-  }
+  const windows = workspace.windows.map((window, i) => (
+    <Window
+      key={window.id}
+      index={i}
+      window={window}
+      selected={window.id === currentWindowId}
+    />
+  ));
+
   return <div className="workspace">{windows}</div>;
 };
 

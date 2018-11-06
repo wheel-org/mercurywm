@@ -26,8 +26,8 @@ type DispatchProps = {|
 |};
 
 type PassedProps = {|
-    terminal: TerminalType,
-    selected: boolean,
+    +terminal: TerminalType,
+    +selected: boolean,
 |};
 
 type Props = PassedProps & StateProps & DispatchProps;
@@ -55,16 +55,18 @@ class TerminalLink extends React.Component<Props, State> {
         }
         this.input.scrollTop = this.input.scrollHeight;
 
-        // TODO: event is a ClipboardEvent, which isn't supported in flow right now
-        this.input.addEventListener('paste', (event: any) => {
-            const clipboardData = (event.clipboardData: DataTransfer).getData('text/plain');
+        this.input.addEventListener('paste', (event: ClipboardEvent) => {
+            const clipboardData = event.clipboardData;
+            if (!clipboardData) return;
+
+            const data = clipboardData.getData('text/plain');
             const command = this.getCurrentInputCommand();
             this.props.updateCommand(
-                command.slice(0, this.state.cursor) + clipboardData + command.slice(this.state.cursor),
+                command.slice(0, this.state.cursor) + data + command.slice(this.state.cursor),
                 this.state.historyIndex
             );
             this.setState({
-                cursor: this.state.cursor + clipboardData.length
+                cursor: this.state.cursor + data.length
             });
         });
     }
@@ -81,6 +83,7 @@ class TerminalLink extends React.Component<Props, State> {
     }
 
     componentWillReceiveProps(nextProps) {
+      console.log(this.state.historyIndex, nextProps);
         if (this.state.historyIndex < 0) {
             this.setState({ historyIndex: 0 });
         } else if (this.state.historyIndex >= nextProps.terminal.history.length) {
@@ -237,7 +240,7 @@ class TerminalLink extends React.Component<Props, State> {
             .replace('%w', this.props.terminal.workingDirectory)
             .replace('%u', this.props.username);
         let command = this.props.terminal.history[this.state.historyIndex];
-        if (command === undefined) {
+        if (command == null) {
             command = this.props.terminal.history[0];
         }
 
@@ -264,30 +267,28 @@ const mapStateToProps = (state: StoreState): StateProps => ({
     wfs: state.wfs
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-    return {
-        updateCommand: (text: string, index: number) => {
-            dispatch({
-                type: 'UPDATE_COMMAND',
-                text,
-                index
-            });
-        },
-        addCommand: (text: string, showPrompt: boolean) => {
-            dispatch({
-                type: 'ADD_COMMAND',
-                text,
-                showPrompt
-            });
-        },
-        executeCommand: (text: string) => {
-            dispatch({
-                type: 'EXECUTE_COMMAND',
-                text
-            });
-        }
-    };
-};
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
+    updateCommand: (text: string, index: number) => {
+        dispatch({
+            type: 'UPDATE_COMMAND',
+            text,
+            index
+        });
+    },
+    addCommand: (text: string, showPrompt: boolean) => {
+        dispatch({
+            type: 'ADD_COMMAND',
+            text,
+            showPrompt
+        });
+    },
+    executeCommand: (text: string) => {
+        dispatch({
+            type: 'EXECUTE_COMMAND',
+            text
+        });
+    }
+});
 
 const ConnectedComp: React.ComponentType<PassedProps> = connect(
   mapStateToProps,
