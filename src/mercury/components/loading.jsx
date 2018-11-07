@@ -19,4 +19,4 @@ const Loading = () => (
   </div>
 );
 
-module.exports = Loading;
+export default Loading;

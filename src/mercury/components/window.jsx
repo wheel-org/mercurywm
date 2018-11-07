@@ -15,7 +15,7 @@ type DispatchProps = {|
   +onClick: number => void
 |};
 
-type PassedProps =  {|
+type PassedProps = {|
   +window: WindowType,
   +index: number,
   +selected: boolean,

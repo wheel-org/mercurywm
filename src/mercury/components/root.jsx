@@ -33,7 +33,7 @@ type DispatchProps = {|
 type Props = StateProps & DispatchProps;
 
 class Root extends React.Component<Props> {
-    componentWillMount() {
+    componentDidMount() {
         window.addEventListener('keydown', (e: KeyboardEvent) => this.handleSystemKey(e), true);
         window.addEventListener('message', (e: MessageEvent) => this.receiveMessage(e), false);
     }
