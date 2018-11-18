@@ -62,7 +62,7 @@ class TerminalLink extends React.Component<Props, State> {
     }
   }
 
-  onPaste(data: string) {
+  onPaste = (data: string) => {
     const command = this.getCurrentInputCommand();
     this.props.updateCommand(
       command.slice(0, this.state.cursor) +
@@ -73,12 +73,12 @@ class TerminalLink extends React.Component<Props, State> {
     this.setState({
       cursor: this.state.cursor + data.length
     });
-  }
+  };
 
   getCurrentInputCommand() {
     const history = this.props.terminal.history;
     return history[this.state.historyIndex];
-  }
+  };
 
   handleKey = (e: SyntheticKeyboardEvent<HTMLDivElement>) => {
     const history = this.props.terminal.history;
