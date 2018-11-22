@@ -61,7 +61,6 @@ function Command(state, command, params) {
 
 export function isCommand(name: string) {
     const names = [
-        'backup',
         'cat',
         'cd',
         'clear',
