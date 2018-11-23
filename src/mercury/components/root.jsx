@@ -87,7 +87,6 @@ class Root extends React.Component<Props> {
                 this.props.createOrModifyFile(message.path, message.content);
                 break;
             case 'selectWindow':
-                console.log(message);
                 this.props.selectWindowDirect(Number(message.id));
                 break;
         }
