@@ -151,6 +151,10 @@ export type ExtensionMessage =
       +type: 'writeFile',
       +path: string,
       +content: string
+    |}
+  | {|
+      +type: 'selectWindow',
+      +id: string
     |};
 
 // Response message from Mercury to extension

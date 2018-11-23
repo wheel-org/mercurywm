@@ -23,6 +23,7 @@ type StateProps = {|
 |};
 
 type DispatchProps = {|
+    +selectWindowDirect: number => void,
     +selectWorkspace: number => void,
     +selectWindow: number => void,
     +killScript: number => void,
@@ -85,6 +86,10 @@ class Root extends React.Component<Props> {
             case 'writeFile':
                 this.props.createOrModifyFile(message.path, message.content);
                 break;
+            case 'selectWindow':
+                console.log(message);
+                this.props.selectWindowDirect(Number(message.id));
+                break;
         }
     }
 
@@ -98,6 +103,11 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
+    selectWindowDirect: (id: number) =>
+        dispatch({
+            type: 'SELECT_WINDOW',
+            id
+        }),
     selectWorkspace: (direction: number) =>
         dispatch({
             type: 'INTENT_SELECT_WORKSPACE',
