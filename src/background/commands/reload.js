@@ -3,6 +3,7 @@
 import type { StoreState } from 'types';
 
 export default function reload(state: StoreState, params: Array<string>) {
-  chrome.runtime.reload();
+  // TODO: maybe refresh the page?
+  this.output("Cannot reload in embed MercuryWM");
   return state;
 }
