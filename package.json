@@ -6,6 +6,8 @@
     "scripts": {
         "dev": "webpack --progress --watch",
         "prod": "cross-env NODE_ENV=production webpack -p --progress",
+        "web-dev": "cross-env MERCURY_TARGET=web npm run dev",
+        "web-prod": "cross-env MERCURY_TARGET=web npm run prod",
         "test": "flow check",
         "ci-prod": "npm run prod && zip -r mercurywm-$(date +%s).zip build/"
     },

@@ -28,25 +28,50 @@ console = _console;
 
 console.log('MercuryWM background running');
 
-self.onmessage = e => {
-  if (!store.getState().loaded) {
-      return;
-  }
-
-  const action: Action = e.data;
-
+function handleAction(action: Action) {
   // This will run synchronous commands, and if it's a script, will be
   //   set to "running" and let the next block handle the async-ness.
   store.dispatch(action);
 
   if (action.type === 'EXECUTE_COMMAND') {
-      const newState = store.getState();
-      // Only handle async script if store determines it is (and sets
-      //   status to running)
-      const currWindow = getCurrentWindow(newState);
-      if (currWindow && currWindow.terminal.running) {
-          // Run the script async
-          executeScript(newState.selectedWindow, action.text);
-      }
+    const newState = store.getState();
+    // Only handle async script if store determines it is (and sets
+    //   status to running)
+    const currWindow = getCurrentWindow(newState);
+    if (currWindow && currWindow.terminal.running) {
+      // Run the script async
+      executeScript(newState.selectedWindow, action.text);
+    }
   }
-};
+}
+
+if (process.env.MERCURY_TARGET === 'web') {
+  self.onmessage = e => {
+    if (!store.getState().loaded) {
+      return;
+    }
+
+    handleAction(e.data);
+  };
+} else {
+  chrome.runtime.onConnect.addListener(port => {
+    if (!port) return;
+
+    console.assert(port.name === 'mercurywm');
+    console.log('connected');
+    port.postMessage('connected');
+
+    port.onMessage.addListener((action: Action) => {
+      if (!store.getState().loaded) {
+        port.postMessage('Background not ready');
+        return;
+      }
+
+      handleAction(action);
+    });
+
+    port.onDisconnect.addListener(() => {
+      console.log('disconnect');
+    });
+  });
+}

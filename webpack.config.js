@@ -64,6 +64,14 @@ const config = {
   }
 };
 
+if (process.env.MERCURY_TARGET === 'web') {
+  config.plugins.push(
+    new webpack.DefinePlugin({
+      'process.env.MERCURY_TARGET': JSON.stringify('web')
+    })
+  );
+}
+
 if (process.env.NODE_ENV === 'production') {
   config.mode = 'production';
   config.optimization = {

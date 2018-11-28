@@ -1,11 +1,11 @@
 /* @flow strict */
 
-import * as React from "react";
-import { connect } from "react-redux";
+import * as React from 'react';
+import { connect } from 'react-redux';
 
-import TerminalLink from "./terminal-link.jsx";
+import TerminalLink from './terminal-link.jsx';
 
-import type { StoreState, Dispatch, Window as WindowType } from "types";
+import type { StoreState, Dispatch, Window as WindowType } from 'types';
 
 type StateProps = {|
   +env: Object
@@ -28,25 +28,27 @@ class Window extends React.Component<Props> {
 
   renderFile() {
     const { window, env } = this.props;
-    return (
-      <iframe
-        className="window-frame"
-        src={
-          "render.html?runningCommand=" +
-          window.terminal.runningCommand +
-          "&workingDirectory=" +
-          window.terminal.workingDirectory +
-          "&cache=" +
-          this.cacheParamValue +
-          "&id=" +
-          window.id +
-          "&env=" +
-          encodeURIComponent(JSON.stringify(env)) +
-          "&params=" +
-          encodeURIComponent(JSON.stringify(window.terminal.params))
-        }
-      />
-    );
+
+    const urlEnd =
+      'render.html?runningCommand=' +
+      window.terminal.runningCommand +
+      '&workingDirectory=' +
+      window.terminal.workingDirectory +
+      '&cache=' +
+      this.cacheParamValue +
+      '&id=' +
+      window.id +
+      '&env=' +
+      encodeURIComponent(JSON.stringify(env)) +
+      '&params=' +
+      encodeURIComponent(JSON.stringify(window.terminal.params));
+
+    const renderURL =
+      process.env.MERCURY_TARGET === 'web'
+        ? urlEnd
+        : chrome.runtime.getURL(urlEnd);
+
+    return <iframe className="window-frame" src={renderURL} />;
   }
 
   renderExtension() {
@@ -57,15 +59,15 @@ class Window extends React.Component<Props> {
         src={
           Constants.MERCURYWM_CONTENT_URL +
           window.terminal.runningCommand +
-          "/index.html?workingDirectory=" +
+          '/index.html?workingDirectory=' +
           window.terminal.workingDirectory +
-          "&cache=" +
+          '&cache=' +
           this.cacheParamValue +
-          "&id=" +
+          '&id=' +
           window.id +
-          "&env=" +
+          '&env=' +
           encodeURIComponent(JSON.stringify(env)) +
-          "&params=" +
+          '&params=' +
           encodeURIComponent(JSON.stringify(window.terminal.params))
         }
       />
@@ -76,14 +78,14 @@ class Window extends React.Component<Props> {
     const { window, index, selected } = this.props;
     return (
       <span>
-        <div className={"window" + (selected ? " selected" : " ")}>
+        <div className={'window' + (selected ? ' selected' : ' ')}>
           <TerminalLink terminal={window.terminal} selected={selected} />
         </div>
         <div className="window-info">
           <span>
             {index} ({window.id})
           </span>
-          <span style={{ float: "right" }}>
+          <span style={{ float: 'right' }}>
             {window.x}, {window.y}, {window.width}, {window.height}
           </span>
         </div>
@@ -100,22 +102,15 @@ class Window extends React.Component<Props> {
         className="window-box"
         onClick={() => onClick(window.id)}
         style={{
-<<<<<<< HEAD
           width: window.width + '%',
           height: window.height + '%',
           left: window.x + '%',
           top: window.y + '%',
           padding: padding + 'px 0 0 ' + padding + 'px'
-=======
-          width: window.width + "%",
-          height: window.height + "%",
-          left: window.x + "%",
-          top: window.y + "%"
->>>>>>> Testing embed Mercury
         }}
       >
         {window.terminal.isExtension
-          ? window.terminal.runningCommand === "render"
+          ? window.terminal.runningCommand === 'render'
             ? this.renderFile()
             : this.renderExtension()
           : this.renderTerminal()}
@@ -131,7 +126,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   onClick: id => {
     dispatch({
-      type: "SELECT_WINDOW",
+      type: 'SELECT_WINDOW',
       id
     });
   }

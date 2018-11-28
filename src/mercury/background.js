@@ -2,10 +2,30 @@
 
 import type { Action } from 'types';
 
-export const worker = new Worker('background.js');
+let worker;
+let dispatchToBackground;
 
-function dispatchToBackground(action: Action) {
-  worker.postMessage(action);
+if (process.env.MERCURY_TARGET === 'web') {
+  const w = new Worker('background.js');
+  worker = w;
+
+  dispatchToBackground = (action: Action) => {
+    w.postMessage(action);
+  };
+} else {
+  worker = null;
+
+  const port = chrome.runtime.connect(
+    undefined,
+    { name: 'mercurywm' }
+  );
+  port.onMessage.addListener(msg => {
+    console.log(msg);
+  });
+
+  dispatchToBackground = (action: Action) => {
+    port.postMessage(action);
+  };
 }
 
-export default dispatchToBackground;
+export { worker, dispatchToBackground as default };

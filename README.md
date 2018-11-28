@@ -4,10 +4,13 @@ MercuryWM is a Chrome extension that transforms your new tab page into a multi-w
 ## Build
 - `git clone https://github.com/wheel-org/mercurywm.git`
 - `npm install`
-- `npm run webpack`
+- `npm run dev`
   - This will also make webpack to watch for changes and rebuild on save
 
 To build a production version, run `npm run prod`.
+
+MercuryWM can also be built for web, instead of as an extension. To do this,
+run `npm run web-dev` or `npm run web-prod`, and serve the `build` directory.
 
 MercuryWM also uses Flow for static type checking. To use Flow, run `npm install -g flow-bin`, then either run `flow` in the root of MercuryWM, or use an editor plugin.
 
