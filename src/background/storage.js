@@ -39,7 +39,7 @@ const defaultStateObject: StorageState = {
 export function load(callback: StoreState => void) {
   if (process.env.MERCURY_TARGET === 'web') {
     // No storage for web
-    callback(defaultStateObject[Constants.STATE_KEY]);
+    callback(initialState);
   } else {
     chrome.storage.local.get(defaultStateObject, (data: StorageState) => {
       callback(data[Constants.STATE_KEY]);

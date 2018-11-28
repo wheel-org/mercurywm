@@ -28,4 +28,4 @@ if (process.env.MERCURY_TARGET === 'web') {
   };
 }
 
-export { worker, dispatchToBackground as default };
+export { worker, dispatchToBackground };

@@ -28,6 +28,15 @@ console = _console;
 
 console.log('MercuryWM background running');
 
+// Debug methods for extension MercuryWM
+if (process.env.MERCURY_TARGET !== 'web' && !PRODUCTION) {
+  window.getState = () => store.getState();
+  window.reset = () => {
+    clear();
+    chrome.runtime.reload();
+  };
+}
+
 function handleAction(action: Action) {
   // This will run synchronous commands, and if it's a script, will be
   //   set to "running" and let the next block handle the async-ness.

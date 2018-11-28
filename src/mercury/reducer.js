@@ -1,6 +1,6 @@
 /* @flow strict */
 
-import dispatchToBackground from './background';
+import { dispatchToBackground } from './background';
 import { initialState } from './store';
 
 import type { StoreState, Action } from 'types';

@@ -63,7 +63,10 @@ class Root extends React.Component<Props> {
 
     receiveMessage(event: MessageEvent) {
         if (
-            (event.origin + '/' !== Constants.MERCURYWM_ORIGIN) ||
+            (
+                event.origin + '/' !== Constants.MERCURYWM_ORIGIN &&
+                event.origin !== window.location.origin
+            ) ||
             typeof event.data !== 'string'
         ) {
             return;
