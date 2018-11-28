@@ -105,6 +105,7 @@ export type Script = {|
   +output: (text: string, showPrompt?: boolean, showCommand?: boolean) => void,
   +exec: (input: string, callback?: (any) => void) => void,
   // Action creators
+  +updateStore: (newState: StoreState) => void,
   // +resetStore: () => void,
   // +clearHistory: () => void,
   // +addCommand: (text: string, showPrompt: boolean) => void,

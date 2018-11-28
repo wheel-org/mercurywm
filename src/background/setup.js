@@ -100,7 +100,8 @@ function setupFile(script, args, resolve) {
                 'rm -d [file] - Removes directory'
             ]);
             createMan('backup', '', [
-                'backup save - Writes a backup of the current state of Mercury into the console',
+                'backup - Shows when the last backup was made',
+                'backup save - Writes a backup of the current state of Mercury into synced storage',
                 'backup restore - Restores Mercury from a backup created by "backup save"'
             ]);
             createMan('render', '', [
