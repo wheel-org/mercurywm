@@ -117,3 +117,11 @@ function getQueryParams(qs) {
 
   return params;
 }
+
+// Capture click event to tell Mercury this window is selected
+document.addEventListener('click', () => {
+  sendMessage({
+    type: 'selectWindow',
+    id
+  });
+}, true);
