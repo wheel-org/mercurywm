@@ -92,7 +92,8 @@ class Window extends React.Component<Props> {
   }
 
   render() {
-    const { window, onClick } = this.props;
+    const { window, onClick, env } = this.props;
+    const padding = env.windowPadding || 10;
 
     return (
       <div
@@ -102,7 +103,8 @@ class Window extends React.Component<Props> {
           width: window.width + '%',
           height: window.height + '%',
           left: window.x + '%',
-          top: window.y + '%'
+          top: window.y + '%',
+          padding: padding + 'px 0 0 ' + padding + 'px'
         }}
       >
         {window.terminal.isExtension
