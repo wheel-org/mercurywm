@@ -42,7 +42,7 @@ export default function shift(state: StoreState, params: Array<string>) {
 
   if (result.length !== 0) {
     const change =
-      params[1] === '+' ? 1 : params[1] === '-' ? -1 : parseInt(params[1]);
+      (params[1] === '+' ? 1 : params[1] === '-' ? -1 : parseInt(params[1])) || 0;
 
     const c = getChangeMatrix(params[0], change);
     this.currWindow.x += c[0];
