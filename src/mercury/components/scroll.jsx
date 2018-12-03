@@ -106,7 +106,6 @@ class SmoothScroll extends React.Component<Props> {
       <div
         className="terminal-link"
         ref={this.input}
-        tabIndex="1"
         onKeyDown={this.handleKey}
       >
         {this.props.children}
