@@ -15,9 +15,13 @@ export const createTerminal = (): Terminal => ({
 
 export const createWindow = (x: number, y: number, width: number, height: number, id: number): Window => ({
     x,
+    xOffset: 0,
     y,
+    yOffset: 0,
     width,
+    widthOffset: 0,
     height,
+    heightOffset: 0,
     id,
     terminal: createTerminal()
 });

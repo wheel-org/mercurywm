@@ -26,6 +26,7 @@ const Workspace = ({ workspace, currentWindowId, env }: Props) => {
       index={i}
       window={window}
       selected={window.id === currentWindowId}
+      workspace={workspace}
     />
   ));
 

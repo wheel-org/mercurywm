@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import TerminalLink from './terminal-link.jsx';
 
-import type { StoreState, Dispatch, Window as WindowType } from 'types';
+import type { StoreState, Dispatch, Window as WindowType, Workspace } from 'types';
 
 type StateProps = {|
   +env: Object
@@ -16,6 +16,7 @@ type DispatchProps = {|
 |};
 
 type PassedProps = {|
+  +workspace: Workspace,
   +window: WindowType,
   +index: number,
   +selected: boolean,
@@ -92,18 +93,42 @@ class Window extends React.Component<Props> {
   }
 
   render() {
-    const { window, onClick, env } = this.props;
+    const { window, onClick, env, workspace } = this.props;
     const padding = env.windowPadding || 10;
+    const fixedTop = workspace.fixedTop || 0;
+    const fixedLeft = workspace.fixedLeft || 0;
+    const fixedBottom = workspace.fixedBottom || 0;
+    const fixedRight = workspace.fixedRight || 0;
+
+    let { width, height, left, top } = window;
+
+    if (left === 0 && fixedLeft > 0) {
+        width = fixedLeft;
+    }
+
+    if (top === 0 && fixedTop > 0) {
+        height = fixedTop;
+    }
+
+    if (left + width === 100 && fixedRight > 0) {
+        width = fixedRight;
+    }
+
+    if (top + height === 100 && fixedBottom > 0) {
+        height = fixedBottom;
+    }
+
+    const calc = (percent, offset) => 'calc(' + percent + '% + ' + (offset || 0) + 'px)';
 
     return (
       <div
         className="window-box"
         onClick={() => onClick(window.id)}
         style={{
-          width: window.width + '%',
-          height: window.height + '%',
-          left: window.x + '%',
-          top: window.y + '%',
+          width: calc(window.width, window.widthOffset),
+          height: calc(window.height, window.heightOffset),
+          left: calc(window.x, window.xOffset),
+          top: calc(window.y, window.yOffset),
           padding: padding + 'px 0 0 ' + padding + 'px'
         }}
       >

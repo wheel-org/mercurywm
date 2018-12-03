@@ -3,6 +3,7 @@
 import merge from './merge';
 import shift from './shift';
 import split from './split';
+import fix from './fix';
 
 import type { StoreState } from 'types';
 
@@ -23,6 +24,9 @@ export default function window(state: StoreState, params: Array<string>) {
     case 'top':
     case 'bottom':
       return shift.call(this, state, params);
+    case 'fixh':
+    case 'fixw':
+      return fix.call(this, state, params);
     case 'list':
       this.output('In this workspace:');
       this.workspace.windows.forEach(({ terminal }, i) => {

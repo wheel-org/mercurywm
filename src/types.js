@@ -18,15 +18,23 @@ export type Terminal = {|
 
 export type Window = {|
   +x: number,
+  +xOffset: number,
   +y: number,
+  +yOffset: number,
   +width: number,
+  +widthOffset: number,
   +height: number,
+  +heightOffset: number,
   +id: number,
   +terminal: Terminal
 |};
 
 export type Workspace = {|
-  +windows: Array<Window>
+  +windows: Array<Window>,
+  +fixedTop: number,
+  +fixedLeft: number,
+  +fixedBottom: number,
+  +fixedRight: number
 |};
 
 // File system
