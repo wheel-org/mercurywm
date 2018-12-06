@@ -39,6 +39,7 @@ html, body, #root {
     overflow-wrap: break-word;
     overflow-y: scroll;
     overflow-x: visible;
+    outline-width: 0;
 }
 
 .terminal p {
