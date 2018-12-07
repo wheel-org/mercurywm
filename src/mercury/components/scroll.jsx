@@ -107,6 +107,9 @@ class SmoothScroll extends React.Component<Props> {
         className="terminal-link"
         ref={this.input}
         onKeyDown={this.handleKey}
+        /* tabIndex is needed for onKeyDown to work on a div:
+         * https://stackoverflow.com/questions/43503964/onkeydown-event-not-working-on-divs-in-react */
+        tabIndex="1"
       >
         {this.props.children}
       </div>
