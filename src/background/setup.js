@@ -106,8 +106,9 @@ function setupFile(script, args, resolve) {
             ]);
             createMan('render', '', [
                 'render - Renders nothing (Makes the window blank)',
-                'render [HTML filepath] - Renders the HTML file',
-                'render [HTML filepath] [JS filepath] - Renders the HTML file and executes the JS file'
+                'render [files...] - Loads the files into a window, assumes one must be an HTML file\n' +
+                '       if a JS file is encountered, it will be evaluated\n' +
+                '       if a CSS file is encountered, it will be injected'
             ]);
             script.exec('cd ..');
             script.output('====================================');

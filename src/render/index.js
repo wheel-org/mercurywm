@@ -10,25 +10,35 @@ const params: string[] = JSON.parse(qp.params);
 console.log({ runningCommand, workingDirectory, cache, id, env, params });
 
 const content = document.getElementById("content");
-if (content && params[0]) {
-  getFile(params[0], htmlFile => {
-    console.log(htmlFile);
-    content.innerHTML = htmlFile;
-    if (params[1]) {
-      getFile(params[1], jsFile => {
-        console.log(jsFile);
+const head = document.head || document.getElementsByTagName('head')[0];
+if (content) {
+  for (let i = 0; i < params.length; i++) {
+    const param = params[i];
+    getFile(param, file => {
+      if (param.endsWith('.html')) {
+        content.innerHTML = file;
+      }
+      else if (param.endsWith('.js')) {
         (function() {
-          eval(jsFile);
+          eval(file);
         })();
-      });
-    }
-  });
+      }
+      else if (param.endsWith('.css')) {
+        const style = document.createElement('style');
+        if (head) {
+          style.type = 'text/css';
+          style.appendChild(document.createTextNode(file));
+          head.appendChild(style);
+        }
+      }
+    });
+  }
 }
 
 function getFile(path: string, callback: string => void) {
   const absolutePath = path.startsWith("~")
-    ? workingDirectory + "/" + path
-    : path;
+    ? path
+    : workingDirectory + "/" + path;
   fileRequestCallback[absolutePath] = callback;
   sendMessage({
     type: "requestFile",
