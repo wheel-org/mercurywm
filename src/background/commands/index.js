@@ -37,6 +37,9 @@ function Command(state, command, params) {
             if (dirIndex >= 0) {
                 this.traversePath(directory.data[dirIndex], parts.slice(1), callback);
             }
+            else {
+                this.output('Directory traversal failed. Path not found.');
+            }
         }
     };
     this.deleteFile = function(path) {
