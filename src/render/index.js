@@ -116,7 +116,7 @@ document.addEventListener('click', () => {
 }, true);
 
 const content = document.getElementById("content");
-const head = document.head || document.getElementsByTagName('head')[0];
+const head = document.head;
 if (content) {
   let jsToEval = []
   let calls = 0;
