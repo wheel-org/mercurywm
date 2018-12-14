@@ -24,9 +24,10 @@ function Command(state, command, params) {
         });
     };
     this.traversePath = function(directory, parts, callback) {
-        if (parts.length > 0 && parts[0] === '~') {
+        while (parts.length > 0 && parts[0] === '~') {
             // Remove root directory
             parts.shift();
+            directory = state.wfs;
         }
 
         const name = parts[0];
