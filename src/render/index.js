@@ -7,33 +7,8 @@ const qp: { [string]: string } = getQueryParams(document.location.search);
 const { runningCommand, workingDirectory, cache, id } = qp;
 const env: { [string]: string } = JSON.parse(qp.env);
 const params: string[] = JSON.parse(qp.params);
-console.log({ runningCommand, workingDirectory, cache, id, env, params });
 
-const content = document.getElementById("content");
-const head = document.head || document.getElementsByTagName('head')[0];
-if (content) {
-  for (let i = 0; i < params.length; i++) {
-    const param = params[i];
-    getFile(param, file => {
-      if (param.endsWith('.html')) {
-        content.innerHTML = file;
-      }
-      else if (param.endsWith('.js')) {
-        (function() {
-          eval(file);
-        })();
-      }
-      else if (param.endsWith('.css')) {
-        const style = document.createElement('style');
-        if (head) {
-          style.type = 'text/css';
-          style.appendChild(document.createTextNode(file));
-          head.appendChild(style);
-        }
-      }
-    });
-  }
-}
+console.log({ runningCommand, workingDirectory, cache, id, env, params });
 
 function getFile(path: string, callback: string => void) {
   const absolutePath = path.startsWith("~")
@@ -45,6 +20,7 @@ function getFile(path: string, callback: string => void) {
     path: absolutePath
   });
 }
+window.getFile = getFile;
 
 function writeFile(path: string, content: string) {
   sendMessage({
@@ -53,10 +29,12 @@ function writeFile(path: string, content: string) {
     content
   });
 }
+window.writeFile = writeFile;
 
 function getEnv(key: string) {
   return env[key] || "";
 }
+window.getEnv = getEnv;
 
 function setEnv(key: string, value: string) {
   env[key] = value;
@@ -66,6 +44,7 @@ function setEnv(key: string, value: string) {
     value
   });
 }
+window.setEnv = setEnv;
 
 // Exit render
 function done() {
@@ -135,3 +114,36 @@ document.addEventListener('click', () => {
     id
   });
 }, true);
+
+const content = document.getElementById("content");
+const head = document.head;
+if (content) {
+  let jsToEval = []
+  let calls = 0;
+  for (let i = 0; i < params.length; i++) {
+    const param = params[i];
+    calls += 1;
+    getFile(param, file => {
+      if (param.endsWith('.html')) {
+        content.innerHTML = file;
+      }
+      else if (param.endsWith('.js')) {
+        jsToEval[i] = file;
+      }
+      else if (param.endsWith('.css')) {
+        const style = document.createElement('style');
+        if (head) {
+          style.type = 'text/css';
+          style.appendChild(document.createTextNode(file));
+          head.appendChild(style);
+        }
+      }
+      calls -= 1;
+      if (calls <= 0) {
+        (function() {
+          window.eval(Object.values(jsToEval).join('\n\n'));
+        })();
+      }
+    });
+  }
+}
