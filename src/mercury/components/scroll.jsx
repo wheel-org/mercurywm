@@ -11,7 +11,7 @@ type Props = {|
 
 class SmoothScroll extends React.Component<Props> {
   animation: ?AnimationFrameID;
-  input = React.createRef();
+  input = React.createRef<HTMLDivElement>();
 
   componentDidMount() {
     const box = this.input.current;
@@ -89,9 +89,7 @@ class SmoothScroll extends React.Component<Props> {
 
       // Continue scrolling
       const timeStep = deltaTime / duration;
-      const newTop =
-        animationStart +
-        interpolator(timeStep) * (animationEnd - animationStart);
+      const newTop = animationStart + interpolator(timeStep) * (animationEnd - animationStart);
       if (box) box.scrollTop = newTop;
 
       this.animation = requestAnimationFrame(animate);
