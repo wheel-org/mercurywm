@@ -64,7 +64,7 @@ function saveBackup(script: Script, resolve: Function): void {
 }
 
 function restoreBackup(script: Script, resolve: Function): void {
-  chrome.storage.sync.get(['backupDate', 'backupSize'], data => {
+  chrome.storage.sync.get((['backupDate', 'backupSize']: string[]), data => {
     if (isError(script, 'Backup restore failed!')) {
       resolve();
       return;
@@ -72,14 +72,14 @@ function restoreBackup(script: Script, resolve: Function): void {
 
     const backupDate: number = data.backupDate;
     if (backupDate == null) {
-      script.output("No backup saved");
+      script.output('No backup saved');
       resolve();
       return;
     }
 
     const backupSize: number = data.backupSize;
     if (backupSize == null) {
-      script.output("Missing backup data");
+      script.output('Missing backup data');
       resolve();
       return;
     }
@@ -109,11 +109,7 @@ function restoreBackup(script: Script, resolve: Function): void {
   });
 }
 
-export default function backup(
-  script: Script,
-  params: Array<string>,
-  resolve: Function
-) {
+export default function backup(script: Script, params: Array<string>, resolve: Function) {
   if (params.length === 0) {
     chrome.storage.sync.get('backupDate', data => {
       if (!isError(script, 'Backup list failed!')) {
