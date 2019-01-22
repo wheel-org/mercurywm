@@ -24,18 +24,21 @@ function Command(state, command, params) {
         });
     };
     this.traversePath = function(directory, parts, callback) {
-        if (parts.length > 0 && parts[0] === '~') {
+        while (parts.length > 0 && parts[0] === '~') {
             // Remove root directory
             parts.shift();
+            directory = state.wfs;
         }
 
         const name = parts[0];
         if (parts.length === 1) {
             callback(directory, name);
         } else {
-            const dirIndex = directory.data.findIndex(item => item.type == Constants.DIR_TYPE && item.name === name);
+            const dirIndex = directory.data.findIndex(item => (item.type === Constants.DIR_TYPE && item.name === name));
             if (dirIndex >= 0) {
                 this.traversePath(directory.data[dirIndex], parts.slice(1), callback);
+            } else {
+                this.output('Path not found!');
             }
         }
     };
