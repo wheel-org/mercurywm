@@ -9,6 +9,7 @@ const env: { [string]: string } = JSON.parse(qp.env);
 const params: string[] = JSON.parse(qp.params);
 console.log({ runningCommand, workingDirectory, cache, id, env, params });
 
+const windowContext = window;
 const content = document.getElementById("content");
 const head = document.head || document.getElementsByTagName('head')[0];
 if (content) {
@@ -20,7 +21,7 @@ if (content) {
       }
       else if (param.endsWith('.js')) {
         (function() {
-          eval(file);
+          windowContext.eval(file);
         })();
       }
       else if (param.endsWith('.css')) {
