@@ -64,6 +64,7 @@ function Command(state, command, params) {
 
 export function isCommand(name: string) {
     const names = [
+        'alias',
         'cat',
         'cd',
         'clear',
@@ -87,7 +88,12 @@ export function isCommand(name: string) {
 export function executeCommand(state: StoreState, input: string): StoreState {
     if (input === '') return state;
 
-    const [name, ...params] = parseInput(input);
+    let [name, ...params] = parseInput(input);
+    while (state.wsh.aliases && state.wsh.aliases[name]) {
+        const [newName, ...newParams] = parseInput(state.wsh.aliases[name]);
+        name = newName;
+        params.unshift(...newParams);
+    }
 
     const command = new Command(state, name, params);
     if (name === 'reset') {
