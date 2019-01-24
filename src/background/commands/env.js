@@ -8,7 +8,11 @@ export default function env(state: StoreState, params: Array<string>) {
       this.output(e + ': ' + state.wsh.env[e], false, false);
     });
   } else if (params.length === 1) {
-    this.output(params[0] + ': ' + state.wsh.env[params[0]], false, false);
+    if (!state.wsh.env[params[0]]) {
+      this.output('Environment variable \'' + params[0] + '\' does not exist!');
+    } else {
+      this.output(params[0] + ': ' + state.wsh.env[params[0]], false, false);
+    }
   } else if (params.length === 2) {
     // $FlowFixMe: command can mutate state
     state.wsh.env[params[0]] = params[1];

@@ -12,7 +12,11 @@ export default function alias(state: StoreState, params: Array<string>) {
         this.output(e + ': ' + state.wsh.aliases[e], false, false);
     });
   } else if (params.length === 1) {
-    this.output(params[0] + ': ' + state.wsh.aliases[params[0]], false, false);
+    if (!state.wsh.aliases[params[0]]) {
+      this.output('\'' + params[0] + '\' is not aliased to anything!');
+    } else {
+      this.output(params[0] + ': ' + state.wsh.aliases[params[0]], false, false);
+    }
   } else if (params.length === 2) {
     // $FlowFixMe: command can mutate state
     if (!params[1]) {
