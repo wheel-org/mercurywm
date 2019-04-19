@@ -6,9 +6,6 @@ import { connect } from 'react-redux';
 import SmoothScroll from './scroll.jsx';
 import Terminal from './terminal.jsx';
 import { getDirectory } from 'utils';
-// This is only here because getDirectory needs the file system is a parameter
-// For other state needs, use connect!
-import store from 'mercury/store';
 
 import type {
   StoreState,
@@ -75,7 +72,7 @@ class TerminalLink extends React.Component<Props, State> {
   getCurrentInputCommand() {
     const history = this.props.terminal.history;
     return history[this.state.historyIndex];
-  };
+  }
 
   handleKey = (e: SyntheticKeyboardEvent<HTMLDivElement>) => {
     const history = this.props.terminal.history;
@@ -122,10 +119,7 @@ class TerminalLink extends React.Component<Props, State> {
       this.setState({
         cursor: this.state.cursor + 1
       });
-    } else if (
-      e.keyCode === Constants.KEY_HOME &&
-      this.state.cursor !== 0
-    ) {
+    } else if (e.keyCode === Constants.KEY_HOME && this.state.cursor !== 0) {
       this.setState({
         cursor: 0
       });
@@ -153,7 +147,7 @@ class TerminalLink extends React.Component<Props, State> {
         // Grab Matches
         const workingDirectory = getDirectory(
           this.props.terminal.workingDirectory,
-          store.getState().wfs
+          this.props.wfs
         );
         // Guaranteed to exist since we're in the directory
         if (!workingDirectory) return;
@@ -182,14 +176,13 @@ class TerminalLink extends React.Component<Props, State> {
             tabPressed: false
           });
           this.props.addCommand(command, true);
-          for (let i = 0; i < matches.length; i++) {
+          matches.forEach(match => {
             this.props.addCommand(
-              (workingDirectory.data[i].type === Constants.DIR_TYPE
-                ? 'DIR     '
-                : 'FILE    ') + workingDirectory.data[i].name,
+              (match.type === Constants.DIR_TYPE ? 'DIR     ' : 'FILE    ') +
+                match.name,
               false
             );
-          }
+          });
         } else {
           this.setState({
             tabPressed: true
