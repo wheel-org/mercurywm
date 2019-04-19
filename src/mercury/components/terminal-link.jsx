@@ -125,6 +125,20 @@ class TerminalLink extends React.Component<Props, State> {
       this.setState({
         cursor: this.state.cursor + 1
       });
+    } else if (
+      e.keyCode === Constants.KEY_HOME &&
+      this.state.cursor !== 0
+    ) {
+      this.setState({
+        cursor: 0
+      });
+    } else if (
+      e.keyCode === Constants.KEY_END &&
+      this.state.cursor !== command.length
+    ) {
+      this.setState({
+        cursor: command.length
+      });
     } else if (e.keyCode === Constants.KEY_BACKSPACE && this.state.cursor > 0) {
       this.props.updateCommand(
         command.slice(0, this.state.cursor - 1) +
