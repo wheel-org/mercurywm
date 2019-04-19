@@ -75,6 +75,18 @@ export type Action =
   | {| +type: 'SELECT_WORKSPACE', +id: number |}
   | {| +type: 'SELECT_WINDOW', +id: number |}
   | {| +type: 'UPDATE_COMMAND', +text: string, +index: number |}
+  | {|
+    +type: 'INSERT_IN_COMMAND',
+    +text: string,
+    +historyIndex: number,
+    +insertIndex: number
+  |}
+  | {|
+    +type: 'DELETE_FROM_COMMAND',
+    +historyIndex: number,
+    +deleteIndex: number,
+    +deleteCount: number
+  |}
   | {| +type: 'ADD_COMMAND', +text: string, +showPrompt: boolean |}
   | {| +type: 'EXECUTE_COMMAND', +text: string, +hidden?: boolean |}
   | {|
