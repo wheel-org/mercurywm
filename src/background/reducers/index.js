@@ -123,6 +123,36 @@ const rootReducer = function(state: StoreState, action: Action): StoreState {
                 selectedWindow: action.id
             };
 
+        case 'INSERT_IN_COMMAND': {
+            const command = currTerminal.history[currTerminal.history.length - 1];
+            const newCommand = command.slice(0, action.insertIndex) + action.text + command.slice(action.insertIndex);
+            return updateCurrTerminal(
+                state,
+                index,
+                u(
+                    {
+                        history: { [action.historyIndex]: newCommand }
+                    },
+                    currTerminal
+                )
+            );
+        }
+
+        case 'DELETE_FROM_COMMAND': {
+            const command = currTerminal.history[currTerminal.history.length - 1];
+            const newCommand = command.slice(0, action.deleteIndex) + command.slice(action.deleteIndex + action.deleteCount);
+            return updateCurrTerminal(
+                state,
+                index,
+                u(
+                    {
+                        history: { [action.historyIndex]: newCommand }
+                    },
+                    currTerminal
+                )
+            );
+        }
+
         case 'UPDATE_COMMAND':
             return updateCurrTerminal(
                 state,

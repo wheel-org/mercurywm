@@ -27,6 +27,8 @@ type StateProps = {|
 
 type DispatchProps = {|
   +updateCommand: (string, number) => void,
+  +insertInCommand: (string, number, number) => void,
+  +deleteFromCommand: (number, number, number) => void,
   +addCommand: (string, boolean) => void,
   +executeCommand: string => void
 |};
@@ -64,12 +66,7 @@ class TerminalLink extends React.Component<Props, State> {
 
   onPaste = (data: string) => {
     const command = this.getCurrentInputCommand();
-    this.props.updateCommand(
-      command.slice(0, this.state.cursor) +
-        data +
-        command.slice(this.state.cursor),
-      this.state.historyIndex
-    );
+    this.props.insertInCommand(data, this.state.historyIndex, this.state.cursor);
     this.setState({
       cursor: this.state.cursor + data.length
     });
@@ -140,11 +137,7 @@ class TerminalLink extends React.Component<Props, State> {
         cursor: command.length
       });
     } else if (e.keyCode === Constants.KEY_BACKSPACE && this.state.cursor > 0) {
-      this.props.updateCommand(
-        command.slice(0, this.state.cursor - 1) +
-          command.slice(this.state.cursor),
-        this.state.historyIndex
-      );
+      this.props.deleteFromCommand(this.state.historyIndex, this.state.cursor - 1, 1);
       this.setState({
         cursor: this.state.cursor - 1
       });
@@ -152,11 +145,7 @@ class TerminalLink extends React.Component<Props, State> {
       e.keyCode === Constants.KEY_DELETE &&
       this.state.cursor < command.length
     ) {
-      this.props.updateCommand(
-        command.slice(0, this.state.cursor) +
-          command.slice(this.state.cursor + 1),
-        this.state.historyIndex
-      );
+      this.props.deleteFromCommand(this.state.historyIndex, this.state.cursor, 1);
     } else if (e.keyCode === Constants.KEY_TAB) {
       const words = command.split(' ');
       if (words.length > 1) {
@@ -210,12 +199,7 @@ class TerminalLink extends React.Component<Props, State> {
         e.preventDefault();
       }
     } else if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
-      this.props.updateCommand(
-        command.slice(0, this.state.cursor) +
-          e.key +
-          command.slice(this.state.cursor),
-        this.state.historyIndex
-      );
+      this.props.insertInCommand(e.key, this.state.historyIndex, this.state.cursor);
       this.setState({
         cursor: this.state.cursor + 1
       });
@@ -271,6 +255,22 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
       type: 'ADD_COMMAND',
       text,
       showPrompt
+    });
+  },
+  insertInCommand: (text: string, historyIndex: number, insertIndex: number) => {
+    dispatch({
+      type: 'INSERT_IN_COMMAND',
+      text,
+      historyIndex,
+      insertIndex
+    });
+  },
+  deleteFromCommand: (historyIndex: number, deleteIndex: number, deleteCount: number) => {
+    dispatch({
+      type: 'DELETE_FROM_COMMAND',
+      historyIndex,
+      deleteIndex,
+      deleteCount
     });
   },
   executeCommand: (text: string) => {
