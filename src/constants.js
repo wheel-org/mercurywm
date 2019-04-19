@@ -31,7 +31,9 @@ const Constants = {
     KEY_ENTER: 13,
     KEY_BACKSPACE: 8,
     KEY_DELETE: 46,
-    KEY_TAB: 9
+    KEY_TAB: 9,
+    KEY_HOME: 36,
+    KEY_END: 35,
 };
 
 module.exports = Constants;
