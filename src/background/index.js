@@ -13,6 +13,25 @@ window.reset = () => {
     chrome.runtime.reload();
 };
 
+var _console = (function(nativeConsole) {
+    return {
+        log: function (text){
+            nativeConsole.log(text);
+        },
+        info: function (text) {
+            nativeConsole.info(text);
+        },
+        warn: function (text) {
+            nativeConsole.warn(text);
+        },
+        error: function (text) {
+            nativeConsole.error(text);
+        },
+        assert: nativeConsole.assert
+    };
+}(window.console));
+console = _console;
+
 console.log('MercuryWM background running');
 
 chrome.runtime.onConnect.addListener(port => {
