@@ -56,7 +56,7 @@ export default function merge(state: StoreState, params: Array<string>) {
     const firstIndex = parseInt(params[1]);
     const secondIndex = parseInt(params[2]);
 
-    if (firstIndex !== secondIndex) {
+    if (firstIndex === secondIndex) {
       this.output('Windows must be distinct');
     } else if (
       firstIndex >= 0 &&
