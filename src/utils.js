@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 import type { Directory, File, StoreState, Window } from 'types';
 

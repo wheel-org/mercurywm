@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
@@ -8,31 +8,43 @@ import Window from './window.jsx';
 import type { StoreState, Workspace as WorkspaceType } from 'types';
 
 type StateProps = {|
-  +currentWindowId: number
+  +currentWindowId: number,
+  +env: Object
 |};
 
-type Props = {|
+type PassedProps = {|
   +workspace: WorkspaceType,
-  ...StateProps
-|};
+|}
 
-const Workspace = ({ workspace, currentWindowId }: Props) => {
-  const windows = [];
-  for (let i = 0; i < workspace.windows.length; i++) {
-    windows.push(
-      <Window
-        key={workspace.windows[i].id}
-        index={i}
-        window={workspace.windows[i]}
-        selected={workspace.windows[i].id === currentWindowId}
-      />
-    );
-  }
-  return <div className="workspace">{windows}</div>;
+type Props = PassedProps & StateProps;
+
+const Workspace = ({ workspace, currentWindowId, env }: Props) => {
+  const padding = env.windowPadding || 10;
+  const windows = workspace.windows.map((window, i) => (
+    <Window
+      key={window.id}
+      index={i}
+      window={window}
+      selected={window.id === currentWindowId}
+    />
+  ));
+
+  return <div
+    className="workspace"
+    style={{
+      width: "calc(100% - " + padding + "px)",
+      height: "calc(100% - 20px - " + padding + "px)"
+    }}
+  >{windows}</div>;
 };
 
 const mapStateToProps = (state: StoreState): StateProps => ({
-  currentWindowId: state.selectedWindow
+  currentWindowId: state.selectedWindow,
+  env: state.wsh.env
 });
 
-export default connect(mapStateToProps)(Workspace);
+const ConnectedComp: React.ComponentType<PassedProps> = connect(
+  mapStateToProps
+)(Workspace);
+
+export default ConnectedComp;

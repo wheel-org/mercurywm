@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 import { getDirectory, getFile, getPath } from 'utils';
 
@@ -11,8 +11,7 @@ export default function rm(state: StoreState, params: Array<string>) {
   }
 
   if (params.length === 1) {
-    const path = getPath(params[0], this.terminal.workingDirectory);
-
+    const path = getPath(params[0], state.wfs, this.terminal.workingDirectory);
     if (getFile(path, state.wfs)) {
       this.deleteFile(path);
     } else if (getDirectory(path, state.wfs)) {
@@ -21,7 +20,7 @@ export default function rm(state: StoreState, params: Array<string>) {
       this.output(params[0] + ' was not found');
     }
   } else {
-    const path = getPath(params[1], this.terminal.workingDirectory);
+    const path = getPath(params[1], state.wfs, this.terminal.workingDirectory);
 
     if (params[0] === '-f') {
       if (getFile(path, state.wfs)) {

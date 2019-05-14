@@ -1,4 +1,4 @@
-/* @flow
+/* @flow strict
  * root.jsx
  * Renders the app when data is loaded, or shows the loading page
  * Handles global key listeners and iframe message listeners
@@ -23,6 +23,7 @@ type StateProps = {|
 |};
 
 type DispatchProps = {|
+    +selectWindowDirect: number => void,
     +selectWorkspace: number => void,
     +selectWindow: number => void,
     +killScript: number => void,
@@ -30,10 +31,10 @@ type DispatchProps = {|
     +createOrModifyFile: (string, string) => void
 |};
 
-type Props = {| ...StateProps, ...DispatchProps |};
+type Props = StateProps & DispatchProps;
 
 class Root extends React.Component<Props> {
-    componentWillMount() {
+    componentDidMount() {
         window.addEventListener('keydown', (e: KeyboardEvent) => this.handleSystemKey(e), true);
         window.addEventListener('message', (e: MessageEvent) => this.receiveMessage(e), false);
     }
@@ -85,6 +86,9 @@ class Root extends React.Component<Props> {
             case 'writeFile':
                 this.props.createOrModifyFile(message.path, message.content);
                 break;
+            case 'selectWindow':
+                this.props.selectWindowDirect(Number(message.id));
+                break;
         }
     }
 
@@ -98,6 +102,11 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
+    selectWindowDirect: (id: number) =>
+        dispatch({
+            type: 'SELECT_WINDOW',
+            id
+        }),
     selectWorkspace: (direction: number) =>
         dispatch({
             type: 'INTENT_SELECT_WORKSPACE',
@@ -127,4 +136,9 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
         })
 });
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(Root);
+const ConnectedComp: React.ComponentType<{||}> = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Root);
+
+export default ConnectedComp;

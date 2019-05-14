@@ -1,8 +1,8 @@
-/* @flow */
+/* @flow strict */
 
 import u from 'updeep';
 import { executeCommand } from 'background/commands';
-import { clear, save } from 'background/storage';
+import { clear, save, initialState } from 'background/storage';
 import { createDirectory, createFile, createWorkspace } from 'creators';
 import {
     findWindow,
@@ -122,6 +122,36 @@ const rootReducer = function(state: StoreState, action: Action): StoreState {
                 ...state,
                 selectedWindow: action.id
             };
+
+        case 'INSERT_IN_COMMAND': {
+            const command = currTerminal.history[currTerminal.history.length - 1];
+            const newCommand = command.slice(0, action.insertIndex) + action.text + command.slice(action.insertIndex);
+            return updateCurrTerminal(
+                state,
+                index,
+                u(
+                    {
+                        history: { [action.historyIndex]: newCommand }
+                    },
+                    currTerminal
+                )
+            );
+        }
+
+        case 'DELETE_FROM_COMMAND': {
+            const command = currTerminal.history[currTerminal.history.length - 1];
+            const newCommand = command.slice(0, action.deleteIndex) + command.slice(action.deleteIndex + action.deleteCount);
+            return updateCurrTerminal(
+                state,
+                index,
+                u(
+                    {
+                        history: { [action.historyIndex]: newCommand }
+                    },
+                    currTerminal
+                )
+            );
+        }
 
         case 'UPDATE_COMMAND':
             return updateCurrTerminal(
@@ -390,7 +420,7 @@ const rootReducer = function(state: StoreState, action: Action): StoreState {
     }
 };
 
-const saveWrapper = function(state: StoreState, action: Action) {
+const saveWrapper = function(state: StoreState = initialState, action: Action) {
     const newState = rootReducer(state, action);
     save(newState);
     return newState;

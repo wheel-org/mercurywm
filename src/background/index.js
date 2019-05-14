@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 import executeScript from './scripts';
 import { clear } from './storage';
@@ -13,9 +13,30 @@ window.reset = () => {
     chrome.runtime.reload();
 };
 
+var _console = (function(nativeConsole) {
+    return {
+        log: function (text){
+            nativeConsole.log(text);
+        },
+        info: function (text) {
+            nativeConsole.info(text);
+        },
+        warn: function (text) {
+            nativeConsole.warn(text);
+        },
+        error: function (text) {
+            nativeConsole.error(text);
+        },
+        assert: nativeConsole.assert
+    };
+}(window.console));
+console = _console;
+
 console.log('MercuryWM background running');
 
 chrome.runtime.onConnect.addListener(port => {
+    if (!port) return;
+
     console.assert(port.name === 'mercurywm');
     console.log('connected');
     port.postMessage('connected');
@@ -34,7 +55,8 @@ chrome.runtime.onConnect.addListener(port => {
             const newState = store.getState();
             // Only handle async script if store determines it is (and sets
             //   status to running)
-            if (getCurrentWindow(newState).terminal.running) {
+            const currWindow = getCurrentWindow(newState);
+            if (currWindow && currWindow.terminal.running) {
                 // Run the script async
                 executeScript(newState.selectedWindow, action.text);
             }

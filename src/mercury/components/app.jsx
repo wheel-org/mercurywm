@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 import * as React from 'react';
 import { connect } from 'react-redux';
@@ -10,18 +10,19 @@ import type { StoreState, Dispatch, Workspace as WorkspaceType } from 'types';
 type Props = {|
     +currentWorkspace: WorkspaceType,
     +background: string,
+    +font: string,
     +title: string
 |};
 
 const App = (props: Props) => {
     document.title = props.title;
-
     return (
         <div
             style={{
                 width: '100%',
                 height: '100%',
-                background: props.background
+                background: props.background,
+                fontFamily: props.font
             }}
         >
             <Workspace workspace={props.currentWorkspace} />
@@ -36,11 +37,18 @@ const mapStateToProps = (state: StoreState): Props => {
         bg = 'url("' + bg + '") 0% 0% / cover';
     }
 
+    let font = state.wsh.env.font;
+    if (!font) {
+        font = "'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace";
+    }
     return {
         currentWorkspace: state.workspaces[state.selectedWorkspace],
         background: bg,
+        font: font,
         title: state.wsh.env.title || Constants.NAME + ' ' + Constants.VERSION
     };
 };
 
-export default connect(mapStateToProps)(App);
+const ConnectedComp: React.ComponentType<{||}> = connect(mapStateToProps)(App);
+
+export default ConnectedComp;

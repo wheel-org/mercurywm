@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 import merge from './merge';
 import shift from './shift';
@@ -25,8 +25,10 @@ export default function window(state: StoreState, params: Array<string>) {
       return shift.call(this, state, params);
     case 'list':
       this.output('In this workspace:');
-      this.workspace.windows.forEach(({ terminal }, i) => {
+      this.workspace.windows.forEach((window, i) => {
+        const terminal = window.terminal;
         let outputString = '[' + i + '] ';
+        outputString += '(' + window.x + ', ' + window.y + ', ' + window.width + ', ' + window.height + ') ';
         if (terminal.running) {
           outputString +=
             'Running: ' +

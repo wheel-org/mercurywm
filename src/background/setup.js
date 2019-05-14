@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 let script: {
     output: string => void,
@@ -100,13 +100,15 @@ function setupFile(script, args, resolve) {
                 'rm -d [file] - Removes directory'
             ]);
             createMan('backup', '', [
-                'backup save - Writes a backup of the current state of Mercury into the console',
+                'backup - Shows when the last backup was made',
+                'backup save - Writes a backup of the current state of Mercury into synced storage',
                 'backup restore - Restores Mercury from a backup created by "backup save"'
             ]);
             createMan('render', '', [
                 'render - Renders nothing (Makes the window blank)',
-                'render [HTML filepath] - Renders the HTML file',
-                'render [HTML filepath] [JS filepath] - Renders the HTML file and executes the JS file'
+                'render [files...] - Loads the files into a window, assumes one must be an HTML file\n' +
+                '       if a JS file is encountered, it will be evaluated\n' +
+                '       if a CSS file is encountered, it will be injected'
             ]);
             script.exec('cd ..');
             script.output('====================================');

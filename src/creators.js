@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 import type { Directory, File, Terminal, Window, Workspace } from 'types';
 

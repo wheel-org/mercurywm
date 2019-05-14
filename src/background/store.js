@@ -1,10 +1,10 @@
-/* @flow */
+/* @flow strict */
 
 import { createStore } from 'redux';
-import Storage from 'background/storage';
+import * as Storage from 'background/storage';
 import reducers from 'background/reducers';
 
-import type { Store, Action } from 'types';
+import type { Store } from 'types';
 
 const store: Store = createStore(reducers, Storage.initialState);
 

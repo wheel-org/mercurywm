@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 import * as React from 'react';
 
@@ -19,4 +19,4 @@ const Loading = () => (
   </div>
 );
 
-module.exports = Loading;
+export default Loading;

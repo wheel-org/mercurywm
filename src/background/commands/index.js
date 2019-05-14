@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 import { clear } from 'background/storage';
 import { findWindow } from 'utils';
@@ -23,19 +23,23 @@ function Command(state, command, params) {
             prompt: showPrompt ? this.terminal.workingDirectory : ''
         });
     };
-    this.traversePath = function(directory, parts, callback) {
-        if (parts.length > 0 && parts[0] === '~') {
+    this.traversePath = function(dir, parts, callback) {
+        let directory = dir;
+        while (parts.length > 0 && parts[0] === '~') {
             // Remove root directory
             parts.shift();
+            directory = state.wfs;
         }
 
         const name = parts[0];
         if (parts.length === 1) {
             callback(directory, name);
         } else {
-            const dirIndex = directory.data.findIndex(item => item.type == Constants.DIR_TYPE && item.name === name);
+            const dirIndex = directory.data.findIndex(item => (item.type === Constants.DIR_TYPE && item.name === name));
             if (dirIndex >= 0) {
                 this.traversePath(directory.data[dirIndex], parts.slice(1), callback);
+            } else {
+                this.output('Path not found!');
             }
         }
     };
@@ -61,7 +65,7 @@ function Command(state, command, params) {
 
 export function isCommand(name: string) {
     const names = [
-        'backup',
+        'alias',
         'cat',
         'cd',
         'clear',
@@ -82,10 +86,15 @@ export function isCommand(name: string) {
     return names.find(n => n === name);
 }
 
-export function executeCommand(state: StoreState, input: string) {
+export function executeCommand(state: StoreState, input: string): StoreState {
     if (input === '') return state;
 
-    const [name, ...params] = parseInput(input);
+    let [name, ...params] = parseInput(input);
+    while (state.wsh.aliases && state.wsh.aliases[name]) {
+        const [newName, ...newParams] = parseInput(state.wsh.aliases[name]);
+        name = newName;
+        params.unshift(...newParams);
+    }
 
     const command = new Command(state, name, params);
     if (name === 'reset') {
@@ -96,7 +105,7 @@ export function executeCommand(state: StoreState, input: string) {
         return state;
     } else if (isCommand(name)) {
         return require('./' + name).default.call(command, state, params);
-    } else if (name !== undefined) {
+    } else {
         // $FlowFixMe: command can mutate state
         command.terminal.running = true;
         return state;

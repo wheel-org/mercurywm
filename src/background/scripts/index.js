@@ -1,11 +1,11 @@
-/* @flow */
+/* @flow strict */
 
 import { isCommand } from 'background/commands';
 import store from 'background/store';
 import { createFile, createTerminal, createWindow } from 'creators';
 import { findWindow, getDirectory, getFile, getPath } from 'utils';
 
-import type { Directory, File, Script as ScriptType, Window } from 'types';
+import type { Directory, File, Script as ScriptType, StoreState, Window } from 'types';
 
 // Parse input into command and parameters
 function parseInput(text): Array<string> {
@@ -16,7 +16,7 @@ function parseInput(text): Array<string> {
 
 // List of built-in scripts (doesn't include .bin)
 function isScript(name: string) {
-    const names = ['async', 'edit', 'yum'];
+    const names = ['async', 'backup', 'edit', 'yum'];
     return names.find(n => n === name);
 }
 
@@ -69,6 +69,7 @@ function Script(command): ScriptType {
         //     workspace: workspaceID,
         //     window: windowID
         //   }),
+        updateStore: (newState: StoreState) => store.dispatch({ type: 'LOAD_STORAGE', data: newState}),
         createFile: (name: string, data: string) => createFile(name, data),
         createTerminal: () => createTerminal(),
         createWindow: (x: number, y: number, w: number, h: number, id: number) => createWindow(x, y, w, h, id),

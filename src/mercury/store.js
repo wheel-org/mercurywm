@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 import { createDirectory } from 'creators';
 import reducer from 'mercury/reducer';
@@ -7,7 +7,7 @@ import { createStore } from 'redux';
 import type { StorageState, Store } from 'types';
 
 // Not actual valid state since real state will be taken from storage
-const initialState: StorageState = {
+const defaultStateObject: StorageState = {
   [Constants.STATE_KEY]: {
     loaded: false,
     workspaces: [],
@@ -20,7 +20,7 @@ const initialState: StorageState = {
   }
 };
 
-const store: Store = createStore(reducer, initialState[Constants.STATE_KEY]);
+const store: Store = createStore(reducer, defaultStateObject[Constants.STATE_KEY]);
 
 chrome.storage.local.get(Constants.STATE_KEY, (data: StorageState) => {
   store.dispatch({
@@ -39,3 +39,4 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 });
 
 export default store;
+export const initialState = defaultStateObject[Constants.STATE_KEY];

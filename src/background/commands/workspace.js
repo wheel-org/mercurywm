@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 import { createWorkspace } from 'creators';
 
@@ -27,13 +27,13 @@ export default function workspace(state: StoreState, params: Array<string>) {
       } else if (state.workspaces.length === 1) {
         this.output('Cannot have zero workspaces');
       } else {
+        state.workspaces.splice(index, 1);
         if (index === state.selectedWorkspace) {
           // $FlowFixMe: command can mutate state
           state.selectedWorkspace = 0;
           // $FlowFixMe: command can mutate state
           state.selectedWindow = state.workspaces[0].windows[0].id;
         }
-        state.workspaces.splice(index, 1);
       }
     } else {
       this.output('Unknown parameter ' + params[0]);
