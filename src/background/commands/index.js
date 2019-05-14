@@ -23,7 +23,8 @@ function Command(state, command, params) {
             prompt: showPrompt ? this.terminal.workingDirectory : ''
         });
     };
-    this.traversePath = function(directory, parts, callback) {
+    this.traversePath = function(dir, parts, callback) {
+        let directory = dir;
         while (parts.length > 0 && parts[0] === '~') {
             // Remove root directory
             parts.shift();

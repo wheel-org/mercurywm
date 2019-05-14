@@ -52,6 +52,9 @@ export type StoreState = {|
   +wsh: {
     +env: {
       +[string]: string
+    },
+    +aliases?: {
+      +[string]: string
     }
   },
   +selectedWindow: number,
