@@ -23,8 +23,14 @@ jobs:
           name: Running Tests
           command: npm run test
       - run:
+          name: Add Build Number to Manifest
+          command: node append_build_number.js ${CIRCLE_BUILD_NUM}
+      - run:
           name: Build and Zip
           command: npm run ci-prod
+      - store_artifacts:
+          path: build
+          destination: build/
       - run:
           name: Publish to Web Store
           command: |
