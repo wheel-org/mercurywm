@@ -13,12 +13,6 @@ const updates = {
 const versions = ['1.0.0', '1.1.0', '2.0.0', '2.1.0'];
 
 function updateState(state: $Shape<StoreState>): StoreState {
-  // Missing version string; try all updates
-  if (!state.version) {
-    // $FlowFixMe: mutating state
-    state.version = '1.0.0';
-  }
-
   // While the state isn't updated to the latest version, keep applying updates
   while (state.version !== Constants.VERSION) {
     const index = versions.findIndex(v => v === state.version);
