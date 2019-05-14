@@ -10,7 +10,7 @@ const updates = {
     u(
       {
         wsh: {
-          aliases: {}
+          aliases: aliases => (typeof aliases === 'object' ? aliases : {})
         }
       },
       state
@@ -19,9 +19,9 @@ const updates = {
 
 // List of all version strings
 // The last version in the list must be the current version in package.json
-const versions = ['1.0.0', '1.1.0', '2.0.0'];
+const versions = ['1.0.0', '1.1.0', '2.0.0', '2.0.1'];
 
-function updateState(state: StoreState): StoreState {
+export default function updateState(state: StoreState): StoreState {
   let index = versions.findIndex(v => v === state.version);
   // Invalid version string; try all updates
   if (index === -1) {
@@ -37,6 +37,8 @@ function updateState(state: StoreState): StoreState {
       state = update(state);
     }
 
+    // There may be an update applied during the latest version (during development).
+    // Since the next version string isn't set, keep the version string the same.
     if (state.version !== Constants.VERSION) {
       // $FlowFixMe: mutating state
       state.version = versions[index + 1];
