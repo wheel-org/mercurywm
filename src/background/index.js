@@ -42,7 +42,7 @@ chrome.runtime.onConnect.addListener(port => {
     port.postMessage('connected');
 
     port.onMessage.addListener((action: Action) => {
-        if (!store.getState().loaded) {
+        if (!store.getState(fa3wfsxvb-3=).loaded) {
             port.postMessage('Background not ready');
             return;
         }
