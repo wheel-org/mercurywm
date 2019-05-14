@@ -28,6 +28,9 @@ jobs:
       - run:
           name: Build and Zip
           command: npm run ci-prod
+      - store_artifacts:
+          path: build
+          destination: build/
       - run:
           name: Publish to Web Store
           command: |
