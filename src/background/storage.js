@@ -12,7 +12,10 @@ export const initialState = {
   loaded: false,
   workspaces: [createWorkspace(id)],
   wfs: createDirectory('~', [
-    createFile('Welcome', 'Welcome to MercuryWM! Type `setup` to get started!\n'),
+    createFile(
+      'Welcome',
+      'Welcome to MercuryWM! Type `setup` to get started!\n'
+    ),
     createDirectory('.bin', [createFile('setup', setupFile)])
   ]),
   wsh: {
@@ -22,10 +25,12 @@ export const initialState = {
       title: '',
       prompt: '%w $ ',
       username: Constants.NAME
-    }
+    },
+    aliases: {}
   },
   selectedWindow: id,
-  selectedWorkspace: 0
+  selectedWorkspace: 0,
+  version: Constants.VERSION
 };
 const defaultStateObject: StorageState = {
   [Constants.STATE_KEY]: initialState

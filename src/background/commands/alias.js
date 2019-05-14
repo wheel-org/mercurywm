@@ -4,14 +4,9 @@ import type { StoreState } from 'types';
 
 /* This command has essentially the same logic as env.js */
 export default function alias(state: StoreState, params: Array<string>) {
-  if (!state.wsh.aliases) {
-    // $FlowFixMe: Users with old versions of MercuryWM won't have 'aliases'.
-    state.wsh.aliases = {};
-  }
   if (params.length === 0) {
     Object.keys(state.wsh.aliases).forEach(e => {
-      state.wsh.aliases &&
-        this.output(e + ': ' + state.wsh.aliases[e], false, false);
+      this.output(e + ': ' + state.wsh.aliases[e], false, false);
     });
   } else if (params.length === 1) {
     if (!state.wsh.aliases[params[0]]) {
