@@ -1,13 +1,13 @@
 {
     "name": "mercurywm",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "New tab page with multi-windowed terminals",
     "main": "src/index.js",
     "scripts": {
         "dev": "webpack --progress --watch",
         "prod": "cross-env NODE_ENV=production webpack -p --progress",
         "test": "flow check",
-        "travis": "npm run prod && zip -r mercurywm-$(date +%s).zip build/"
+        "ci-prod": "npm run prod && zip -r mercurywm-$(date +%s).zip build/"
     },
     "repository": {
         "type": "git",
