@@ -13,14 +13,19 @@ const defaultStateObject: StorageState = {
     workspaces: [],
     wfs: createDirectory('~', []),
     wsh: {
-      env: {}
+      env: {},
+      aliases: {}
     },
     selectedWindow: 0,
-    selectedWorkspace: 0
+    selectedWorkspace: 0,
+    version: ''
   }
 };
 
-const store: Store = createStore(reducer, defaultStateObject[Constants.STATE_KEY]);
+const store: Store = createStore(
+  reducer,
+  defaultStateObject[Constants.STATE_KEY]
+);
 
 chrome.storage.local.get(Constants.STATE_KEY, (data: StorageState) => {
   store.dispatch({

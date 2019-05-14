@@ -13,6 +13,7 @@ import {
     getDirectory,
     getFile
 } from 'utils';
+import updater from './updater';
 
 import type { Action, Directory, StoreState, Terminal } from 'types';
 
@@ -84,7 +85,7 @@ const rootReducer = function(state: StoreState, action: Action): StoreState {
     switch (action.type) {
         case 'LOAD_STORAGE':
             return {
-                ...action.data,
+                ...updater(action.data),
                 loaded: true
             };
 
