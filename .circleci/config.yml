@@ -2,21 +2,18 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:4.8.2
+      - image: circleci/node
     steps:
       - checkout
-      - run:
-        name: update-npm
-        command: 'sudo npm install -g npm@5'
       - restore_cache:
-        key: dependency-cache-{{ checksum "package.json" }}
+          key: dependency-cache-{{ checksum "package.json" }}
       - run:
-        name: install-npm-packages
-        command: npm install
+          name: install-npm-packages
+          command: npm install
       - save_cache:
-        key: dependency-cache-{{ checksum "package.json" }}
-        paths:
-          - ./node_modules
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
       - run:
-        name: build-prod
-        command: npm run ci-prod
+          name: build-prod
+          command: npm run ci-prod
