@@ -1,6 +1,6 @@
 /* @flow strict */
 
-import type { StoreState } from "types";
+import type { StoreState } from 'types';
 
 /* This command has essentially the same logic as env.js */
 export default function alias(state: StoreState, params: Array<string>) {
@@ -11,14 +11,14 @@ export default function alias(state: StoreState, params: Array<string>) {
   if (params.length === 0) {
     Object.keys(state.wsh.aliases).forEach(e => {
       state.wsh.aliases &&
-        this.output(e + ": " + state.wsh.aliases[e], false, false);
+        this.output(e + ': ' + state.wsh.aliases[e], false, false);
     });
   } else if (params.length === 1) {
     if (!state.wsh.aliases[params[0]]) {
       this.output("'" + params[0] + "' is not aliased to anything!");
     } else {
       this.output(
-        params[0] + ": " + state.wsh.aliases[params[0]],
+        params[0] + ': ' + state.wsh.aliases[params[0]],
         false,
         false
       );
@@ -31,7 +31,7 @@ export default function alias(state: StoreState, params: Array<string>) {
       state.wsh.aliases[params[0]] = params[1];
     }
   } else {
-    this.output("Invalid number of parameters");
+    this.output('Invalid number of parameters');
   }
   return state;
 }
