@@ -36,7 +36,7 @@ const defaultStateObject: StorageState = {
   [Constants.STATE_KEY]: initialState
 };
 
-export function load(callback: any => void) {
+export function load(callback: StoreState => void) {
   chrome.storage.local.get(defaultStateObject, (data: StorageState) => {
     callback(data[Constants.STATE_KEY]);
   });
