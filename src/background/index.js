@@ -8,22 +8,22 @@ import { getCurrentWindow } from 'utils';
 import type { Action } from 'types';
 
 var _console = (function(nativeConsole) {
-    return {
-        log: function (text){
-            nativeConsole.log(text);
-        },
-        info: function (text) {
-            nativeConsole.info(text);
-        },
-        warn: function (text) {
-            nativeConsole.warn(text);
-        },
-        error: function (text) {
-            nativeConsole.error(text);
-        },
-        assert: nativeConsole.assert
-    };
-}(window.console));
+  return {
+    log: function(text) {
+      nativeConsole.log(text);
+    },
+    info: function(text) {
+      nativeConsole.info(text);
+    },
+    warn: function(text) {
+      nativeConsole.warn(text);
+    },
+    error: function(text) {
+      nativeConsole.error(text);
+    },
+    assert: nativeConsole.assert
+  };
+})(self.console);
 console = _console;
 
 console.log('MercuryWM background running');
