@@ -5,7 +5,7 @@
     "main": "src/index.js",
     "scripts": {
         "dev": "webpack --progress --watch",
-        "prod": "cross-env NODE_ENV=production webpack -p --progress",
+        "prod": "webpack -p --progress",
         "test": "flow check",
         "ci-prod": "npm run prod && zip -r mercurywm-$(date +%s).zip build/"
     },
@@ -22,7 +22,6 @@
         "@babel/preset-flow": "^7.0.0",
         "@babel/preset-react": "^7.0.0",
         "babel-loader": "^8.0.5",
-        "cross-env": "^5.2.0",
         "flow-bin": "^0.91.0",
         "flow-interfaces-chrome": "^0.5.3",
         "flow-typed": "^2.5.1",
