@@ -73,8 +73,7 @@ module.exports = (env, argv) => {
     config.optimization = {
       minimizer: [
         new TerserPlugin({
-          cache: true,
-          parallel: true,
+          extractComments: false,
           terserOptions: {
             compress: {
               drop_console: true
