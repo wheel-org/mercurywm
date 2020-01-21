@@ -51,10 +51,7 @@ const config = {
           }),
         {}
       )
-    ),
-    new webpack.DefinePlugin({
-      PRODUCTION: JSON.stringify(process.env.NODE_ENV === 'production')
-    })
+    )
   ],
   stats: {
     colors: true
@@ -64,29 +61,36 @@ const config = {
   }
 };
 
-if (process.env.NODE_ENV === 'production') {
-  config.mode = 'production';
-  config.optimization = {
-    minimizer: [
-      new TerserPlugin({
-        cache: true,
-        parallel: true,
-        terserOptions: {
-          compress: {
-            drop_console: true
-          }
-        }
-      })
-    ]
-  };
-} else {
-  config.mode = 'development';
-  config.devtool = '#cheap-module-source-map';
+module.exports = (env, argv) => {
   config.plugins.push(
     new webpack.DefinePlugin({
-      'process.env.UPDEEP_MODE': JSON.stringify('dangerously_never_freeze')
+      PRODUCTION: JSON.stringify(argv.mode === 'production')
     })
   );
-}
 
-module.exports = config;
+  if (argv.mode === 'production') {
+    config.mode = 'production';
+    config.optimization = {
+      minimizer: [
+        new TerserPlugin({
+          extractComments: false,
+          terserOptions: {
+            compress: {
+              drop_console: true
+            }
+          }
+        })
+      ]
+    };
+  } else {
+    config.mode = 'development';
+    config.devtool = '#cheap-module-source-map';
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        'process.env.UPDEEP_MODE': JSON.stringify('dangerously_never_freeze')
+      })
+    );
+  }
+
+  return config;
+};
