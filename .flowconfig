@@ -10,10 +10,7 @@ node_modules/flow-interfaces-chrome/interfaces/
 [options]
 module.system.node.resolve_dirname=node_modules
 module.system.node.resolve_dirname=src
-suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe
 module.ignore_non_literal_requires=true
-# Issue with v0.110.0
-experimental.disable_live_non_parse_errors=true
 
 [strict]
 nonstrict-import
