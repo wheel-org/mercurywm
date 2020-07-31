@@ -9,7 +9,6 @@ const env: { [string]: string } = JSON.parse(qp.env);
 const params: string[] = JSON.parse(qp.params);
 console.log({ runningCommand, workingDirectory, cache, id, env, params });
 
-const windowContext = window;
 const content = document.getElementById("content");
 const head = document.head || document.getElementsByTagName('head')[0];
 if (content) {
@@ -20,9 +19,10 @@ if (content) {
         content.innerHTML = file;
       }
       else if (param.endsWith('.js')) {
-        (function() {
-          windowContext.eval(file);
-        })();
+        // Alternative to eval
+        Function(`"use strict";return function (getFile, writeFile, getEnv, setEnv, done){${file}};`)()(
+          getFile, writeFile, getEnv, setEnv, done
+        );
       }
       else if (param.endsWith('.css')) {
         const style = document.createElement('style');
@@ -80,8 +80,8 @@ function sendMessage(msg: ExtensionMessage) {
   parent.postMessage(JSON.stringify(msg), "*");
 }
 
-window.onload = function() {
-  window.addEventListener("keydown", function(e) {
+window.onload = function () {
+  window.addEventListener("keydown", function (e) {
     if (e.ctrlKey && e.keyCode === 67) {
       // Quit extension on Ctrl+C
       done();
